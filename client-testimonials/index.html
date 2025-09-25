@@ -3,38 +3,275 @@
 	
 <!-- Mirrored from aenfinite.com/dd-nyc-client-testimonials/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:09:50 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
-<head>
+<head><!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			} .header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
 	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 
 <!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->
-<title>Aenfinite® Client Testimonials</title>
-<meta name="description" content="Explore client reviews for Aenfinite®, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals."/>
+<title>Aenfinite Client Testimonials</title>
+<meta name="description" content="Explore client reviews for Aenfinite, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals."/>
 <meta name="robots" content="nofollow, noindex"/>
 <meta property="og:locale" content="en_US" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Aenfinite® Client Testimonials" />
-<meta property="og:description" content="Explore client reviews for Aenfinite®, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals." />
+<meta property="og:title" content="Aenfinite Client Testimonials" />
+<meta property="og:description" content="Explore client reviews for Aenfinite, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals." />
 <meta property="og:url" content="https://aenfinite.com/client-testimonials/" />
-<meta property="og:site_name" content="Aenfinite®" />
+<meta property="og:site_name" content="Aenfinite" />
 <meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
 <meta property="og:updated_time" content="2025-02-21T05:20:23-05:00" />
 <meta property="og:image" content="https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta property="og:image:secure_url" content="https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta property="og:image:width" content="768" />
 <meta property="og:image:height" content="432" />
-<meta property="og:image:alt" content="Aenfinite® Brand Logo - Best Branding &amp; Web Design Agency in Denver" />
+<meta property="og:image:alt" content="Aenfinite Brand Logo - Best Branding &amp; Web Design Agency in Denver" />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="article:published_time" content="2024-02-11T13:30:07-05:00" />
 <meta property="article:modified_time" content="2025-02-21T05:20:23-05:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Aenfinite® Client Testimonials" />
-<meta name="twitter:description" content="Explore client reviews for Aenfinite®, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals." />
+<meta name="twitter:title" content="Aenfinite Client Testimonials" />
+<meta name="twitter:description" content="Explore client reviews for Aenfinite, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals." />
 <meta name="twitter:site" content="@aenfinite" />
 <meta name="twitter:creator" content="@aenfinite" />
 <meta name="twitter:image" content="https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta name="twitter:label1" content="Time to read" />
 <meta name="twitter:data1" content="Less than a minute" />
-<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"Aenfinite®","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"Aenfinite®","alternateName":"Aenfinite® - Branding &amp; Web Design Division of DigitalDesign.NYC","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","url":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","width":"5714","height":"3216","caption":"Aenfinite® Brand Logo - Best Branding &amp; Web Design Agency in Denver","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/client-testimonials/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/client-testimonials/","name":"Aenfinite® Client Testimonials"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/client-testimonials/#webpage","url":"https://aenfinite.com/client-testimonials/","name":"Aenfinite® Client Testimonials","datePublished":"2024-02-11T13:30:07-05:00","dateModified":"2025-02-21T05:20:23-05:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/client-testimonials/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/client-testimonials/#author","name":"Hasan Ahmed®","description":"Archives from for Aenfinite® (DigitalDesign.NYC)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","caption":"Hasan Ahmed®","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Aenfinite® Client Testimonials","keywords":"Aenfinite® Client Testimonials","datePublished":"2024-02-11T13:30:07-05:00","dateModified":"2025-02-21T05:20:23-05:00","author":{"@id":"https://aenfinite.com/client-testimonials/#author","name":"Hasan Ahmed®"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Explore client reviews for Aenfinite®, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals.","name":"Aenfinite® Client Testimonials","@id":"https://aenfinite.com/client-testimonials/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/client-testimonials/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/client-testimonials/#webpage"}}]}</script>
+<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"Aenfinite","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"Aenfinite","alternateName":"Aenfinite - Branding &amp; Web Design Division of Aenfinite.com","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","url":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","width":"5714","height":"3216","caption":"Aenfinite Brand Logo - Best Branding &amp; Web Design Agency in Denver","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/client-testimonials/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/client-testimonials/","name":"Aenfinite Client Testimonials"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/client-testimonials/#webpage","url":"https://aenfinite.com/client-testimonials/","name":"Aenfinite Client Testimonials","datePublished":"2024-02-11T13:30:07-05:00","dateModified":"2025-02-21T05:20:23-05:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/client-testimonials/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/client-testimonials/#author","name":"Hasan Ahmed","description":"Archives from for Aenfinite (Aenfinite.com)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","caption":"Hasan Ahmed","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Aenfinite Client Testimonials","keywords":"Aenfinite Client Testimonials","datePublished":"2024-02-11T13:30:07-05:00","dateModified":"2025-02-21T05:20:23-05:00","author":{"@id":"https://aenfinite.com/client-testimonials/#author","name":"Hasan Ahmed"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Explore client reviews for Aenfinite, a M/WBE Certified design company in Denver. See stories from WillowWood, BAS Stone, Thrillz, Cole Metals.","name":"Aenfinite Client Testimonials","@id":"https://aenfinite.com/client-testimonials/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/client-testimonials/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/client-testimonials/#webpage"}}]}</script>
 <!-- /Rank Math WordPress SEO plugin -->
 
 <link rel="https://api.w.org/" href="../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../wp-json/wp/v2/pages/3898.json" /><link rel='shortlink' href='../index13fe.html?p=3898' />
@@ -43,6 +280,90 @@
 
 	<!-- CSS Inline Styles -->
 	<style>
+			.checkbox-group .list-item input[type="checkbox"]:checked + .list-item-label {
+			background: #227bf3 !important;
+			color: white !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) {
+			background: #227bf3 !important;
+			border-color: #227bf3 !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) .list-item-label {
+			color: white !important;
+		}
+		.form-control-wrap .checkbox-group {
+			display: flex !important;
+			flex-wrap: wrap !important;
+			gap: 10px !important;
+		}
+		
+		.checkbox-group .list-item {
+			display: flex !important;
+			align-items: center !important;
+			background: #f8f9fa !important;
+			border: 1px solid #e0e0e0 !important;
+			border-radius: 25px !important;
+			padding: 8px 16px !important;
+			transition: all 0.3s ease !important;
+			cursor: pointer !important;
+			min-width: fit-content !important;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+			margin: 0 !important;
+		}
+		
+		.checkbox-group .list-item:hover {
+			background: #e3f2fd !important;
+			border-color: #227bf3 !important;
+			box-shadow: 0 4px 8px rgba(34, 123, 243, 0.15) !important;
+			transform: translateY(-1px) !important;
+		}
+		
+		.checkbox-group .list-item input[type="checkbox"] {
+			margin: 0 8px 0 0 !important;
+			accent-color: #227bf3 !important;
+			transform: scale(1.1) !important;
+		}
+		
+		.checkbox-group .list-item-label {
+			font-size: 14px !important;
+			font-weight: 500 !important;
+			color: #555 !important;
+			cursor: pointer !important;
+			margin: 0 !important;
+			white-space: nowrap !important;
+		}
+		
+		.checkbox-group .list-item:hover .list-item-label {
+			color: #227bf3 !important;
+		}
+		
+		/* Force override any existing styles */
+		.checkbox-group span.list-item {
+			display: flex !important;
+			align-items: center !important;
+			background: #f8f9fa !important;
+			border: 1px solid #e0e0e0 !important;
+			border-radius: 25px !important;
+			padding: 8px 16px !important;
+			margin: 0 !important;
+		}
+		
+		/* Responsive design for contact form */
+		@media (max-width: 768px) {
+			.form-control-wrap .checkbox-group {
+				gap: 8px !important;
+			}
+			
+			.checkbox-group .list-item {
+				padding: 6px 12px !important;
+			}
+			
+			.checkbox-group .list-item-label {
+				font-size: 13px !important;
+			}
+		}
 		/* Mobile logo protection - ensure white logo always shows in mobile menu */
 		.menu.js-menu.mobile .topbar-logo .mobile-logo {
 			filter: brightness(0) invert(1) !important;
@@ -92,10 +413,412 @@
 	})(window,document,'script','dataLayer','GTM-53L4TW5R');</script>
 	<!-- End Google Tag Manager -->
 
-	<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = 'https://acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite® with ¤ï¸', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerOffsetX : 40, triggerOffsetY : 40, triggerRadius : '10px' } }); }; h.appendChild(s); })(); </script>
+	<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = 'https://acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite with ️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerOffsetX : 40, triggerOffsetY : 40, triggerRadius : '10px' } }); }; h.appendChild(s); })(); </script>
 	<script src="https://tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
 		
-</head>
+<!-- GSAP Library for advanced cursor animations -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
+		
+		<!-- Advanced Interactive Cursor Animation Script -->
+		<script>
+			// Interactive Cursor Animation Script
+			let cursor;
+			const amount = 20;
+			const sineDots = Math.floor(amount * 0.3);
+			const width = 26;
+			const idleTimeout = 150;
+			let lastFrame = 0;
+			let mousePosition = {x: 0, y: 0};
+			let dots = [];
+			let timeoutID;
+			let idle = false;
+
+			class Dot {
+				constructor(index = 0) {
+					this.index = index;
+					this.anglespeed = 0.05;
+					this.x = 0;
+					this.y = 0;
+					this.scale = 1 - 0.05 * index;
+					this.range = width / 2 - width / 2 * this.scale + 2;
+					this.limit = width * 0.75 * this.scale;
+					this.element = document.createElement("span");
+					TweenMax.set(this.element, {scale: this.scale});
+					cursor.appendChild(this.element);
+				}
+
+				lock() {
+					this.lockX = this.x;
+					this.lockY = this.y;
+					this.angleX = Math.PI * 2 * Math.random();
+					this.angleY = Math.PI * 2 * Math.random();
+				}
+
+				draw(delta) {
+					if (!idle || this.index <= sineDots) {
+						TweenMax.set(this.element, {x: this.x, y: this.y});
+					} else {
+						this.angleX += this.anglespeed;
+						this.angleY += this.anglespeed;
+						this.y = this.lockY + Math.sin(this.angleY) * this.range;
+						this.x = this.lockX + Math.sin(this.angleX) * this.range;
+						TweenMax.set(this.element, {x: this.x, y: this.y});
+					}
+				}
+			}
+
+			function initAdvancedCursor() {
+				// Get or create cursor element
+				cursor = document.getElementById("aenfinite-cursor");
+				if (!cursor) {
+					cursor = document.createElement("div");
+					cursor.id = "aenfinite-cursor";
+					cursor.className = "aenfinite-cursor";
+					document.body.appendChild(cursor);
+				}
+
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+			}
+
+			function startIdleTimer() {
+				timeoutID = setTimeout(goInactive, idleTimeout);
+				idle = false;
+			}
+
+			function resetIdleTimer() {
+				clearTimeout(timeoutID);
+				startIdleTimer();
+			}
+
+			function goInactive() {
+				idle = true;
+				for (let dot of dots) {
+					dot.lock();
+				}
+			}
+
+			function buildDots() {
+				for (let i = 0; i < amount; i++) {
+					let dot = new Dot(i);
+					dots.push(dot);
+				}
+			}
+
+			const onMouseMove = event => {
+				mousePosition.x = event.clientX - width / 2;
+				mousePosition.y = event.clientY - width / 2;
+				resetIdleTimer();
+			};
+
+			const onTouchMove = (event) => {
+				event.preventDefault();
+				mousePosition.x = event.touches[0].clientX - width / 2;
+				mousePosition.y = event.touches[0].clientY - width / 2;
+				resetIdleTimer();
+			};
+
+			const render = timestamp => {
+				const delta = timestamp - lastFrame;
+				positionCursor(delta);
+				lastFrame = timestamp;
+				requestAnimationFrame(render);
+			};
+
+			const positionCursor = delta => {
+				let x = mousePosition.x;
+				let y = mousePosition.y;
+				dots.forEach((dot, index, dots) => {
+					let nextDot = dots[index + 1] || dots[0];
+					dot.x = x;
+					dot.y = y;
+					dot.draw(delta);
+					if (!idle || index <= sineDots) {
+						const dx = (nextDot.x - dot.x) * 0.35;
+						const dy = (nextDot.y - dot.y) * 0.35;
+						x += dx;
+						y += dy;
+					}
+				});
+			};
+
+			// Initialize when DOM is loaded
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
+
+		<!-- Advanced Cursor Styles -->
+		<style>
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			} .header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #ff6b35;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg><style>.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			} .header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}</style>
+	
+	<!-- Animated Cursor Implementation -->
+	<style>
+		* {
+			cursor: none !important;
+		}
+		
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
+		
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+	</style>
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.1, 1 - index * 0.05) + ")";
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+		</head>
 <body class="page-template page-template-page-testimonials page-template-page-testimonials-php page-id-3898 document loading">
 		
 	<!-- Google Tag Manager (noscript) -->
@@ -117,69 +840,209 @@
 
 	<div style="display:none!important;">
 		<div class="ip">217.113.194.75</div>
-		<div class="url">Aenfinite® Client Testimonials</div>
+		<div class="url">Aenfinite Client Testimonials</div>
 		<div class="urlback"></div>
 		<div class="datas">08.15.2025</div>
 		<div class="times">10-40 am</div>
 	</div>
 
 	<div class="mainnav js-mainnav ">
-		<div class="wrapper">
-			<div class="topbar">
-				<div class="topbar-nav js-topnav-follow">
-					<div class="topbar-logo js-topnav-follow-item active">
-						<a href="../">
-							<img src="../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
-							<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
-						</a>
+			<div class="wrapper">
+				<div class="topbar">
+					<div class="topbar-nav js-topnav-follow">
+						<div class="topbar-logo js-topnav-follow-item active">
+							<a href="">
+								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
+								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
+							</a>
+						</div>
+						<ul class="topnav desktop">
+							<li class="topnav-item js-topnav-follow-item">
+								<a href="/featured-work/">Work</a>
+							</li>
+							<li class="topnav-item js-topnav-follow-item">
+								<a href="/agency">Agency</a>
+							</li>
+							                            <li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
+                                <a href="/services/">Services</a>
+                                <ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Development Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/wordpress-websites/">WordPress Websites</a></li>
+<li><a href="/services/e-commerce-websites/">E-Commerce Websites</a></li>
+											<li><a href="/services/custom-web-development">Custom Web Development</a></li>
+											<li><a href="/services/software-&-platform-development/">Software & Platform Development</a></li>
+											<li><a href="/services/app-development/">App Development</a></li>
+											<li><a href="/services/web-design/">Website Design & Development</a></li>
+											<li><a href="/services/web-design-and-branding-for-real-estate/">Real Estate Web Solutions</a></li>                                      </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Design & Creative Services ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ui-ux-design/">UI/UX Design</a></li>
+
+                                            <li><a href="/services/branding/">Brand Identity & Strategy</a></li>
+                                            <li><a href="/services/graphic-design/">Graphic Design</a></li>
+                                            <li><a href="/services/motion-graphics/">Motion Graphics</a></li>
+                                            <li><a href="/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+                                            <li><a href="/services/conference-branding/">Conference Branding</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Marketing & Digital Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/digital-marketing/">Digital Marketing Strategy</a></li>
+                                            <li><a href="/services/search-engine-optimization/">Search Engine Optimization (SEO)</a></li>
+                                            <li><a href="/services/pay-per-click">Pay-Per-Click (PPC) Advertising</a></li>
+                                            <li><a href="/services/social-media-marketing/">Social Media Marketing</a></li>
+                                            <li><a href="/services/paid-ads/">Paid Advertising</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">AI & Technology Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ai-chatbots-&-virtual-assistants/">AI Chatbots & Virtual Assistants</a></li>
+                                            <li><a href="/services/workflow-&-business-automation/">Workflow & Business Automation</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li><style>/* Multi-Level Dropdown Navigation Styles - Partner With Us Style */
+.menu-item-has-children {
+    position: relative;
+}
+
+/* Main dropdown from Services menu - adaptive styling */
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Sub-menus - adaptive styling based on navbar state */
+.sub-menu {
+    position: absolute;
+    top: -5px;
+    left: 100%;
+    margin-left: 1px;
+    min-width: 250px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    z-index: 1001;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Default dropdown styling - no background, dark text (for top of page) */
+.dropdown-list a,
+.sub-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.dropdown-list a:hover,
+.sub-menu a:hover {
+    color: #007cba;
+    padding-left: 15px;
+}
+
+/* When navbar is active/scrolled - black background, white text */
+.mainnav.active .dropdown-list,
+.mainnav.active .sub-menu {
+    margin-top: 10px;
+    background: #000;
+}
+
+.mainnav.active .dropdown-list a,
+.mainnav.active .sub-menu a {
+    color: #fff;
+}
+
+.mainnav.active .dropdown-list a:hover,
+.mainnav.active .sub-menu a:hover {
+    color: #007cba;
+}
+
+/* When hovering over menu item with children, expand main dropdown to match sub-menu */
+.menu-item-has-children:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Expand main dropdown when sub-menu is hovered */
+.menu-item-has-children:hover {
+    min-width: 250px;
+}
+
+.dropdown-list:has(.menu-item-has-children:hover) {
+    min-width: 250px;
+    width: 250px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sub-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 3px solid #007cba;
+        margin-left: 15px;
+        background: #f9f9f9;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .menu-item-has-children.active > .sub-menu {
+        max-height: 500px;
+    }
+}</style>						</ul>
+						<div class="topnav-follower desktop js-topnav-follow-bar"></div>
 					</div>
-					<ul class="topnav desktop">
-						<li class="topnav-item js-topnav-follow-item">
-							<a href="../featured-work/">Work</a>
-						</li>
-						<li class="topnav-item js-topnav-follow-item">
-							<a href="../agency/">Agency</a>
-						</li>
-						<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-							<a href="../services/">Services</a>
-							<ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
-								<li id="menu-item-2275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2275"><a href="../services/web-design/">Web Design</a></li>
-								<li id="menu-item-2276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2276"><a href="../services/branding/">Branding</a></li>
-								<li id="menu-item-ecommerce" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-ecommerce"><a href="../services/e-commerce-websites/">E-commerce Websites</a></li>
-								<li id="menu-item-digital-marketing" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-digital-marketing"><a href="../services/digital-marketing/">Digital Marketing</a></li>
-								<li id="menu-item-6909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6909"><a href="../services/trade-show-booth-design/">Trade Shows</a></li>
-								<li id="menu-item-2277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2277"><a href="../services/packaging-design/">Packaging Design</a></li>
-							</ul>	
-						</li>
-						<li class="topnav-item js-topnav-follow-item">
-							<a href="./client-testimonials/" aria-current="page">Testimonials</a>
-						</li>
-					</ul>
-					<div class="topnav-follower desktop js-topnav-follow-bar"></div>
+					<div class="topbar-social desktop">
+						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="/agency/partner-with-us/">Partner with us</a></li>
+</ul>					</div>
+					<div class="topbar-contact desktop">
+						<a href="/contact/" class="topbar-contact_button">Contact</a>
+					</div>
+					<div class="menu-button mobile js-menu-toggle"><i></i></div>
 				</div>
-				<div class="topbar-social desktop">
-					<ul id="menu-header-contact-left" class="menuss">
-						<li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954">
-							<a class="js-dropdown-layer-marker" href="../agency/partner-with-us/">Partner with us</a>
-						</li>
-					</ul>					
-				</div>
-				<div class="topbar-contact desktop">
-					<a href="../contact/?linkcontact=top-contact-button" class="topbar-contact_button">Contact</a>
-				</div>
-				<div class="menu-button mobile js-menu-toggle"><i></i></div>
 			</div>
-		</div>
-		<div class="mainnav-dropdown-layer js-dropdown-layer">
-			<div class="mainnav-dropdown-layer-container js-dropdown-layer-text">
-				<div class="wrapper">
-					<div class="mainnav-dropdown-layer-text">
-						If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+			<div class="mainnav-dropdown-layer js-dropdown-layer">
+				<div class="mainnav-dropdown-layer-container js-dropdown-layer-text">
+					<div class="wrapper">
+						<div class="mainnav-dropdown-layer-text">
+							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
+			</div>	</div>
 		
 	<div class="container">
 			
@@ -204,7 +1067,7 @@
 		<div class="section">
 			<div class="wrapper">
 				<div class="inner-wrapper">
-					<h1>Aenfinite® Client Testimonials</h1>
+					<h1>Aenfinite Client Testimonials</h1>
 					<div class="list-testimonials">
 						<div class="item" itemprop="review" itemscope itemtype="http://schema.org/Review">
 							<div class="left">
@@ -226,7 +1089,7 @@
 							</div>
 							<div class="right">
 								<div class="review" itemprop="reviewBody">
-									"The Aenfinite® website and brand solution is solid + aesthetically AMAZING! Bringing the website up to par with our evolution as a company is another feather in our collective caps!"								
+									"The Aenfinite website and brand solution is solid + aesthetically AMAZING! Bringing the website up to par with our evolution as a company is another feather in our collective caps!"								
 								</div>
 								<div class="rating-author">
 									<div class="rating" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
@@ -240,7 +1103,7 @@
 											<img src="https://aenfinite.com/wp-content/uploads/2024/06/WW-Hires-Otto-PR-Image-e1717618135768.jpg" alt="Otto Fernandez" class="avatar" />
 										</div>
 										<h3 itemprop="author">
-											<b>€” Otto Fernandez,</b>
+											<b> Otto Fernandez,</b>
 											Chief Commercial Officer, WillowWood Global										
 										</h3>
 									</div>
@@ -280,7 +1143,7 @@
 											<img src="https://aenfinite.com/wp-content/uploads/2024/07/Katibelle-Sharkey-copy.jpg" alt="Katibelle Sharkey" class="avatar" />
 										</div>
 										<h3 itemprop="author">
-											<b>€” Katibelle Sharkey,</b>
+											<b> Katibelle Sharkey,</b>
 											Creative Director, BAS Stone Denver										
 										</h3>
 									</div>
@@ -291,7 +1154,7 @@
 						<div class="item" itemprop="review" itemscope itemtype="http://schema.org/Review">
 							<div class="left">
 								<div class="thumb">
-									<img src="https://aenfinite.com/wp-content/uploads/2025/02/Frame-1000003906.webp" alt="Wechter Branding and Website by Aenfinite®" class="img-clients-proj">
+									<img src="https://aenfinite.com/wp-content/uploads/2025/02/Frame-1000003906.webp" alt="Wechter Branding and Website by Aenfinite" class="img-clients-proj">
 									<div class="hovers">View project</div>
 								</div>
 								<span class="number">03</span>
@@ -306,7 +1169,7 @@
 							</div>
 							<div class="right">
 								<div class="review" itemprop="reviewBody">
-									"Working with Aenfinite® has been transformational for our brand. Their understanding of craftsmanship and attention to detail matches our approach to guitar making. The results speak for themselves."								
+									"Working with Aenfinite has been transformational for our brand. Their understanding of craftsmanship and attention to detail matches our approach to guitar making. The results speak for themselves."								
 								</div>
 								<div class="rating-author">
 									<div class="rating" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
@@ -320,7 +1183,7 @@
 											<img src="https://aenfinite.com/wp-content/uploads/2024/03/Abraham-Wechter.jpg" alt="Abraham Wechter" class="avatar" />
 										</div>
 										<h3 itemprop="author">
-											<b>€” Abraham Wechter,</b>
+											<b> Abraham Wechter,</b>
 											Founder, Wechter Guitars										
 										</h3>
 									</div>
@@ -372,7 +1235,7 @@
 	<!-- Google Tag Manager (noscript) -->
 	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53L4TW5R" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-	<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = 'https://acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite® with ¤ï¸', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerOffsetX : 40, triggerOffsetY : 40, triggerRadius : '10px' } }); }; h.appendChild(s); })(); </script>
+	<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = 'https://acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite with ️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerOffsetX : 40, triggerOffsetY : 40, triggerRadius : '10px' } }); }; h.appendChild(s); })(); </script>
 	<script src="https://tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
 
 	<script src="../wp-content/themes/aenfinite.com/static/js/demo5163.js?v=20241204-0018"></script>	
@@ -485,6 +1348,8 @@
 		});
 	</script>
 
-</body>
+	<!-- Universal Button and Checkbox Highlighting Script -->	<script src="js/button-highlights.js"></script>
+		</body>
 </html>
+
 

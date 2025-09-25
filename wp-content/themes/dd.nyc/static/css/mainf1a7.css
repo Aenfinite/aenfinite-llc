@@ -1306,22 +1306,22 @@
 
 	.footer-col_list{font-size: 14px;}
 
-	.footer-col__connect{grid-column-end: span 2;margin-top: 60px;padding-right: 0;}
-	.footer-col__address{grid-column-end: span 2;margin-top: 8px;padding-right: 0;}
+	.{grid-column-end: span 2;margin-top: 60px;padding-right: 0;}
+	.{grid-column-end: span 2;margin-top: 8px;padding-right: 0;}
 
-	.footer-col__connect::before,
-	.footer-col__address::before,
-	.footer-col__connect .footer-col_caption,
-	.footer-col__address .footer-col_caption{display: none;}
+	.::before,
+	.::before,
+	. .footer-col_caption,
+	. .footer-col_caption{display: none;}
 
-	.footer-col__connect .footer-col_list,
-	.footer-col__address .footer-col_list{margin-top: 0;}
+	. .footer-col_list,
+	. .footer-col_list{margin-top: 0;}
 
-	.footer-col__connect .footer-col_list ul{display: flex;font-size: 12px;justify-content: space-between;}
-	.footer-col__address .footer-col_list ul{display: flex;font-size: 12px;color: #575757;}
+	. .footer-col_list ul{display: flex;font-size: 12px;justify-content: space-between;}
+	. .footer-col_list ul{display: flex;font-size: 12px;color: #575757;}
 
-	.footer-col__connect .footer-col_list li + li,
-	.footer-col__address .footer-col_list li + li{margin: 0 0 0 8px;}
+	. .footer-col_list li + li,
+	. .footer-col_list li + li{margin: 0 0 0 8px;}
 
 	.bottombar{margin-top: 60px;grid-gap: 40px;}
 
@@ -1504,9 +1504,9 @@
 	.footer-col_caption{font-size: 14px;}
 	.footer-col_list{margin-top: 10px;}
 	.footer-col_list li + li{margin-top: 10px;}
-	.footer-col__connect{margin-top: 48px;}
-	.footer-col__connect .footer-col_list{font-size: 12px;}
-	.footer-col__address .footer-col_list ul{justify-content: space-between;}
+	.{margin-top: 48px;}
+	. .footer-col_list{font-size: 12px;}
+	. .footer-col_list ul{justify-content: space-between;}
 
 
 
@@ -1564,7 +1564,7 @@
 	.reviews-logo{width: 80px;}
 	.reviews-num{font-size: 10px;}
 
-	.footer-col__connect{order: 1;}
+	.{order: 1;}
 
 
 }
@@ -2587,6 +2587,40 @@ h2.main__title {
 
 .to-contact.visible_button {
 	opacity: 1;
+}
+
+/* Button Styles for to-contact and to-meeting */
+.to-contact, .to-meeting {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: #227bf3;
+	border-radius: 100px;
+	height: 40px;
+	color: #FFF;
+	font-size: 14px;
+	line-height: 1;
+	font-weight: 600;
+	letter-spacing: -0.03em;
+	padding: 0 20px;
+	transition: all .15s;
+	text-decoration: none;
+	margin-left: 10px;
+}
+
+.to-contact:hover, .to-meeting:hover {
+	background: #1e6fd9;
+	color: #fff;
+	text-decoration: none;
+	transform: translateY(-1px);
+}
+
+.to-contact:active, .to-meeting:active {
+	transform: translateY(0);
+}
+
+.to-contact:visited, .to-meeting:visited {
+	color: #FFF;
 }
 
 .popup-landing {

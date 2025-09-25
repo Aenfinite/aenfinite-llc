@@ -1,32 +1,891 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
+	
+<!-- Mirrored from Aenfinite/services/graphic-design/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:09:30 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+<!-- Aenfinite Services Section CSS -->
+<style>
+/* ===== AENFINITE SERVICES SECTION CSS ===== */
+/* Extracted from Cities/index.html for reuse across projects */
+
+/* ===== DESKTOP SERVICES STYLES ===== */
+.service-list {
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	grid-gap: 30px;
+	align-items: start;
+}
+
+.service {
+	margin-bottom: 0;
+	border-radius: 12px;
+	overflow: visible;
+	transition: all 0.3s ease;
+}
+
+.service:hover {
+	transform: translateY(-5px);}
+
+.service-caption {
+	font-size: 20px;
+	font-weight: 600;
+	padding: 20px 0;
+	margin: 0;
+	background: none;
+	border-radius: 0;
+	line-height: 1.4;
+	color: #1a1a1a;
+	cursor: pointer;
+	transition: none;
+}
+
+.service-caption:hover {
+	background: none;
+}
+
+.service-content {
+	padding: 30px 0;
+	margin: 0;
+	background: none;
+}
+
+.service-tags {
+	margin-bottom: 25px;
+}
+
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+}
+
+.chip {
+	margin: 0;
+	padding: 0;
+}
+
+.chip-label {
+	font-size: 13px;
+	font-weight: 500;
+	padding: 8px 14px;
+	border-radius: 20px;
+	background: #e3f2fd;
+	color: #1976d2;
+	text-decoration: none;
+	display: inline-block;
+	line-height: 1.2;
+	transition: all 0.3s ease;
+}
+
+.chip-label:hover {
+	background: #1976d2;
+	color: white;
+	transform: translateY(-1px);
+}
+
+.service-text {
+	margin: 20px 0;
+}
+
+.service-text p {
+	font-size: 16px;
+	line-height: 1.6;
+	color: #555;
+	margin: 0;
+	padding: 0;
+}
+
+.service-action {
+	margin-top: 25px;
+}
+
+.service-action a {
+	font-size: 16px;
+	font-weight: 500;
+	padding: 12px 24px;
+	border-radius: 8px;
+	background: #227bf3;
+	color: white;
+	text-decoration: none;
+	display: inline-block;
+	transition: all 0.3s ease;
+}
+
+.service-action a:hover {
+	background: #1e6bc7;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(34, 123, 243, 0.3);
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.service-nav {
+		padding: 0 15px !important;
+	}
+	
+	.service-list {
+		padding: 0 15px !important;
+		grid-template-columns: 1fr;
+		grid-gap: 25px;
+	}
+	
+	.service {
+		margin-bottom: 0 !important;
+		padding: 0 !important;
+		border-radius: 16px !important;
+	}
+	
+	.service:hover {
+		transform: translateY(-3px) !important;	}
+	
+	.service-caption {
+		font-size: 18px !important;
+		padding: 15px 20px !important;
+		margin: 0 !important;
+		background: #f8f9fa !important;
+		border-radius: 8px !important;
+		line-height: 1.4 !important;
+	}
+	
+	.service-content {
+		padding: 25px 20px !important;
+		margin: 0 !important;
+	}
+	
+	.service-tags {
+		margin-bottom: 20px !important;
+	}
+	
+	.chips {
+		display: flex !important;
+		flex-wrap: wrap !important;
+		gap: 8px !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	
+	.chip {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	
+	.chip-label {
+		font-size: 12px !important;
+		padding: 6px 12px !important;
+		border-radius: 20px !important;
+		background: #e3f2fd !important;
+		color: #1976d2 !important;
+		text-decoration: none !important;
+		display: inline-block !important;
+		line-height: 1.2 !important;
+	}
+	
+	.service-text {
+		margin: 20px 0 !important;
+	}
+	
+	.service-text p {
+		font-size: 16px !important;
+		line-height: 1.6 !important;
+		color: #555 !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	
+	.service-action {
+		margin-top: 20px !important;
+	}
+	
+	.service-action a {
+		font-size: 16px !important;
+		padding: 12px 24px !important;
+		border-radius: 8px !important;
+		background: #227bf3 !important;
+		color: white !important;
+		text-decoration: none !important;
+		display: inline-block !important;
+	}
+}
+
+/* ===== EXTRA SMALL PHONES ===== */
+@media (max-width: 480px) {
+	.service-list {
+		padding: 0 10px !important;
+		grid-gap: 20px;
+	}
+	
+	.service {
+		padding: 0 !important;
+		border-radius: 12px !important;
+	}
+	
+	.service-caption {
+		font-size: 16px !important;
+		padding: 12px 15px !important;
+	}
+	
+	.service-content {
+		padding: 20px 15px !important;
+	}
+}
+	
+/* ===== MOBILE ACCORDION STYLES ===== */
+@media (max-width: 768px) {
+	/* Mobile slide-in animation for service content */
+	.service-content {
+		max-height: 0 !important;
+		overflow: hidden !important;
+		opacity: 0 !important;
+		transform: translateY(30px) !important;
+		transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+		padding: 0 15px !important;
+	}
+	
+	.service.active .service-content {
+		max-height: 1000px !important;
+		opacity: 1 !important;
+		transform: translateY(0) !important;
+		padding: 20px 15px !important;
+	}
+}
+
+/* ===== DESKTOP SERVICES DISPLAY ===== */
+@media (min-width: 769px) {
+	.service-content {
+		max-height: none !important;
+		overflow: visible !important;
+		opacity: 1 !important;
+		transform: none !important;
+		padding: 30px 0 !important;
+	}
+	
+	.desktop-only {
+		display: block !important;
+	}
+}
+
+/* ===== MOBILE DESKTOP-ONLY CONTENT HIDE ===== */
+@media (max-width: 768px) {
+	.desktop-only {
+		display: none !important;
+	}
+	
+	.header-cross {
+		display: none !important;
+	}
+}
+
+/* ===== DESKTOP HEADER CROSS DISPLAY ===== */
+@media (min-width: 769px) {
+	.header-cross {
+		display: block !important;
+	}
+}
+	
+	/* Mobile hamburger menu logo sizing */
+	.menu-header .nav-logo,
+	.topbar-logo .nav-logo {
+		max-width: 120px !important;
+		max-height: 35px !important;
+	}
+
+/* ===== EXTRA SMALL MOBILE (480px and below) ===== */
+@media (max-width: 480px) {
+	.service-caption {
+		font-size: 16px !important;
+		padding: 12px 15px !important;
+	}
+	
+	.service-content {
+		padding: 20px 15px !important;
+	}
+	
+	.chip-label {
+		font-size: 11px !important;
+		padding: 5px 10px !important;
+	}
+	
+	.service-text p {
+		font-size: 15px !important;
+		line-height: 1.5 !important;
+	}
+	
+	.service-action a {
+		font-size: 15px !important;
+		padding: 10px 20px !important;
+	}
+}
+
+/* ===== UTILITY CLASSES ===== */
+.mobile-hide {
+	display: none;
+}
+
+.mobile-show {
+	display: block;
+}
+
+.mobile-center {
+	text-align: center;
+	margin: 0 auto;
+}
+
+.mobile-full-width {
+	width: 100%;
+	max-width: 100%;
+}
+
+/* Show mobile utilities only on mobile */
+@media (min-width: 769px) {
+	.mobile-hide {
+		display: block;
+	}
+	
+	.mobile-show {
+		display: none;
+	}
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fadein {
+	animation: fadeInUp 0.6s ease-out;
+}
+
+/* ===== ACCESSIBLE FOCUS STYLES ===== */
+.service-caption:focus,
+.chip-label:focus,
+.service-action a:focus {
+	outline: 2px solid #227bf3;
+	outline-offset: 2px;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+	.service {
+		break-inside: avoid;
+		box-shadow: none;
+		border: none;
+	}
+	
+	.service-caption {
+		background: none !important;
+		color: black !important;
+	}
+	
+	.chip-label {
+		background: #f0f0f0 !important;
+		color: black !important;
+		border: 1px solid #ccc;
+	}
+	
+	.service-action a {
+		background: transparent !important;
+		color: black !important;
+		border: 1px solid black;
+	}
+}
+			.checkbox-group .list-item input[type="checkbox"]:checked + .list-item-label {
+			background: #227bf3 !important;
+			color: white !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) {
+			background: #227bf3 !important;
+			border-color: #227bf3 !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) .list-item-label {
+			color: white !important;
+		}
+		.form-control-wrap .checkbox-group {
+			display: flex !important;
+			flex-wrap: wrap !important;
+			gap: 15px !important;
+			width: 100% !important;
+			max-width: 100% !important;
+		}
+		
+		.checkbox-group .list-item {
+			display: flex !important;
+			align-items: center !important;
+			background: #f8f9fa !important;
+			border: 1px solid #e0e0e0 !important;
+			border-radius: 25px !important;
+			padding: 8px 16px !important;
+			transition: all 0.3s ease !important;
+			cursor: pointer !important;
+			min-width: fit-content !important;
+			max-width: fit-content !important;
+			flex: 0 0 auto !important;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+			margin: 0 !important;
+		}
+		
+		.checkbox-group .list-item:hover {
+			background: #e3f2fd !important;
+			border-color: #227bf3 !important;
+			box-shadow: 0 4px 8px rgba(34, 123, 243, 0.15) !important;
+			transform: translateY(-1px) !important;
+		}
+		
+		.checkbox-group .list-item input[type="checkbox"] {
+			margin: 0 8px 0 0 !important;
+			accent-color: #227bf3 !important;
+			transform: scale(1.1) !important;
+		}
+		
+		.checkbox-group .list-item-label {
+			font-size: 14px !important;
+			font-weight: 500 !important;
+			color: #555 !important;
+			cursor: pointer !important;
+			margin: 0 !important;
+			white-space: nowrap !important;
+		}
+		
+		.checkbox-group .list-item:hover .list-item-label {
+			color: #227bf3 !important;
+		}
+		
+		/* Force override any existing styles */
+		.checkbox-group span.list-item {
+			display: flex !important;
+			flex: 0 0 auto !important;
+			width: auto !important;
+			max-width: fit-content !important;
+		}
+		
+		/* Extra specific targeting for desktop layout */
+		
+		/* Responsive design for contact form */
+		@media (max-width: 768px) {
+			.form-control-wrap .checkbox-group {
+				gap: 8px !important;
+			}
+			
+			.checkbox-group .list-item {
+				padding: 6px 12px !important;
+			}
+			
+			.checkbox-group .list-item-label {
+				font-size: 13px !important;
+			}
+			
+			/* Mobile responsive heading */
+			.section-caption_text h2 {
+				font-size: 14px !important;
+				line-height: 1.3 !important;
+				word-wrap: break-word !important;
+				hyphens: auto !important;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.section-caption_text h2 {
+				font-size: 14px !important;
+				line-height: 1.4 !important;
+			}
+		}
+		
+		/* Fix for highlighted text overlap */
+		.title h1 span span[style*="background:#227bf3"] {
+			white-space: nowrap !important;
+			overflow-wrap: normal !important;
+			font-size: inherit !important;
+		}
+		
+		.title h1 {
+			text-align: left !important;
+		}
+		
+		@media (max-width: 768px) {
+			.title h1 span span[style*="background:#227bf3"] {
+				display: block !important;
+				margin-bottom: 8px !important;
+				white-space: normal !important;
+				text-align: left !important;
+				font-size: inherit !important;
+			}
+			
+			.title h1 {
+				text-align: left !important;
+			}
+		}
+</style>
+
+<!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			} .header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
 			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
+		<style>
+			
+		.nav-logo {
+			height: 28px;
+			width: 140px;
+			display: block;
+		}
+
+		.topbar-logo a {
+			position: relative;
+			display: block;
+		}
+
+		.nav-logo-default,
+		.nav-logo-active {
+			transition: opacity 0.3s ease;
+			height: 28px;
+			width: 140px;
+		}
+
+		.nav-logo-default {
+			opacity: 1;
+		}
+
+		.nav-logo-active {
+			opacity: 0;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+
+		.topbar-logo:hover .nav-logo-default {
+			opacity: 0;
+		}
+
+		.topbar-logo:hover .nav-logo-active {
+			opacity: 1;
+		}
+		
+		/* Active navbar logo switching when scrolling */
+		.mainnav.active .nav-logo-default,
+		.mainnav.always-active .nav-logo-default,
+		.mainnav:hover .nav-logo-default {
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+		
+		.mainnav.active .nav-logo-active,
+		.mainnav.always-active .nav-logo-active,
+		.mainnav:hover .nav-logo-active {
+			opacity: 1;
+			transform: scale(1.05);
+			z-index: 2;
+		}
+		
+		/* Fix preloader layout issues */
+		.preloader {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			overflow: hidden;
+		}
+		
+		.preloader-inner {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		
+		.preloader iframe {
+			border: none;
+			margin: 0;
+			padding: 0;
+		}
+		</style>
 	
 <!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->
-<title>Page not found | Aenfinite®</title>
-<meta name="robots" content="follow, noindex"/>
+<title>Premier Conference Branding & Event Identity Design Services | Aenfinite</title>
+<meta name="description" content="Aenfinite creates powerful conference branding and event identity designs that elevate your conference presence and engage attendees. Complete conference branding solutions, event collateral, and digital assets."/>
+<meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
+<link rel="canonical" href="" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Page not found | Aenfinite®" />
-<meta property="og:site_name" content="Aenfinite®" />
+<meta property="og:title" content="Premier Conference Branding & Event Identity Design Services | Aenfinite" />
+<meta property="og:description" content="Aenfinite creates powerful conference branding and event identity designs that elevate your conference presence and engage attendees. Complete conference branding solutions, event collateral, and digital assets." />
+<meta property="og:url" content="https://Aenfinite.com/services/conference-branding/" />
+<meta property="og:site_name" content="Aenfinite" />
 <meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
-<meta property="og:image" content="https://Aenfinite/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
-<meta property="og:image:secure_url" content="https://Aenfinite/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta property="og:updated_time" content="2025-07-12T11:13:56-04:00" />
+<meta property="og:image" content="https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta property="og:image:secure_url" content="https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta property="og:image:width" content="768" />
 <meta property="og:image:height" content="432" />
-<meta property="og:image:alt" content="Aenfinite® Brand Logo - Best Branding &amp; Web Design Agency in Denver" />
+<meta property="og:image:alt" content="Aenfinite Brand Logo - Best Branding Agency in Denver" />
 <meta property="og:image:type" content="image/jpeg" />
+<meta property="article:published_time" content="2022-10-16T21:16:37-04:00" />
+<meta property="article:modified_time" content="2025-07-12T11:13:56-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Page not found | Aenfinite®" />
+<meta name="twitter:title" content="Professional Branding Services | Logo Design & Brand Identity | Aenfinite" />
+<meta name="twitter:description" content="Aenfinite delivers expert branding services including logo design, brand identity, brand strategy, and brand guidelines. Specializing in cohesive brand experiences that enhance recognition and drive business growth." />
 <meta name="twitter:site" content="@aenfinite" />
-<meta name="twitter:image" content="https://Aenfinite/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
-<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://Aenfinite/#organization","name":"Aenfinite\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/Aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://Aenfinite/#website","url":"https://Aenfinite","name":"Aenfinite\u00ae","alternateName":"Aenfinite\u00ae - Branding &amp; Web Design Division of DigitalDesign.NYC","publisher":{"@id":"https://Aenfinite/#organization"},"inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://Aenfinite","name":"Home"}}]},{"@type":"WebPage","@id":"#webpage","url":"","name":"Page not found | Aenfinite\u00ae","isPartOf":{"@id":"https://Aenfinite/#website"},"inLanguage":"en-US","breadcrumb":{"@id":"#breadcrumb"}}]}</script>
+<meta name="twitter:creator" content="@aenfinite" />
+<meta name="twitter:image" content="https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta name="twitter:label1" content="Time to read" />
+<meta name="twitter:data1" content="Less than a minute" />
+<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://Aenfinite.com/#organization","name":"Aenfinite\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/Aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://Aenfinite.com/#website","url":"https://Aenfinite","name":"Aenfinite\u00ae","alternateName":"Aenfinite\u00ae - Branding Agency","publisher":{"@id":"https://Aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","url":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","width":"5714","height":"3216","caption":"Aenfinite\u00ae Brand Logo - Best Branding Agency","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://Aenfinite.com/services/branding/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://Aenfinite","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://Aenfinite.com/services/","name":"Services"}},{"@type":"ListItem","position":"3","item":{"@id":"https://Aenfinite.com/services/branding/","name":"Branding"}}]},{"@type":"WebPage","@id":"https://Aenfinite.com/services/branding/#webpage","url":"https://Aenfinite.com/services/branding/","name":"Professional Branding Services | Logo Design & Brand Identity | Aenfinite\u00ae","datePublished":"2022-10-16T21:16:37-04:00","dateModified":"2025-09-16T11:13:56-04:00","isPartOf":{"@id":"https://Aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://Aenfinite.com/services/branding/#breadcrumb"}},{"@type":"Person","@id":"https://Aenfinite.com/services/branding/#author","name":"Anjelika Aenfinite\u00ae","description":"Archives from for Aenfinite\u00ae (Aenfinite.com)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","caption":"Anjelika Aenfinite\u00ae","inLanguage":"en-US"},"worksFor":{"@id":"https://Aenfinite.com/#organization"}},{"@type":"Article","headline":"Professional Branding Services | Logo Design & Brand Identity | Aenfinite\u00ae","keywords":"Conference Branding, Event Identity Design, Conference Brand Strategy, Event Collateral, Brand Activation, Conference Marketing","datePublished":"2022-10-16T21:16:37-04:00","dateModified":"2025-09-16T11:13:56-04:00","author":{"@id":"https://Aenfinite.com/services/branding/#author","name":"Anjelika Aenfinite\u00ae"},"publisher":{"@id":"https://Aenfinite.com/#organization"},"description":"Aenfinite\u00ae delivers Professional Branding Services services including online store design, Brand Guidelines Development, website optimization, and maintenance. Specializing in high-converting e-commerce solutions that enhance user experience and business growth.","name":"Professional Branding Services | Logo Design & Brand Identity | Aenfinite\u00ae","@id":"https://Aenfinite.com/services/branding/#richSnippet","isPartOf":{"@id":"https://Aenfinite.com/services/branding/#webpage"},"image":{"@id":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://Aenfinite.com/services/branding/#webpage"}}]}</script>
 <!-- /Rank Math WordPress SEO plugin -->
 
-<link rel="https://api.w.org/" href="https://Aenfinite/wp-json/" />    <style type="text/css">
+<link rel="https://api.w.org/" href="../../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../../wp-json/wp/v2/pages/1708.json" /><link rel='shortlink' href='../../index13fe.html?p=1708' />
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="../../wp-json/oembed/1.0/embed5d0d.json?url=https%3A%2F%2FAenfinite%2Fservices%2Fgraphic-design%2F" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="../../wp-json/oembed/1.0/embed19dd?url=https%3A%2F%2FAenfinite%2Fservices%2Fgraphic-design%2F&amp;format=xml" />
+    <style type="text/css">
 		#wp-admin-bar-wp-logo > .ab-item .ab-icon:before {
-			content: url('https://Aenfinite/wp-content/uploads/2024/05/logo.svg') !important;
+			content: url('../../wp-content/uploads/2024/05/logo.svg') !important;
 			width: 75%;
 			height: auto;
 			left: 50%;
@@ -78,15 +937,15 @@
 			}	
 		}		
     </style>
-    <link rel="icon" href="https://Aenfinite/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-32x32.png" sizes="32x32" />
-<link rel="icon" href="https://Aenfinite/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-192x192.png" sizes="192x192" />
-<link rel="apple-touch-icon" href="https://Aenfinite/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-180x180.png" />
-<meta name="msapplication-TileImage" content="https://Aenfinite/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-270x270.png" />
+    <link rel="icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-32x32.png" sizes="32x32" />
+<link rel="icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-180x180.png" />
+<meta name="msapplication-TileImage" content="https://Aenfinite.com/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-270x270.png" />
 		<meta name="p:domain_verify" content="a289659500b9ab2eea935a542138f755"/>
 		<meta name="google-site-verification" content="w5x4RIV--Je9QfyBMKTz_kRMtBGYQ_0e80K3uAykqoc" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<!-- Powered by Aenfinite® https://Aenfinite/ -->
+		<!-- Powered by Aenfinite https://Aenfinite.com/ -->
 		<!--              
 				,DDD                 DDD        
 			  DD    DD            DD     DD     
@@ -101,15 +960,15 @@
 						  D, DD                 
 							*
 		-->
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/jquery.min.js"></script>
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/slick.min.js"></script>
-		<link href="https://Aenfinite/wp-content/themes/aenfinite.com/static/css/main.css?v=20250731-2020" rel="stylesheet" type="text/css" />
-		<link href="https://Aenfinite/wp-content/themes/aenfinite.com/style.css?v=20250731-2020" rel="stylesheet" type="text/css" />
+		<script src="../../wp-content/themes/aenfinite.com/static/js/jquery.min.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/slick.min.js"></script>
+		<link href="../../wp-content/themes/aenfinite.com/static/css/mainf1a7.css?v=20250731-2020" rel="stylesheet" type="text/css" />
+		<link href="../../wp-content/themes/aenfinite.com/stylef1a7.css?v=20250731-2020" rel="stylesheet" type="text/css" />
 		
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/smartScroll.min.js"></script>
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/gsap.min.js"></script>
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/ScrollMagic.js"></script>
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/animation.gsap.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/smartScroll.min.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/gsap.min.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/ScrollMagic.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/animation.gsap.js"></script>
 		
 		<!-- Google tag (gtag.js) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-K9VRBCFE61"></script>
@@ -124,31 +983,171 @@
 		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		'../../../www.googletagmanager.com/gtm5445.html?id='+i+dl;f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer','GTM-53L4TW5R');</script>
 		<!-- End Google Tag Manager -->
 
 
-<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = 'https://acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite® with ❤️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
+<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite with ??', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
 		
-	<script src="https://tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
-	
+	<script src="../../../tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
+		
+
+	<!-- Animated Cursor Implementation -->
 	<style>
-		/* Logo scroll behavior */
-		.topbar-logo .logo-white { display: block; }
-		.topbar-logo .logo-dark { display: none; }
+		* {
+			cursor: none !important;
+		}
 		
-		.header.scrolled .topbar-logo .logo-white { display: none; }
-		.header.scrolled .topbar-logo .logo-dark { display: block; }
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
 		
-		.nav-logo, .mobile-logo {
-			max-height: 35px;
-			width: auto;
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
 		}
 	</style>
-		
-	</head>
-	<body class="document loading body_hide">
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.1, 1 - index * 0.05) + ")";
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+		</head>
+	<body class="page-template page-template-page-service-php page-id-1708 page-child parent-pageid-82 document loading body_hide document">
 		
 		<!-- Google Tag Manager (noscript) -->
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53L4TW5R"
@@ -168,58 +1167,200 @@
 			</symbol>
 		</svg>
 		<div style="display:none!important;">
-						<div class="ip">51.79.77.165</div>
-			<div class="url"></div>
-			<div class="urlback">https://t.co/</div>
+						<div class="ip">49.36.188.249</div>
+			<div class="url">E-commerce Services</div>
+			<div class="urlback">https://Aenfinite.com/services/branding/</div>
 			<div class="datas">08.15.2025</div>
-			<div class="times">6-44 am</div>
+			<div class="times">9-38 am</div>
 		</div>	
-		<div class="mainnav js-mainnav always-active">
+		<div class="mainnav js-mainnav ">
 			<div class="wrapper">
 				<div class="topbar">
 					<div class="topbar-nav js-topnav-follow">
 						<div class="topbar-logo js-topnav-follow-item active">
-							<a href="../../">
-								<object data="../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" type="image/svg+xml" class="logo-white nav-logo">
-									<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo">
-								</object>
-								<object data="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" type="image/svg+xml" class="logo-dark nav-logo">
-									<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo">
-								</object>
+							<a href="/">
+								<img src="/wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
+								<img src="/wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
 							</a>
 						</div>
 						<ul class="topnav desktop">
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="https://Aenfinite/featured-work/">Work</a>
+								<a href="/featured-work/">Work</a>
 							</li>
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="https://Aenfinite/agency/">Agency</a>
+								<a href="/agency/">Agency</a>
 							</li>
-							<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-								<a href="https://Aenfinite/services/">Services</a>
-								<ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list"><li id="menu-item-2275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2275"><a href="https://Aenfinite/services/web-design/">Web Design</a></li>
-<li id="menu-item-2276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2276"><a href="https://Aenfinite/services/branding/">Branding</a></li>
-<li id="menu-item-6909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6909"><a href="https://Aenfinite/services/trade-show-booth-design/">Trade Shows</a></li>
-<li id="menu-item-2277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2277"><a href="https://Aenfinite/services/packaging-design/">Packaging Design</a></li>
-</ul>	
+							                            <li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
+                                <a href="/services/">Services</a>
+                              <ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
+									<li class="menu-item menu-item-has-children">
+										<a href="#">Development Solutions ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/e-commerce-websites/">E-Commerce Websites</a></li>
+											<li><a href="/services/custom-web-development">Custom Web Development</a></li>
+											<li><a href="/services/software-&-platform-development/">Software & Platform Development</a></li>
+											<li><a href="/services/app-development/">App Development</a></li>
+											<li><a href="/services/web-design/">Website Design & Development</a></li>
+											<li><a href="/services/web-design-and-branding-for-real-estate/">Real Estate Web Solutions</a></li>									</ul>
+									</li>
+									<li class="menu-item menu-item-has-children">
+										<a href="#">Design & Creative Services ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/ui-ux-design/">UI/UX Design</a></li>
+											<li><a href="/services/website-design/">Website Design</a></li>
+											<li><a href="/services/branding/">Brand Identity & Strategy</a></li>
+											<li><a href="/services/graphic-design/">Graphic Design</a></li>
+											<li><a href="/services/motion-graphics/">Motion Graphics</a></li>
+											<li><a href="/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+											<li><a href="/services/conference-branding/">Conference Branding</a></li>
+										</ul>
+									</li>
+									<li class="menu-item menu-item-has-children">
+										<a href="#">Marketing & Digital Solutions ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/digital-marketing/">Digital Marketing Strategy</a></li>
+											<li><a href="/services/search-engine-optimization/">Search Engine Optimization (SEO)</a></li>
+											<li><a href="/services/pay-per-click">Pay-Per-Click (PPC) Advertising</a></li>
+											<li><a href="/services/social-media-marketing/">Social Media Marketing</a></
+
+										</ul>
+									</li>
+									
+									
+									
+								</ul>
 							</li>
-							<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-								<a href="https://Aenfinite/industries/">Industries</a>
-								<ul id="menu-header-industries-menu" class="dropdown-list js-dropdown-list"><li id="menu-item-3774" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3774"><a href="https://Aenfinite/services/real-estate/">Real Estate</a></li>
-<li id="menu-item-7019" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7019"><a href="https://Aenfinite/services/healthcare-industry/">Healthcare</a></li>
-<li id="menu-item-3771" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3771"><a href="https://Aenfinite/services/financial-industry/">Finance &#038; Tech</a></li>
-<li id="menu-item-3772" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3772"><a href="https://Aenfinite/services/industrial-sector/">Industrial</a></li>
-<li id="menu-item-6731" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6731"><a href="https://Aenfinite/services/manufacturing-industry/">Manufacturing</a></li>
-</ul>	
-							</li>
+							<li class="menu-item menu-item-has-children">
+										<a href="#">AI & Technology Solutions ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/ai-chatbots-&-virtual-assistants/">AI Chatbots & Virtual Assistants</a></li>
+											<li><a href="/services/workflow-&-business-automation/">Workflow & Business Automation</a></li>
+										</ul>
+									</li>
 						</ul>
+                            </li><style>/* Multi-Level Dropdown Navigation Styles - Partner With Us Style */
+.menu-item-has-children {
+    position: relative;
+}
+
+/* Main dropdown from Services menu - adaptive styling */
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Sub-menus - adaptive styling based on navbar state */
+.sub-menu {
+    position: absolute;
+    top: -5px;
+    left: 100%;
+    margin-left: 1px;
+    min-width: 250px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    z-index: 1001;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Default dropdown styling - no background, dark text (for top of page) */
+.dropdown-list a,
+.sub-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.dropdown-list a:hover,
+.sub-menu a:hover {
+    color: #007cba;
+    padding-left: 15px;
+}
+
+/* When navbar is active/scrolled - black background, white text */
+.mainnav.active .dropdown-list,
+.mainnav.active .sub-menu {
+    margin-top: 10px;
+    background: #000;
+}
+
+.mainnav.active .dropdown-list a,
+.mainnav.active .sub-menu a {
+    color: #fff;
+}
+
+.mainnav.active .dropdown-list a:hover,
+.mainnav.active .sub-menu a:hover {
+    color: #007cba;
+}
+
+/* When hovering over menu item with children, expand main dropdown to match sub-menu */
+.menu-item-has-children:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Expand main dropdown when sub-menu is hovered */
+.menu-item-has-children:hover {
+    min-width: 250px;
+}
+
+.dropdown-list:has(.menu-item-has-children:hover) {
+    min-width: 250px;
+    width: 250px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sub-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 3px solid #007cba;
+        margin-left: 15px;
+        background: #f9f9f9;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .menu-item-has-children.active > .sub-menu {
+        max-height: 500px;
+    }
+}</style>						</ul>
 						<div class="topnav-follower desktop js-topnav-follow-bar"></div>
 					</div>
 					<div class="topbar-social desktop">
-						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="https://Aenfinite/agency/partner-with-us/">Partner with us</a></li>
+						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="/agency/partner-with-us/">Partner with us</a></li>
 </ul>					</div>
 					<div class="topbar-contact desktop">
-						<a href="https://Aenfinite/contact/?linkcontact=top-contact-button" class="topbar-contact_button">Contact</a>
+						<a href="/contact/" class="topbar-contact_button">Contact</a>
 					</div>
 					<div class="menu-button mobile js-menu-toggle"><i></i></div>
 				</div>
@@ -228,16 +1369,53 @@
 				<div class="mainnav-dropdown-layer-container js-dropdown-layer-text">
 					<div class="wrapper">
 						<div class="mainnav-dropdown-layer-text">
-							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 		
 		<div class="container">
 		
-					
+			<div class="header js-active-header">
+	<div class="wrapper">
+		<div class="header-cross js-cross">
+			<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+				<g stroke="currentColor" stroke-width="1.5">
+					<line x1="0" y1="0" x2="100%" y2="100%" vector-effect="non-scaling-stroke"></line>
+				</g>
+			</svg>
+		</div>
+		<div class="header-cross js-cross">
+			<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+				<g stroke="currentColor" stroke-width="1.5">
+					<line x1="100%" y1="0" x2="0" y2="100%" vector-effect="non-scaling-stroke"></line>
+				</g>
+			</svg>
+			<span class="header-cross_text">Redefine Infinite Possibilities</span>
+		</div>
+		<div class="header-wrapper">
+			<div class="header-caption">
+				<div class="title title__main js-header-title">
+					<h1>
+						<span>Premier <span style="background:#227bf3;color:white;padding:1px 0px;border-radius:2px;display:inline;line-height:1.2;margin-right:2px;vertical-align:baseline;">Conference Branding</span> that creates impactful <span style="background:#227bf3;color:white;padding:1px 0px;border-radius:2px;display:inline;line-height:1.2;margin-right:2px;vertical-align:baseline;">event identities</span> and engages attendees.</span>
+													
+											</h1>
+									</div>
+			</div>
+			
+
+		</div>
+
+		                <div class="preloader">
+                    <div class="preloader-inner">
+						<iframe src="/intro/demo/data.html" style="width: 100%; height: 100vh;" ></iframe>
+                      
+
+                    </div>
+				</div>
+			</div>
+		</div>		
 			<a class="fab js-fab" href="#contact">
 				<div class="fab-button js-fab-button desktop">
 					<svg width="100%" height="100%" viewBox="0 0 232 199" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -248,141 +1426,909 @@
 							<rect x="116" y="0" width="116" height="140" fill="#fff" />
 						</mask>
 						<use href="#myHeart" />
-						<image href="https://Aenfinite/wp-content/themes/aenfinite.com/static/img/fab-text.svg" height="199" width="232" class="fab-text" />
+						<image href="../../wp-content/themes/aenfinite.com/static/img/fab-text.svg" height="199" width="232" class="fab-text" />
 						<g mask="url(#mask0_2906_19095)">
 							<use href="#myHeart" />
 						</g>
 					</svg>
 				</div>
 			</a>
-	<div class="main error__404">
+		
 
-		<div class="errorpage js-active-header">
-			<div class="wrapper">
+		
+		<div class="main">
 
-				<div class="header-cross js-cross">
-					<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-						<g stroke="currentColor" stroke-width="1.5">
-							<line x1="0" y1="0" x2="100%" y2="100%" vector-effect="non-scaling-stroke"></line>
-						</g>
-					</svg>
-				</div>
-				<div class="header-cross js-cross">
-					<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-						<g stroke="currentColor" stroke-width="1.5">
-							<line x1="100%" y1="0" x2="0" y2="100%" vector-effect="non-scaling-stroke"></line>
-						</g>
-					</svg>
-					<span class="header-cross_text">Innovating in your field</span>
-				</div>
-
-				<div class="errorpage-grid">
-
-					<div class="errorpage-hearts">
-						<div class="errorpage-heart">
-							<svg class="icon">
-								<use xlink:href="#i-heart"></use>
-							</svg>
-						</div>
-						<div class="errorpage-heart">
-							<svg class="icon">
-								<use xlink:href="#i-heart"></use>
-							</svg>
-						</div>
-						<div class="errorpage-heart">
-							<svg class="icon">
-								<use xlink:href="#i-heart"></use>
-							</svg>
-						</div>
-						<div class="errorpage-heart">
-							<svg class="icon">
-								<use xlink:href="#i-heart"></use>
-							</svg>
-						</div>
-					</div>
-					<div class="errorpage-content">
-						<div class="errorpage-title">
-							<div class="title">
-								<span>We couldn’t find that page.</span>
+            <div class="section">
+                <div class="header-marquee runner js-runner">
+                    <div class="js-runner-content">
+													<div class="marquee-line">
+    <span class="marquee-line_text">Professional Branding Services Services</span>
+    <span class="marquee-line_text">Brand Identity, Logo Design & Visual Strategy</span>
+    <span class="marquee-line_text">Serving Clients Across the US, Canada & Beyond</span>
+    <span class="marquee-line_text">Specialists in Brand Identity & Creative Design</span>
+    <span class="marquee-line_text">Trusted by Growing Businesses for Branding Solutions</span>
+    <span class="marquee-line_text">High-Impact Brand Design & Identity Development</span>
+    <span class="marquee-line_text">Professional Branding & Logo Design Solutions</span>
+    <span class="marquee-line_text">Professional Branding Agency with Proven Results</span>
+    <span class="marquee-line_text">Comprehensive Brand Strategy & Design Support</span>
+    <span class="marquee-line_text">Custom Branding Solutions for Every Industry</span>
+    <span class="marquee-line_text">Brand Consistency & Multi-Platform Implementation</span>
+    <span class="marquee-line_text">Scalable Brand Systems & Long-term Recognition</span>
+</div>
+						                    </div>
+                </div>
+                <div class="js-shiftbox-carousel shiftbox-carousel">
+											<div>
+							<div class="shiftbox">
+								<div class="shiftbox-image">
+									<a href="../../work/branding/">
+										<img src="../../work/branding/ASC-Media-Wall-12'x10'.png" alt="ASC Media Wall Conference Branding - Professional Event Display Design" class="cover" />
+									    <a href="../../work/branding/" class="shiftbox-link"> </a>
+									</a>
+								</div>
+								<div class="shiftbox-content">
+									<div class="preview">
+										<div class="preview-content" data-index="01">
+											<div class="preview-name preview-name__caption"><a href="../../work/branding/">ASC Media Wall Conference Branding</a></div>
+																																		<div class="preview-name">Conference Branding</div>
+																							<div class="preview-name">Media Wall Design</div>
+																							<div class="preview-name">Event Identity</div>
+																							<div class="preview-name">Visual Communication</div>
+																					</div>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="errorpage-subtitle">
-							<a href="https://Aenfinite" class="redlink">
-								<span>Back home</span>
-							</a>
+											<div>
+							<div class="shiftbox">
+								<div class="shiftbox-image">
+									<a href="../../work/branding/">
+										<img src="../../work/branding/brand_guidelines_mockup.jpg" alt="Brand Guidelines Mockup - Professional Conference Brand Identity System" class="cover" />
+									    <a href="../../work/branding/" class="shiftbox-link"> </a>
+									</a>
+								</div>
+								<div class="shiftbox-content">
+									<div class="preview">
+										<div class="preview-content" data-index="02">
+											<div class="preview-name preview-name__caption"><a href="../../work/branding/">Brand Guidelines & Identity System</a></div>
+																																		<div class="preview-name">Brand Guidelines</div>
+																							<div class="preview-name">Identity Design</div>
+																							<div class="preview-name">Conference Branding</div>
+																							<div class="preview-name">Brand Standards</div>
+																					</div>
+									</div>
+								</div>
+							</div>
+						</div>
+											<div>
+							<div class="shiftbox">
+								<div class="shiftbox-image">
+									<a href="../../work/branding/">
+										<img src="../../work/branding/cyclethe6-logo-01.jpg" alt="CycleThe6 Conference Logo Design - Professional Event Branding" class="cover" />
+									    <a href="../../work/branding/" class="shiftbox-link"> </a>
+									</a>
+								</div>
+								<div class="shiftbox-content">
+									<div class="preview">
+										<div class="preview-content" data-index="03">
+											<div class="preview-name preview-name__caption"><a href="../../work/branding/">CycleThe6 Event Branding</a></div>
+																																		<div class="preview-name">Event Logo Design</div>
+																							<div class="preview-name">Conference Identity</div>
+																							<div class="preview-name">Brand Development</div>
+																							<div class="preview-name">Visual Identity</div>
+																					</div>
+									</div>
+								</div>
+							</div>
+						</div>
+											<div>
+							<div class="shiftbox">
+								<div class="shiftbox-image">
+									<a href="../../work/branding/">
+										<img src="../../work/branding/stationery-2.jpg" alt="Professional Conference Stationery Design - Branded Event Materials" class="cover" />
+									    <a href="../../work/branding/" class="shiftbox-link"> </a>
+									</a>
+								</div>
+								<div class="shiftbox-content">
+									<div class="preview">
+										<div class="preview-content" data-index="04">
+											<div class="preview-name preview-name__caption"><a href="../../work/branding/">Conference Stationery Design</a></div>
+																																		<div class="preview-name">Event Stationery</div>
+																							<div class="preview-name">Brand Collateral</div>
+																							<div class="preview-name">Conference Materials</div>
+																							<div class="preview-name">Print Design</div>
+																					</div>
+									</div>
+								</div>
+							</div>
+						</div>
+											<div>
+							<div class="shiftbox">
+								<div class="shiftbox-image">
+									<a href="../../work/branding/">
+										<img src="../../work/branding/muskfume_presentation-08.jpg" alt="MuskFume Brand Presentation - Conference Branding Design System" class="cover" />
+									    <a href="../../work/branding/" class="shiftbox-link"> </a>
+									</a>
+								</div>
+								<div class="shiftbox-content">
+									<div class="preview">
+										<div class="preview-content" data-index="05">
+											<div class="preview-name preview-name__caption"><a href="../../work/branding/">MuskFume Brand Presentation</a></div>
+																																		<div class="preview-name">Brand Presentation</div>
+																							<div class="preview-name">Conference Branding</div>
+																							<div class="preview-name">Visual System</div>
+																							<div class="preview-name">Brand Identity</div>
+																					</div>
+									</div>
+								</div>
+							</div>
+						</div>
+											<div>
+							<div class="shiftbox">
+								<div class="shiftbox-image">
+									<a href="../../work/branding/">
+										<img src="../../work/branding/mockup.jpg" alt="Professional Branding Mockup - Conference Brand Identity Design" class="cover" />
+									    <a href="../../work/branding/" class="shiftbox-link"> </a>
+									</a>
+								</div>
+								<div class="shiftbox-content">
+									<div class="preview">
+										<div class="preview-content" data-index="06">
+											<div class="preview-name preview-name__caption"><a href="../../work/branding/">Professional Branding Mockup</a></div>
+																																		<div class="preview-name">Brand Mockup</div>
+																							<div class="preview-name">Identity Design</div>
+																							<div class="preview-name">Conference Branding</div>
+																							<div class="preview-name">Visual Identity</div>
+																					</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					                </div>
+				<div class="shiftbox-nav desktop">
+					<div class="shiftbox-arrow shiftbox-arrow__left js-shiftbox-prev"></div>
+					<div class="shiftbox-pos">
+						<var class="shiftbox-current js-shiftbox-current">01</var> / <span class="shiftbox-num">06</span>
+					</div>
+					<div class="shiftbox-arrow shiftbox-arrow__right js-shiftbox-next"></div>
+				</div>
+            </div>
+			
+				<div class="section">
+		<div class="wrapper">
+			<div class="textbox appear js-aos">
+				<div class="textbox-content">Aenfinite delivers Premier Conference Branding services that create impactful, memorable event identities and drive attendee engagement. We manage comprehensive conference brand strategy, event identity design, brand activation, and event collateral implementation that generate exceptional conference experiences and long-term event success.</div>
+									<div class="textbox-action">
+						<a href="../../services/search-engine-optimization/" class="redlink">
+							<span>Trust the experts</span>
+						</a>
+					</div>
+							</div>
+		</div>
+	</div>
+	<div class="section">
+	<div class="wrapper">
+		<div class="inner-wrapper">
+			<div class="numbers">
+
+				<div class="numbers-item js-aos">
+					<div class="numbers-value">
+						<div>500+</div>
+					</div>
+					<div class="numbers-title">
+						<div>
+							<div>unique brand identities, logos, and visual systems crafted to help businesses stand out in competitive markets</div>
 						</div>
 					</div>
-					<div class="errorpage-id">404</div>
+				</div>
+
+				<div class="numbers-item js-aos">
+					<div class="numbers-value">
+						<div>8+</div>
+					</div>
+					<div class="numbers-title">
+						<div>
+							<div>years building powerful brands, shaping stories, and creating consistent visual languages across industries</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="numbers-item js-aos">
+					<div class="numbers-value">
+						<div>99%</div>
+					</div>
+					<div class="numbers-title">
+						<div>
+							<div>client satisfaction rate in branding projects, from identity design to complete brand transformations</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+		
+	</div>
+	<div class="section">
+		<div class="wrapper">
+			<div class="inner-wrapper">
+				<div class="section-caption js-aos">
+					<div class="section-caption_text">
+						<h2>Aenfinite Branding & Identity Design Case Studies</h2>
+					</div>
+				</div>
+				<div class="previews js-aosfadein">
+					<div class="previews-carousel js-carousel">
+													<div>
+								<div class="preview">									
+									<div class="preview-media">										
+										<img src="../../work/branding/ASC-Media-Wall-12'x10'.png" alt="ASC Media Wall Conference Branding - Professional Event Display Design" />
+										<div class="preview-action"><a href="../../work/branding/" class="not-index">View project</a></div>										
+									</div>									
+									<div class="preview-content" data-index="01">
+										<div class="preview-name preview-name__caption">
+											<a href="../../work/branding/">ASC Media Wall Conference Branding</a>
+										</div>
+																					<div class="preview-name">Conference Branding</div>
+																					<div class="preview-name">Media Wall Design</div>
+																					<div class="preview-name">Event Identity</div>
+																					<div class="preview-name">Visual Communication</div>
+											
+									</div>
+								</div>
+							</div>
+													<div>
+								<div class="preview">									
+									<div class="preview-media">										
+										<img src="../../work/branding/brand_guidelines_mockup.jpg" alt="Brand Guidelines Mockup - Professional Conference Brand Identity System" />
+										<div class="preview-action"><a href="../../work/branding/" class="not-index">View project</a></div>										
+									</div>									
+									<div class="preview-content" data-index="02">
+										<div class="preview-name preview-name__caption">
+											<a href="../../work/branding/">Brand Guidelines & Identity System</a>
+										</div>
+																					<div class="preview-name">Brand Guidelines</div>
+																					<div class="preview-name">Identity Design</div>
+																					<div class="preview-name">Conference Branding</div>
+																					<div class="preview-name">Brand Standards</div>
+											
+									</div>
+								</div>
+							</div>
+													<div>
+								<div class="preview">									
+									<div class="preview-media">										
+										<img src="../../work/branding/cyclethe6-logo-01.jpg" alt="CycleThe6 Conference Logo Design - Professional Event Branding" />
+										<div class="preview-action"><a href="../../work/branding/" class="not-index">View project</a></div>										
+									</div>									
+									<div class="preview-content" data-index="03">
+										<div class="preview-name preview-name__caption">
+											<a href="../../work/branding/">CycleThe6 Event Branding</a>
+										</div>
+																					<div class="preview-name">Event Logo Design</div>
+																					<div class="preview-name">Conference Identity</div>
+																					<div class="preview-name">Brand Development</div>
+																					<div class="preview-name">Visual Identity</div>
+											
+									</div>
+								</div>
+							</div>
+													<div>
+								<div class="preview">									
+									<div class="preview-media">										
+										<img src="../../work/branding/stationery-2.jpg" alt="Professional Conference Stationery Design - Branded Event Materials" />
+										<div class="preview-action"><a href="../../work/branding/" class="not-index">View project</a></div>										
+									</div>									
+									<div class="preview-content" data-index="04">
+										<div class="preview-name preview-name__caption">
+											<a href="../../work/branding/">Conference Stationery Design</a>
+										</div>
+																					<div class="preview-name">Event Stationery</div>
+																					<div class="preview-name">Brand Collateral</div>
+																					<div class="preview-name">Conference Materials</div>
+																					<div class="preview-name">Print Design</div>
+											
+									</div>
+								</div>
+							</div>
+													<div>
+								<div class="preview">									
+									<div class="preview-media">										
+										<img src="../../work/branding/muskfume_presentation-08.jpg" alt="MuskFume Brand Presentation - Conference Branding Design System" />
+										<div class="preview-action"><a href="../../work/branding/" class="not-index">View project</a></div>										
+									</div>									
+									<div class="preview-content" data-index="05">
+										<div class="preview-name preview-name__caption">
+											<a href="../../work/branding/">MuskFume Brand Presentation</a>
+										</div>
+																					<div class="preview-name">Brand Presentation</div>
+																					<div class="preview-name">Conference Branding</div>
+																					<div class="preview-name">Visual System</div>
+																					<div class="preview-name">Brand Identity</div>
+											
+									</div>
+								</div>
+							</div>
+													<div>
+								<div class="preview">									
+									<div class="preview-media">										
+										<img src="../../work/branding/mockup.jpg" alt="Professional Branding Mockup - Conference Brand Identity Design" />
+										<div class="preview-action"><a href="../../work/branding/" class="not-index">View project</a></div>										
+									</div>									
+									<div class="preview-content" data-index="06">
+										<div class="preview-name preview-name__caption">
+											<a href="../../work/branding/">Professional Branding Mockup</a>
+										</div>
+																					<div class="preview-name">Brand Mockup</div>
+																					<div class="preview-name">Identity Design</div>
+																					<div class="preview-name">Conference Branding</div>
+																					<div class="preview-name">Visual Identity</div>
+											
+									</div>
+								</div>
+							</div>
+											</div>
+				</div>
+				<div class="section-footer js-aos appear">
+					<a href="../../work/" class="redlink">
+						<span>View all projects</span>
+					</a>
 				</div>
 			</div>
 		</div>
+	</div>
+<a href="#contact" class="to-formss"></a>
+<div class="section" id="contact">
+	<div class="block formss">
+		<div class="center">
+			<div class="formss-wrap">
+				<h2>Contact Aenfinite for Professional Branding Services</h2>
+				<div class="toggle-formss">
+					
+<div class="wpcf7 no-js" id="wpcf7-f1252-o1" lang="en-US" dir="ltr" data-wpcf7-id="1252">
+<div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"> <ul></ul></div>
+<form action="https://Aenfinite.com/services/branding/#wpcf7-f1252-o1" method="post" class="wpcf7-form init" aria-label="Contact form" novalidate="novalidate" data-status="init">
+<div style="display: none;">
+<input type="hidden" name="_wpcf7" value="1252" />
+<input type="hidden" name="_wpcf7_version" value="6.0.6" />
+<input type="hidden" name="_wpcf7_locale" value="en_US" />
+<input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1252-o1" />
+<input type="hidden" name="_wpcf7_container_post" value="0" />
+<input type="hidden" name="_wpcf7_posted_data_hash" value="" />
+<input type="hidden" name="_wpcf7_recaptcha_response" value="" />
+</div>
 
+<div class="cell">
+	<div class="inputs">
+		<span class="wpcf7-form-control-wrap" data-name="your-name">
+			<input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" />
+		</span>
+		<span class="wpcf7-form-control-wrap" data-name="your-email">
+			<input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" />
+		</span>
+		<span class="wpcf7-form-control-wrap" data-name="text-tell-project">
+			<input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" autocomplete="on" aria-invalid="false" placeholder="Tell us about your branding project" value="" type="text" name="text-tell-project" />
+		</span>
 	</div>
 
+	<div class="checkbox-select">
+		<strong>I'm interested in...</strong>
+		<span class="form-control-wrap" data-name="checkbox-select">
+			<span class="form-control checkbox-group">
+				<span class="list-item first">
+					<input type="checkbox" name="services" value="Logo Design" id="logo-design" />
+					<label for="logo-design" class="list-item-label">Logo Design</label>
+				</span>
+				<span class="list-item">
+					<input type="checkbox" name="services" value="Brand Identity Development" id="brand-identity" />
+					<label for="brand-identity" class="list-item-label">Brand Identity Development</label>
+				</span>
+				<span class="list-item">
+					<input type="checkbox" name="services" value="Visual Branding" id="visual-branding" />
+					<label for="visual-branding" class="list-item-label">Visual Branding</label>
+				</span>
+				<span class="list-item">
+					<input type="checkbox" name="services" value="Brand Strategy" id="brand-strategy" />
+					<label for="brand-strategy" class="list-item-label">Brand Strategy</label>
+				</span>
+				<span class="list-item">
+					<input type="checkbox" name="services" value="Corporate Branding" id="corporate-branding" />
+					<label for="corporate-branding" class="list-item-label">Corporate Branding</label>
+				</span>
+				<span class="list-item">
+					<input type="checkbox" name="services" value="Rebranding Services" id="rebranding" />
+					<label for="rebranding" class="list-item-label">Rebranding Services</label>
+				</span>
+				<span class="list-item">
+					<input type="checkbox" name="services" value="Brand Guidelines" id="brand-guidelines" />
+					<label for="brand-guidelines" class="list-item-label">Brand Guidelines</label>
+				</span>
+				<span class="list-item last">
+					<input type="checkbox" name="services" value="Other Branding Solutions" id="other" />
+					<label for="other" class="list-item-label">Other Branding Solutions</label>
+				</span>
+			</span>
+		</span>
+
+		<div class="selectbox js-select">
+			<input class="selectbox-input js-select-holder" type="text" placeholder="Tell us your approximate budget" value="" readonly name="budget" />
+			<div class="selectbox-suffix">
+				<svg width="18" height="10" viewBox="0 0 18 10"><path d="M1 1L9 9L17 1" stroke="#CCC" fill="none"></path></svg>
+			</div>
+			<div class="select js-select-list">
+				<div class="select-option js-select-option">up to $5,000</div>
+				<div class="select-option js-select-option">from $5,000 to $15,000</div>
+				<div class="select-option js-select-option">from $15,000 to $30,000</div>
+				<div class="select-option js-select-option">from $30,000 to $50,000</div>
+				<div class="select-option js-select-option">over $50,000</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" value="Send" />
+<div class="wpcf7-response-output" aria-hidden="true"></div>
+</form>
+</div>
+				</div>
+				<i class="formss-heart"></i>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="section">
+		<div class="wrapper">
+			<div>
+				<div class="inner-wrapper">
+					<div class="section-caption js-aos">
+						<div class="section-caption_text">
+							<h2>Brand Design Expertise</h2>
+						</div>
+					</div>
+					<div class="textbox textbox__push js-aos appear">
+						<div class="textbox-content">Aenfinite offers comprehensive conference branding services, from event identity design to complete conference brand activation systems, tailored to elevate your event presence.</div>
+					</div>
+				</div>
+			</div>
+			<div class="panes">
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Custom Logo Design</div>
+						<div class="pane-subtitle">
+							<p>Aenfinite specializes in creating custom logo designs from the ground up. Our expert designers create bespoke brand marks, custom logo concepts, and tailored visual identities that perfectly align with your business objectives. We ensure your logo is memorable, scalable, and optimized for all applications.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Brand Identity Design</div>
+						<div class="pane-subtitle">
+							<p>Transform your vision into reality with our comprehensive Brand Identity Design services. Our designers collaborate to create cohesive, memorable brand identities that capture your brand essence while providing exceptional brand experience across all touchpoints and applications.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Brand Guidelines Development</div>
+						<div class="pane-subtitle">
+							<p>Establish clear brand standards with our comprehensive brand guidelines development services. We create detailed brand documentation, style guides, logo usage specifications, and brand implementation rules that ensure consistent brand application across all platforms.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Visual Identity Systems</div>
+						<div class="pane-subtitle">
+							<p>Create comprehensive visual identity systems with cohesive design elements. Our designers develop tailored visual language that includes color palettes, typography, iconography, and imagery that enhances brand recognition and creates consistent brand experiences across all platforms.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Brand Implementation & Management</div>
+						<div class="pane-subtitle">
+							<p>Seamlessly implement your brand across all touchpoints with our comprehensive brand management services. Our brand implementation includes brand rollout planning, asset management, brand compliance monitoring, and ongoing brand maintenance to keep your brand consistent and impactful.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Brand Strategy Development</div>
+						<div class="pane-subtitle">
+							<p>Develop comprehensive brand strategy with our strategic brand development services. We create brand positioning, messaging frameworks, target audience analysis, and competitive differentiation strategies that enable effective brand communication and deliver meaningful brand experiences across all channels.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Brand Positioning & Messaging</div>
+						<div class="pane-subtitle">
+							<p>Maximize your e-commerce website's search engine visibility with our comprehensive SEO optimization services. We implement e-commerce-specific SEO best practices, optimize product pages, improve site speed, and ensure your store is properly structured for search engines to drive organic traffic and sales growth.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Brand Consistency & Standards</div>
+						<div class="pane-subtitle">
+							<p>Protect your e-commerce investment with our advanced security and performance optimization services. We implement robust security measures, regular malware scanning, performance monitoring, and speed optimization to ensure your online store is secure, fast, and reliable.</p>
+						</div>
+					</div>
+									<div class="pane js-aos fadein">
+						<div class="pane-index"></div>
+						<div class="pane-title">Brand Applications & Collateral</div>
+						<div class="pane-subtitle">
+							<p>Experience the power of a dynamic online presence with <span style="font-weight: 400;">Aenfinite&#8217;s</span> Animated Websites. Our team of skilled designers and developers can help bring your website to life with stunning graphics and seamless animations that captivate your audience. By creating an engaging user experience, you can boost your brand&#8217;s online presence, increase conversions, and stay ahead of the competition.</p>
+						</div>
+					</div>
+							</div>
+		</div>
+	</div>
+	<div class="section">
+	<div class="wrapper">
+		<div class="inner-wrapper">
+			<div class="section-caption js-aos">
+				<div class="section-caption_text">
+					<h2>Our Branding Process</h2>
+				</div>
+			</div>
+			<div class="nlist">
+
+				<!-- Discovery -->
+				<div class="nlist-item appear js-aos js-switch">
+					<div class="nlist-caption">Brand Discovery</div>
+					<div class="nlist-tabs js-switch-tabs">
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-1-1">
+							<span>Research & Insights</span>
+						</div>
+						<div class="nlist-pane js-switch-pane active" id="pane-1-1">
+							<p>We begin by analyzing your market, audience, and competitors. Our team gathers insights to understand your brands current position, values, and opportunities for growth.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-1-2">
+							<span>Brand Strategy</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-1-2">
+							<p>We define your brands voice, vision, and value proposition. This stage ensures your brand story aligns with your business goals and speaks directly to your target audience.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-1-3">
+							<span>Positioning</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-1-3">
+							<p>We position your brand uniquely in the market, highlighting your competitive advantages and crafting a narrative that resonates with customers and builds trust.</p>
+						</div>
+						<div class="nlist-sensor js-switch-sensor"></div>
+					</div>
+					<div class="nlist-content js-switch-copy"></div>
+				</div>
+
+				<!-- Design -->
+				<div class="nlist-item appear js-aos js-switch">
+					<div class="nlist-caption">Brand Design</div>
+					<div class="nlist-tabs js-switch-tabs">
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-2-1">
+							<span>Logo Design</span>
+						</div>
+						<div class="nlist-pane js-switch-pane active" id="pane-2-1">
+							<p>We craft a powerful logo that visually represents your brand identity and makes a lasting impression across all platforms.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-2-2">
+							<span>Visual Identity</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-2-2">
+							<p>From color palettes to typography, we create a consistent design system that communicates professionalism and brand personality.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-2-3">
+							<span>Brand Collateral</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-2-3">
+							<p>We design business cards, brochures, social media kits, and other materials to ensure your brand looks consistent everywhere it appears.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-2-4">
+							<span>Brand Guidelines</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-2-4">
+							<p>We deliver a comprehensive brand book that outlines how your brand should be used across print, digital, and marketing channels for consistency.</p>
+						</div>
+						<div class="nlist-sensor js-switch-sensor"></div>
+					</div>
+					<div class="nlist-content js-switch-copy"></div>
+				</div>
+
+				<!-- Implementation -->
+				<div class="nlist-item appear js-aos js-switch">
+					<div class="nlist-caption">Brand Implementation</div>
+					<div class="nlist-tabs js-switch-tabs">
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-3-1">
+							<span>Digital Presence</span>
+						</div>
+						<div class="nlist-pane js-switch-pane active" id="pane-3-1">
+							<p>We apply your brand identity to websites, social media, and digital campaigns, ensuring a strong online presence.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-3-2">
+							<span>Marketing Materials</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-3-2">
+							<p>We create promotional designs such as banners, ads, and presentations to showcase your brand across campaigns and events.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-3-3">
+							<span>Brand Consistency</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-3-3">
+							<p>We monitor and refine how your brand is represented across all channels, ensuring your message and look stay consistent everywhere.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-3-4">
+							<span>Launch</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-3-4">
+							<p>We guide you through the launch of your new brand identity, making sure it makes maximum impact with your audience.</p>
+						</div>
+						<div class="nlist-sensor js-switch-sensor"></div>
+					</div>
+					<div class="nlist-content js-switch-copy"></div>
+				</div>
+
+				<!-- Support -->
+				<div class="nlist-item appear js-aos js-switch">
+					<div class="nlist-caption">Brand Support</div>
+					<div class="nlist-tabs js-switch-tabs">
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-4-1">
+							<span>Ongoing Support</span>
+						</div>
+						<div class="nlist-pane js-switch-pane active" id="pane-4-1">
+							<p>We stay connected after launch, providing ongoing updates, design improvements, and new materials as your brand evolves.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-4-2">
+							<span>Performance Monitoring</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-4-2">
+							<p>We evaluate how your branding performs across campaigns and customer touchpoints, making adjustments for stronger impact.</p>
+						</div>
+						<div class="nlist-tab js-switch-tab" data-pane="#pane-4-3">
+							<span>Training & Guidelines</span>
+						</div>
+						<div class="nlist-pane js-switch-pane" id="pane-4-3">
+							<p>We provide your team with clear brand guidelines, tutorials, and resources so that your brand is represented consistently at every level.</p>
+						</div>
+						<div class="nlist-sensor js-switch-sensor"></div>
+					</div>
+					<div class="nlist-content js-switch-copy"></div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+	<div class="section">
+		<div class="wrapper">
+			<div class="citebox js-karaoke">
+				<div class="citebox-content js-karaoke-content">
+					<span>
+<span style="background:#227bf3;color:white;padding:2px 8px;border-radius:4px;display:inline; padding-bottom: 0 !important; margin-bottom: 0 !important;">Branding</span> is the perfect balance of creativity and strategy. Work with a team that crafts powerful identities and ensures your brand makes a lasting impact across every touchpoint.
+				</div>
+				<div class="citebox-mask js-karaoke-mask"></div>
+			</div>
+		</div>
+	</div>
+</div>   <div class="section" style="padding-bottom: 100px;">
+	<div class="wrapper">
+		<div class="inner-wrapper">
+			<div class="section-caption js-aos">
+				<div class="section-caption_text">
+					<h2>Aenfinite Branding & Identity Design Services</h2>
+				</div>
+			</div>
+			<div class="service-grid">
+				<div>
+					<div class="service-list js-service-container fadein js-aos">
+
+						<!-- Service 1 -->
+						<div class="service active js-service">
+							<div class="service-caption js-service-caption">Logo & Visual Identity</div>
+							<div class="service-content js-service-content">
+								<div class="service-tags">
+									<div class="chips">
+										<div class="chip"><a href="#" class="chip-label">Logo Design</a></div>
+										<div class="chip"><a href="#" class="chip-label">Color Palette</a></div>
+										<div class="chip"><a href="#" class="chip-label">Typography</a></div>
+										<div class="chip"><a href="#" class="chip-label">Iconography</a></div>
+									</div>
+								</div>
+								<div class="service-text">
+									<p>We create unique logos and cohesive visual identity systems that make your brand instantly recognizable across digital and print platforms.</p>
+									<div class="desktop-only" style="margin-top: 15px;">
+										<p><strong>Our identity design process includes:</strong></p>
+										<ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+											<li>Custom logo concepts tailored to your brand story</li>
+											<li>Scalable design systems for digital & print</li>
+											<li>Typography and icon sets aligned with brand tone</li>
+											<li>Consistent use of colors, grids, and layouts</li>
+										</ul>
+										<p style="margin-top: 15px; font-style: italic; color: #666;">
+											We use tools like Adobe Illustrator, Figma, and CorelDRAW to craft timeless brand visuals.
+										</p>
+									</div>
+								</div>
+								<div class="service-action">
+									<a href="#" class="redlink"><span>Learn more</span></a>
+								</div>
+							</div>
+						</div>
+
+						<!-- Service 2 -->
+						<div class="service js-service">
+							<div class="service-caption js-service-caption">Brand Strategy & Positioning</div>
+							<div class="service-content js-service-content">
+								<div class="service-tags">
+									<div class="chips">
+										<div class="chip"><a href="#" class="chip-label">Brand Research</a></div>
+										<div class="chip"><a href="#" class="chip-label">Audience Insights</a></div>
+										<div class="chip"><a href="#" class="chip-label">Competitive Analysis</a></div>
+										<div class="chip"><a href="#" class="chip-label">Brand Messaging</a></div>
+									</div>
+								</div>
+								<div class="service-text">
+									<p>We define your unique positioning in the market, creating strategies that communicate your value and connect with your ideal audience.</p>
+									<div class="desktop-only" style="margin-top: 15px;">
+										<p><strong>Our strategy work includes:</strong></p>
+										<ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+											<li>Competitor and industry research</li>
+											<li>Target audience profiling and personas</li>
+											<li>Value proposition and brand promise</li>
+											<li>Brand voice and messaging frameworks</li>
+										</ul>
+										<p style="margin-top: 15px; font-style: italic; color: #666;">
+											We combine storytelling and data-driven insights to build brands with clarity and impact.
+										</p>
+									</div>
+								</div>
+								<div class="service-action">
+									<a href="#" class="redlink"><span>Learn more</span></a>
+								</div>
+							</div>
+						</div>
+
+						<!-- Service 3 -->
+						<div class="service js-service">
+							<div class="service-caption js-service-caption">Brand Guidelines</div>
+							<div class="service-content js-service-content">
+								<div class="service-tags">
+									<div class="chips">
+										<div class="chip"><a href="#" class="chip-label">Style Guide</a></div>
+										<div class="chip"><a href="#" class="chip-label">Design Systems</a></div>
+										<div class="chip"><a href="#" class="chip-label">Usage Rules</a></div>
+										<div class="chip"><a href="#" class="chip-label">Brand Consistency</a></div>
+									</div>
+								</div>
+								<div class="service-text">
+									<p>We develop detailed brand guidelines to ensure consistent application of your brand across all marketing and communication materials.</p>
+									<div class="desktop-only" style="margin-top: 15px;">
+										<p><strong>Our guidelines include:</strong></p>
+										<ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+											<li>Logo usage and placement rules</li>
+											<li>Color codes and typography hierarchy</li>
+											<li>Photography and visual style direction</li>
+											<li>Templates for print & digital use</li>
+										</ul>
+										<p style="margin-top: 15px; font-style: italic; color: #666;">
+											Our brand manuals help teams maintain alignment across every channel.
+										</p>
+									</div>
+								</div>
+								<div class="service-action">
+									<a href="#" class="redlink"><span>Learn more</span></a>
+								</div>
+							</div>
+						</div>
+
+						<!-- Service 4 -->
+						<div class="service js-service">
+							<div class="service-caption js-service-caption">Brand Experience</div>
+							<div class="service-content js-service-content">
+								<div class="service-tags">
+									<div class="chips">
+										<div class="chip"><a href="#" class="chip-label">Packaging Design</a></div>
+										<div class="chip"><a href="#" class="chip-label">Marketing Collateral</a></div>
+										<div class="chip"><a href="#" class="chip-label">Digital Branding</a></div>
+										<div class="chip"><a href="#" class="chip-label">Environmental Branding</a></div>
+									</div>
+								</div>
+								<div class="service-text">
+									<p>We design experiences that immerse your audience in your brand  from packaging and digital assets to events and spaces.</p>
+									<div class="desktop-only" style="margin-top: 15px;">
+										<p><strong>Our brand experience services include:</strong></p>
+										<ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+											<li>Custom packaging design with storytelling</li>
+											<li>Marketing collateral & digital campaigns</li>
+											<li>Branded social media templates</li>
+											<li>Office, retail & event branding</li>
+										</ul>
+										<p style="margin-top: 15px; font-style: italic; color: #666;">
+											We help you deliver memorable, consistent brand experiences online and offline.
+										</p>
+									</div>
+								</div>
+								<div class="service-action">
+									<a href="#" class="redlink"><span>Learn more</span></a>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="service-preview desktop fadein js-aos">
+					<div class="service-content-copy js-service-copy"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	
+		</div>
+	
+	
 			<div class="footer">
 				<div class="wrapper">
 					<div>
 						<div class="footer-caption">
 							<div class="title title__default">
-								<span>Starting a new project or want to collaborate with us?</span>
-								<a href="https://Aenfinite/contact/" class="redlink">
-									<span>Let’s talk</span>
+								<span>Have a Project in Mind? Let?s Build Something Great Together.</span>
+								<a href="../../contact/" class="redlink">
+									<span>Lets talk</span>
 								</a>
 							</div>
 							<div class="footer-email">
-								<a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+								<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
 							</div>
 						</div>
 						<div class="footer-grid">
 							<div class="footer-col">
 								<div class="footer-col_caption">Company</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-company-menu" class="menuss"><li id="menu-item-959" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="https://Aenfinite/featured-work/">Work</a></li>
-<li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="https://Aenfinite/agency/">Agency</a></li>
-<li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="https://Aenfinite/services/">Services</a></li>
-<li id="menu-item-3776" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3776"><a href="https://Aenfinite/industries/">Industries</a></li>
-<li id="menu-item-4803" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="https://Aenfinite/dd-nyc-client-testimonials/">Client Testimonials</a></li>
-<li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="https://Aenfinite/contact/">Contact</a></li>
-</ul>									<span class="website-accessibility" data-acsb-custom-trigger="true">Website Accessibility</span>
+									<ul id="menu-footer-company-menu" class="menuss"><li id="menu-item-959" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../../featured-work/">Work</a></li>
+<li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../../agency/">Agency</a></li>
+<li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor menu-item-482"><a href="../">Services</a></li>
+
+
+<li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
 								</div>
 							</div>
 							<div class="footer-col">
 								<div class="footer-col_caption">Services</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-service-menu" class="menuss"><li id="menu-item-279" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-279"><a href="https://Aenfinite/services/web-design/">Web Design</a></li>
-<li id="menu-item-2369" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2369"><a href="https://Aenfinite/services/wordpress-websites/">WordPress Websites</a></li>
-<li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="https://Aenfinite/services/branding/">Branding</a></li>
-<li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="https://Aenfinite/services/packaging-design/">Packaging Design</a></li>
-<li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2259"><a href="https://Aenfinite/services/graphic-design/">Graphic Design</a></li>
-<li id="menu-item-2344" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2344"><a href="https://Aenfinite/services/web-design-and-branding-for-real-estate/">Real Estate Design</a></li>
-<li id="menu-item-6911" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6911"><a href="https://Aenfinite/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+									<ul id="menu-footer-service-menu" class="menuss"><li id="menu-item-279" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-279"><a href="../web-design/">Web Design</a></li>
+<li id="menu-item-2369" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2369"><a href="../e-commerce-websites/">Branding</a></li>
+<li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="../branding/">Branding</a></li>
+<li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="../packaging-design/">Packaging Design</a></li>
+<li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-1708 current_page_item menu-item-2259"><a href="" aria-current="page">Branding</a></li>
+
 </ul>														</div>
 							</div>
-							<div class="footer-col footer-col__connect">
+							<div class="footer-col ">
 								<div class="footer-col_caption">Connect</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-connect" class="menuss"><li id="menu-item-4965" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4965"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.behance.net/aenfinite">Behance</a></li>
-<li id="menu-item-4967" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4967"><a class="js-dropdown-layer-marker" target="_blank" href="https://dribbble.com/aenfinite">Dribbble</a></li>
+
 <li id="menu-item-4966" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4966"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.instagram.com/aenfinite/">Instagram</a></li>
-<li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4952"><a class="js-dropdown-layer-marker" href="https://Aenfinite/agency/partner-with-us/">Partner with us</a></li>
-<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@Aenfinite?subject=Project%20Inquiry">Email</a></li>
-<li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5977"><a class="js-dropdown-layer-marker" href="https://Aenfinite/contact/">Contact</a></li>
+<li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4952"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/">Partner with us</a></li>
+<li id="menu-item-4952-1" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/white-label-services/">White Label Services</a></li>
+<li id="menu-item-4952-2" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/referral-program/">Referral Program</a></li>
+<li id="menu-item-4952-3" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/ghl-services/">GHL Services</a></li>
+<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@aenfinite.com?subject=Project%20Inquiry">Email</a></li>
+<li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5977"><a class="js-dropdown-layer-marker" href="../../contact/">Contact</a></li>
 </ul>								</div>
 							</div>
-							<div class="footer-col footer-col__address">
+							<div class="footer-col " style="padding-top: 15px !important; padding-left: 40px;">
 								<div class="footer-col_caption">Address</div>
 								<div class="footer-col_list">
 									<ul>
 										<li>
-											85 Broad Street<br class="desktop" />
-17th Floor - Suite 17.005<br class="desktop" />
-Denver, NY<br class="desktop" />
-10004										</li>
+    1500 Grant Street<br class="desktop" />
+    4th Ave<br class="desktop" />
+    Denver, CO 80203<br class="desktop" />
+    United States
+</li>
+
 										<li>
-											<a style="white-space:nowrap;" href="tel:+12123801761">+1 212.380.1761</a>
+											<a style="white-space:nowrap;" href="tel:+14692677487">+1 (469) 267-7487</a>
 										</li>
 										<li>
-											<a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+											<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
 										</li>
 									</ul>
 								</div>
@@ -394,12 +2340,7 @@ Denver, NY<br class="desktop" />
 								<p>Copyright &copy; 2025 Aenfinite LLC</p>
 								<p>Headquartered in Denver & Beyond </p>
 							</div>
-							<div class="logotype-bottom"><span><img src="https://Aenfinite/wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="" /></span><span><img src="https://Aenfinite" alt="" /></span><span><img src="https://Aenfinite/wp-content/uploads/2024/10/Frame-1-1.png" alt="" /></span></div>							<div class="line-last">All rights reserved									
-								<div class="heart">
-									<svg class="icon">
-										<use xlink:href="#i-heart"></use>
-									</svg>
-								</div>
+								
 							</div>
 						</div>
 
@@ -414,8 +2355,8 @@ Denver, NY<br class="desktop" />
 							<div class="topbar">
 								<div class="topbar-logo">
 									<a href="../../">
-										<object data="../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" type="image/svg+xml" class="logo-white mobile-logo">
-											<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite®" class="mobile-logo">
+										<object data="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" type="image/svg+xml" class="logo-dark nav-logo">
+											<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo">
 										</object>
 									</a>
 								</div>
@@ -423,16 +2364,15 @@ Denver, NY<br class="desktop" />
 							</div>
 						</div>
 						<div class="menu-nav">
-							<ul id="menu-footer-company-menu-1" class="menuss"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="https://Aenfinite/featured-work/">Work</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="https://Aenfinite/agency/">Agency</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="https://Aenfinite/services/">Services</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3776"><a href="https://Aenfinite/industries/">Industries</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="https://Aenfinite/dd-nyc-client-testimonials/">Client Testimonials</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="https://Aenfinite/contact/">Contact</a></li>
+							<ul id="menu-footer-company-menu-1" class="menuss"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../../featured-work/">Work</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../../agency/">Agency</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor menu-item-482"><a href="../">Services</a></li>
+
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
 </ul>						</div>
 						<div class="menu-footer">
-							<a class="menu-contact" href="https://Aenfinite/contact/">Contact</a>
-							<a class="menu-email" href="mailto:hello@Aenfinite">Email us</a>
+							<a class="menu-contact" href="../../contact/">Contact</a>
+							<a class="menu-email" href="mailto:hello@aenfinite.com">Email us</a>
 						</div>
 					</div>
 				</div>
@@ -440,7 +2380,240 @@ Denver, NY<br class="desktop" />
 		
 		</div>
 
-		<a href="https://Aenfinite/contact/https://Aenfinite/contact/?linkcontact=floating-contact-button" class="to-contact">New Project?</a>
+				<a href="contact/" class="to-contact">New Project?</a><a href="#" class="to-meeter" onclick="openCalendlyPopup(event)">Schedule A Meeting</a>
+
+
+<div id="calendly-modal" class="calendly-modal" style="display: none;">
+	<div class="calendly-modal-content">
+		<div class="calendly-modal-header">
+			<span class="calendly-close" onclick="closeCalendlyPopup()">&times;</span>
+			<h3>Schedule Your Business Meeting</h3>
+		</div>
+		<div class="calendly-modal-body">
+			<div class="calendly-inline-widget" data-url="https://calendly.com/aenfinite/business-meeting" style="min-width:320px;height:630px;"></div>
+		</div>
+	</div>
+</div>
+
+<!-- 3. CSS STYLES (Place this in your <head> section or CSS file) -->
+<style>
+/* ===== BUTTON STYLES ===== */
+
+/* ===== MODAL STYLES ===== */
+.calendly-modal {
+	position: fixed;
+	z-index: 10000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.8);
+	animation: fadeIn 0.3s ease;
+}
+
+.calendly-modal-content {
+	background-color: #fefefe;
+	margin: 2% auto;
+	border: none;
+	border-radius: 15px;
+	width: 90%;
+	max-width: 900px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease;
+}
+
+.calendly-modal-header {
+	background: linear-gradient(135deg, #227bf3, #1e6fd9);
+	color: white;
+	padding: 20px 30px;
+	border-radius: 15px 15px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.calendly-modal-header h3 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.calendly-close {
+	color: white;
+	font-size: 32px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 1;
+	transition: color 0.3s ease;
+}
+
+.calendly-close:hover {
+	color: #f1f1f1;
+	transform: scale(1.1);
+}
+
+.calendly-modal-body {
+	padding: 0;
+	border-radius: 0 0 15px 15px;
+	overflow: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideIn {
+	from { 
+		opacity: 0;
+		transform: translateY(-30px) scale(0.9);
+	}
+	to { 
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 200px !important;
+		padding: 10px 16px !important;
+		font-size: 13px !important;
+	}
+	
+	
+
+	.calendly-modal-content {
+		width: 95%;
+		margin: 5% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 15px 20px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 20px;
+	}
+	
+	.calendly-inline-widget {
+		height: 500px !important;
+		min-width: 280px !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 180px !important;
+		padding: 8px 14px !important;
+		font-size: 12px !important;
+	}
+
+	.calendly-modal-content {
+		width: 98%;
+		margin: 3% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 12px 15px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 18px;
+	}
+	
+	.calendly-inline-widget {
+		height: 450px !important;
+		min-width: 260px !important;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.to-meeting {
+		max-width: 160px !important;
+		padding: 8px 12px !important;
+		font-size: 11px !important;
+	}
+}
+</style>
+
+
+<script>
+/* ===== CALENDLY POPUP FUNCTIONS ===== */
+function openCalendlyPopup(event) {
+	event.preventDefault();
+	document.getElementById('calendly-modal').style.display = 'block';
+	document.body.style.overflow = 'hidden'; // Prevent background scrolling
+	
+	// Load Calendly widget if not already loaded
+	if (!window.Calendly) {
+		loadCalendlyScript();
+	} else {
+		// Initialize widget if Calendly is already loaded
+		initializeCalendlyWidget();
+	}
+}
+
+function closeCalendlyPopup() {
+	document.getElementById('calendly-modal').style.display = 'none';
+	document.body.style.overflow = 'auto'; // Re-enable background scrolling
+}
+
+function loadCalendlyScript() {
+	// Load Calendly CSS
+	if (!document.querySelector('link[href*="calendly.com"]')) {
+		const calendlyCss = document.createElement('link');
+		calendlyCss.href = 'https://assets.calendly.com/assets/external/widget.css';
+		calendlyCss.rel = 'stylesheet';
+		document.head.appendChild(calendlyCss);
+	}
+	
+	// Load Calendly JS
+	if (!document.querySelector('script[src*="calendly.com"]')) {
+		const calendlyScript = document.createElement('script');
+		calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
+		calendlyScript.onload = function() {
+			initializeCalendlyWidget();
+		};
+		document.head.appendChild(calendlyScript);
+	}
+}
+
+function initializeCalendlyWidget() {
+	if (window.Calendly) {
+		Calendly.initInlineWidget({
+			url: 'https://calendly.com/aenfinite/business-meeting',
+			parentElement: document.querySelector('.calendly-inline-widget'),
+			prefill: {},
+			utm: {}
+		});
+	}
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+	const modal = document.getElementById('calendly-modal');
+	if (event.target == modal) {
+		closeCalendlyPopup();
+	}
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+	if (event.key === 'Escape') {
+		const modal = document.getElementById('calendly-modal');
+		if (modal.style.display === 'block') {
+			closeCalendlyPopup();
+		}
+	}
+});
+</script>
 		
 		<div class="cookie-banner" style="">
 			<div class="cookie-banner__inner">
@@ -453,7 +2626,7 @@ Denver, NY<br class="desktop" />
 					</span>
 					<span class="cookie-banner__message">
 						We use cookies to enhance your user experience. By clicking ACCEPT or continuing to browse, you agree to our
-						<a href="/privacy-policy" class="cookie-banner__link" target="_blank">Privacy Policy</a>.
+						<a href="../../privacy-policy/" class="cookie-banner__link" target="_blank">Privacy Policy</a>.
 					</span>
 				</div>
 				<button class="cookie-banner__button">Accept</button>
@@ -476,9 +2649,8 @@ Denver, NY<br class="desktop" />
 		});
 		</script>
 
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/demo.js?v=20241204-0018"></script>	
-		<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/aos.js"></script>
-					<script src="https://Aenfinite/wp-content/themes/aenfinite.com/static/js/tweenmax.min.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/demo5163.js?v=20241204-0018"></script>	
+		<script src="../../wp-content/themes/aenfinite.com/static/js/aos.js"></script>
 				
 		<script>
 			$(function() {
@@ -491,65 +2663,29 @@ Denver, NY<br class="desktop" />
 					
 								
 								
-					function getRandomInt(min, max) {
-						min = Math.ceil(min);
-						max = Math.floor(max);
-						return Math.floor(Math.random() * (max - min + 1)) + min;
-					}
-
-					$.fn.parallax = function(resistance, mouse) {
-						$el = $(this);
-						TweenLite.to($el, 0.05, {
-							x: -((mouse.clientX - window.innerWidth / 2) / resistance),
-							y: -((mouse.clientY - window.innerHeight / 2) / resistance)
-						});
-					};
-
-					$(".js-active-header").mousemove(function(e) {
-						$(".js-cross").css({
-							left: e.pageX,
-							top: e.pageY
-						});
-					}).mouseleave(function() {
-						$(".js-cross").removeAttr("style");
-					});
-
-					$(".errorpage-heart").each(function(i) {
-						$(this).attr("data-resistance", getRandomInt(-50, 50));
-					});
-
-					$(document).mousemove(function(e) {
-						$(".errorpage-heart").each(function(i) {
-							var resistance = $(this).attr("data-resistance");
-							$(this).parallax(resistance, e);
-						});
-
-					});
-				
-								
 			});
 		</script>
 		<script type="application/ld+json">
 				{
 				  "@context": "https://schema.org",
 				  "@type": "LocalBusiness",
-				  "name": "IvyWise",
-				  "image": "https://www.ivywise.com/core/wp-content/uploads/2019/06/ivywise-logo-larger.png",
-				  "@id": "https://www.ivywise.com",
-				  "url": "https://www.ivywise.com",
-				  "telephone": "+12122623500",
+				  "name": "Aenfinite",
+				  "image": "https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg",
+				  "@id": "https://Aenfinite.com",
+				  "url": "https://Aenfinite.com",
+				  "telephone": "+1234567890",
 				  "address": {
 					"@type": "PostalAddress",
-					"streetAddress": "501 Madison Avenue, Suite 802",
+					"streetAddress": "123 Business Avenue",
 					"addressLocality": "Denver",
-					"addressRegion": "NY",
-					"postalCode": "10022",
+					"addressRegion": "CO",
+					"postalCode": "80202",
 					"addressCountry": "US"
 				  },
 				  "geo": {
 					"@type": "GeoCoordinates",
-					"latitude": 40.7593246,
-					"longitude": -73.97430480000003
+					"latitude": 39.7392,
+					"longitude": -104.9903
 				  },
 				  "openingHoursSpecification": {
 					"@type": "OpeningHoursSpecification",
@@ -564,17 +2700,21 @@ Denver, NY<br class="desktop" />
 					"closes": "18:00"
 				  },
 				  "sameAs": [
-					"https://www.facebook.com/ivywise/",
-					"https://twitter.com/ivywise",
-					"https://www.instagram.com/followivywise/",
-					"https://www.youtube.com/user/IvyWiseTV",
-					"https://www.linkedin.com/company/ivywise",
-					"https://www.pinterest.com/ivywise/",
-					"https://www.ivywise.com/",
-					"https://vimeo.com/ivywise",
-					"https://mp.weixin.qq.com/s/0yBt_Gcq1LDfU-xDxuZAKA",
-					"https://wa.me/12122623500"
-				  ]
+					"https://www.facebook.com/aenfinite/",
+					"https://twitter.com/digitaldesignny",
+					"https://www.instagram.com/Aenfinite/",
+				  ],
+				  "description": "Expert search engine optimization agency specializing in keyword research, 
+				  "priceRange": "$$",
+				  "serviceArea": {
+					"@type": "GeoCircle",
+on-page SEO, technical audits, and link building strategies.",					"geoMidpoint": {
+					  "@type": "GeoCoordinates",
+					  "latitude": 39.7392,
+					  "longitude": -104.9903
+					},
+					"geoRadius": "50000"
+				  }
 				}
 		</script>
 		<script>
@@ -605,23 +2745,23 @@ Denver, NY<br class="desktop" />
             var b = document.createElement("script");
             b.type = "text/javascript";
             b.async = true;
-            b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+            b.src = "../../../snap.licdn.com/li.lms-analytics/insight.min.js";
             s.parentNode.insertBefore(b, s);
         })(window.lintrk);
     </script>
     <noscript>
-        <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=6313658&fmt=gif" />
+        <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=6313658&amp;fmt=gif" />
     </noscript>
-    <!-- End LinkedIn Insight Tag --><link rel='stylesheet' id='classic-theme-styles-css' href='https://Aenfinite/wp-includes/css/classic-themes.min.css?ver=6.7.2'  media='all' />
-<link rel='stylesheet' id='contact-form-7-css' href='https://Aenfinite/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=6.0.6'  media='all' />
-<script  src="https://Aenfinite/wp-includes/js/dist/hooks.min.js?ver=4d63a3d491d11ffd8ac6" id="wp-hooks-js"></script>
-<script  src="https://Aenfinite/wp-includes/js/dist/i18n.min.js?ver=5e580eb46a90c2b997e6" id="wp-i18n-js"></script>
+    <!-- End LinkedIn Insight Tag --><link rel='stylesheet' id='classic-theme-styles-css' href='../../wp-includes/css/classic-themes.mind1c0.css?ver=6.7.2'  media='all' />
+<link rel='stylesheet' id='contact-form-7-css' href='../../wp-content/plugins/contact-form-7/includes/css/stylesfc7a.css?ver=6.0.6'  media='all' />
+<script  src="../../wp-includes/js/dist/hooks.min4fdd.js?ver=4d63a3d491d11ffd8ac6" id="wp-hooks-js"></script>
+<script  src="../../wp-includes/js/dist/i18n.minc33c.js?ver=5e580eb46a90c2b997e6" id="wp-i18n-js"></script>
 <script  id="wp-i18n-js-after">
 /* <![CDATA[ */
 wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
 /* ]]> */
 </script>
-<script  src="https://Aenfinite/wp-content/plugins/contact-form-7/includes/swv/js/index.js?ver=6.0.6" id="swv-js"></script>
+<script  src="../../wp-content/plugins/contact-form-7/includes/swv/js/indexfc7a.js?ver=6.0.6" id="swv-js"></script>
 <script  id="contact-form-7-js-before">
 /* <![CDATA[ */
 var wpcf7 = {
@@ -633,9 +2773,9 @@ var wpcf7 = {
 };
 /* ]]> */
 </script>
-<script  src="https://Aenfinite/wp-content/plugins/contact-form-7/includes/js/index.js?ver=6.0.6" id="contact-form-7-js"></script>
-<script  src="https://www.google.com/recaptcha/api.js?render=6LecDXgUAAAAAEvI5y3riqTuwsANQmQo9Y7B55Jf&amp;ver=3.0" id="google-recaptcha-js"></script>
-<script  src="https://Aenfinite/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=3.15.0" id="wp-polyfill-js"></script>
+<script  src="../../wp-content/plugins/contact-form-7/includes/js/indexfc7a.js?ver=6.0.6" id="contact-form-7-js"></script>
+<script  src="../../../www.google.com/recaptcha/api234c.js?render=6LecDXgUAAAAAEvI5y3riqTuwsANQmQo9Y7B55Jf&amp;ver=3.0" id="google-recaptcha-js"></script>
+<script  src="../../wp-includes/js/dist/vendor/wp-polyfill.min2c7c.js?ver=3.15.0" id="wp-polyfill-js"></script>
 <script  id="wpcf7-recaptcha-js-before">
 /* <![CDATA[ */
 var wpcf7_recaptcha = {
@@ -647,22 +2787,17 @@ var wpcf7_recaptcha = {
 };
 /* ]]> */
 </script>
-<script  src="https://Aenfinite/wp-content/plugins/contact-form-7/modules/recaptcha/index.js?ver=6.0.6" id="wpcf7-recaptcha-js"></script>
+<script  src="../../wp-content/plugins/contact-form-7/modules/recaptcha/indexfc7a.js?ver=6.0.6" id="wpcf7-recaptcha-js"></script>
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f9866719a521e6',t:'MTc1NTI2OTY0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>	<!-- Universal Button and Checkbox Highlighting Script -->	<script src="js/button-highlights.js"></script>
+		</body>
 
-<script>
-	// Logo scroll behavior
-	window.addEventListener('scroll', function() {
-		const header = document.querySelector('.header');
-		if (window.scrollY > 50) {
-			header.classList.add('scrolled');
-		} else {
-			header.classList.remove('scrolled');
-		}
-	});
-</script>
-
-	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f9866c9ba421e6',t:'MTc1NTI2OTY0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<!-- Mirrored from Aenfinite/services/graphic-design/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:09:34 GMT -->
 </html>
+
+
+
+
+
 
 
 

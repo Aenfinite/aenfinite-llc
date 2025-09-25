@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aenfinite Global Services Map | Find Our Services Worldwide</title>
+    <meta name="description" content="Explore Aenfinite's global service coverage. Click on any country to discover our web design, development, and digital solutions in your area.">
+    
+    <!-- Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .map-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .map-title {
+            font-size: 1.3rem;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-weight: 600;
+            border-left: 4px solid #2563eb;
+            padding-left: 15px;
+        }
+        
+        #mapdiv {
+            width: 100%;
+            height: 600px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            /* Enhanced performance CSS */
+            will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+            /* Smooth scrolling and interactions */
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        
+        #mapdiv::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(59, 130, 246, 0.03) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .instructions h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .footer p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .aenfinite-logo {
+            color: #2563eb;
+            font-weight: 700;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            #mapdiv {
+                height: 400px;
+            }
+        }
+    </style>
+
+    <!-- amCharts Resources -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Aenfinite Global Services Map</h1>
+            <p>Discover our comprehensive digital solutions worldwide. Click on any country to explore our web design, development, and digital marketing services in your region.</p>
+        </div>
+        
+        <div class="map-section">
+            <div class="map-title">🗺️ Interactive Global Service Coverage</div>
+            <div id="mapdiv"></div>
+            
+            <div class="instructions">
+                <h3>How to Navigate</h3>
+                <p><strong>Click any country</strong> to view our services in that region • <strong>Toggle Map/Globe view</strong> using the switch • <strong>Hover over countries</strong> to see service availability</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Global services powered by <span class="aenfinite-logo">Aenfinite®</span> | Web Design • Development • Digital Marketing • SEO</p>
+        </div>
+    </div>
+
+    <!-- Map JavaScript -->
+    <script>
+    am5.ready(function() {
+
+    // Blue color scheme - Enhanced gradients
+    var primaryBlue = am5.color(0x2563eb);      // Main blue
+    var lightBlue = am5.color(0x3b82f6);       // Light blue
+    var darkBlue = am5.color(0x1d4ed8);        // Dark blue
+    var bgBlue = am5.color(0xdbeafe);           // Background blue
+    var hoverBlue = am5.color(0x60a5fa);       // Hover blue
+    var accentBlue = am5.color(0x1e40af);      // Accent blue
+
+    makeInteractiveMap();
+
+    function makeInteractiveMap() {
+      // Service availability data (you can expand this)
+      var serviceData = [
+        // North America
+        { "id": "US", "services": 95, "primary": true, "name": "United States" },
+        { "id": "CA", "services": 88, "primary": true, "name": "Canada" },
+        { "id": "MX", "services": 65, "primary": false, "name": "Mexico" },
+        
+        // Europe
+        { "id": "GB", "services": 92, "primary": true, "name": "United Kingdom" },
+        { "id": "DE", "services": 85, "primary": true, "name": "Germany" },
+        { "id": "FR", "services": 82, "primary": true, "name": "France" },
+        { "id": "IT", "services": 78, "primary": false, "name": "Italy" },
+        { "id": "ES", "services": 75, "primary": false, "name": "Spain" },
+        { "id": "NL", "services": 80, "primary": true, "name": "Netherlands" },
+        { "id": "CH", "services": 90, "primary": true, "name": "Switzerland" },
+        
+        // Asia Pacific
+        { "id": "AU", "services": 87, "primary": true, "name": "Australia" },
+        { "id": "JP", "services": 83, "primary": true, "name": "Japan" },
+        { "id": "SG", "services": 89, "primary": true, "name": "Singapore" },
+        { "id": "IN", "services": 70, "primary": false, "name": "India" },
+        { "id": "CN", "services": 65, "primary": false, "name": "China" },
+        
+        // Others with basic coverage
+        { "id": "BR", "services": 45, "primary": false, "name": "Brazil" },
+        { "id": "ZA", "services": 40, "primary": false, "name": "South Africa" },
+        { "id": "AE", "services": 75, "primary": false, "name": "UAE" }
+      ];
+
+      var root = am5.Root.new("mapdiv");
+
+      // Enhanced performance settings
+      root.fps = 60;
+      root.animationPolyfill = false;
+
+      // Custom blue theme with smooth animations
+      var blueTheme = am5.Theme.new(root);
+      
+      blueTheme.rule("InterfaceColors").setAll({
+        primaryButton: primaryBlue,
+        primaryButtonHover: lightBlue,
+        primaryButtonDown: darkBlue,
+        primaryButtonActive: bgBlue,
+      });
+
+      blueTheme.rule("Label").setAll({
+        fontSize: "0.9em",
+        fontWeight: "500"
+      });
+
+      // Enhanced animation settings
+      blueTheme.rule("Graphics").setAll({
+        animationEasing: am5.ease.out(am5.ease.cubic),
+        animationDuration: 800
+      });
+
+      root.setThemes([am5themes_Animated.new(root), blueTheme]);
+      
+      var chart = root.container.children.push(am5map.MapChart.new(root, {
+        projection: am5map.geoNaturalEarth1(),
+        panX: "translateX",
+        panY: "translateY",
+        wheelX: "panX",
+        wheelY: "panY",
+        maxZoomLevel: 8,
+        minZoomLevel: 0.5,
+        animationEasing: am5.ease.out(am5.ease.cubic),
+        animationDuration: 1200
+      }));
+
+      // Map controls container
+      var controlsContainer = chart.children.push(am5.Container.new(root, {
+        layout: root.horizontalLayout,
+        centerX: 0,
+        y: am5.percent(100),
+        dy: -40,
+        background: am5.RoundedRectangle.new(root, {
+          fill: am5.color(0xffffff),
+          fillOpacity: 0.8,
+          cornerRadiusTL: 10,
+          cornerRadiusTR: 10,
+          cornerRadiusBL: 10,
+          cornerRadiusBR: 10
+        }),
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 8,
+        paddingBottom: 8
+      }));
+
+      // Map/Globe toggle
+      controlsContainer.children.push(am5.Label.new(root, {
+        centerY: am5.p50,
+        text: "Map View",
+        fontSize: "0.85em",
+        fontWeight: "500",
+        fill: primaryBlue
+      }));
+
+      var mapToggle = controlsContainer.children.push(am5.Button.new(root, {
+        themeTags: ["switch"],
+        centerY: am5.p50,
+        marginLeft: 10,
+        marginRight: 10,
+        icon: am5.Circle.new(root, {
+          themeTags: ["icon"]
+        })
+      }));
+
+      mapToggle.on("active", function () {
+        if (!mapToggle.get("active")) {
+          chart.animate({
+            key: "projection",
+            to: am5map.geoNaturalEarth1(),
+            duration: 1500,
+            easing: am5.ease.out(am5.ease.cubic)
+          });
+          chart.set("panY", "translateY");
+          chart.set("rotationY", 0);
+          polygonSeries.set("exclude", ["AQ"]);
+        } else {
+          chart.animate({
+            key: "projection", 
+            to: am5map.geoOrthographic(),
+            duration: 1500,
+            easing: am5.ease.out(am5.ease.cubic)
+          });
+          chart.set("panY", "rotateY");
+          chart.set("panX", "rotateX");
+          polygonSeries.set("exclude", []);
+          
+          // Enhanced globe rotation with smooth easing
+          var globeAnimation = chart.animate({ 
+            key: "rotationX", 
+            to: 360, 
+            duration: 25000, 
+            easing: am5.ease.linear,
+            loops: Infinity 
+          });
+          
+          // Store animation reference for potential stopping
+          chart.set("globeAnimation", globeAnimation);
+        }
+      });
+
+      controlsContainer.children.push(am5.Label.new(root, {
+        centerY: am5.p50,
+        text: "Globe View",
+        fontSize: "0.85em",
+        fontWeight: "500",
+        fill: primaryBlue
+      }));
+
+      // Create polygon series with enhanced performance
+      var polygonSeries = chart.series.push(
+        am5map.MapPolygonSeries.new(root, {
+          geoJSON: am5geodata_worldLow,
+          valueField: "services",
+          calculateAggregates: true,
+          exclude: ["AQ"],
+          animationEasing: am5.ease.out(am5.ease.cubic),
+          animationDuration: 1000
+        })
+      );
+
+      // Configure country appearance with smooth transitions
+      polygonSeries.mapPolygons.template.setAll({
+        fill: am5.color(0xf1f5f9),
+        stroke: am5.color(0xe2e8f0),
+        strokeWidth: 0.8,
+        strokeOpacity: 0.8,
+        tooltipText: "{name}\n🏢 Services Available: {services}%\n🔗 Click to explore local services",
+        interactive: true,
+        cursorOverStyle: "pointer",
+        animationEasing: am5.ease.out(am5.ease.cubic),
+        animationDuration: 600,
+        shadowColor: am5.color(0x000000),
+        shadowOpacity: 0,
+        shadowOffsetX: 0,
+        shadowOffsetY: 0,
+        shadowBlur: 10
+      });
+
+      // Enhanced color rules with gradient effects
+      polygonSeries.set("heatRules", [{
+        target: polygonSeries.mapPolygons.template,
+        dataField: "value",
+        min: am5.Color.lighten(lightBlue, 0.4),
+        max: primaryBlue,
+        key: "fill"
+      }]);
+
+      // Enhanced hover effects with shadows and scaling
+      polygonSeries.mapPolygons.template.states.create("hover", {
+        fill: hoverBlue,
+        stroke: accentBlue,
+        strokeWidth: 2.5,
+        strokeOpacity: 1,
+        shadowOpacity: 0.3,
+        shadowOffsetX: 2,
+        shadowOffsetY: 4,
+        shadowBlur: 15,
+        scale: 1.02,
+        animationDuration: 400,
+        animationEasing: am5.ease.out(am5.ease.cubic)
+      });
+
+      // Active/clicked state
+      polygonSeries.mapPolygons.template.states.create("active", {
+        fill: darkBlue,
+        stroke: accentBlue,
+        strokeWidth: 3,
+        shadowOpacity: 0.4,
+        scale: 1.05,
+        animationDuration: 300
+      });
+
+      // Enhanced country click handler with smooth animations
+      polygonSeries.mapPolygons.template.on("click", function(ev) {
+        var countryData = ev.target.dataItem.dataContext;
+        var countryName = countryData.name || "this country";
+        var countryId = countryData.id;
+        
+        // Visual feedback - pulse effect
+        ev.target.states.applyAnimate("active");
+        
+        setTimeout(() => {
+          ev.target.states.applyAnimate("default");
+        }, 800);
+        
+        // Enhanced modal-style alert with better formatting
+        const modalContent = `🌍 Exploring Services in ${countryName}
+
+🎯 Available Services:
+• Web Design & Development
+• Mobile App Development  
+• E-commerce Solutions
+• Digital Marketing & SEO
+• Branding & UI/UX Design
+
+📍 Service Coverage: ${countryData.services}%
+
+🔗 Navigation: /services/${countryId.toLowerCase()}
+
+✨ What you can do:
+• Browse services by state/province
+• View local case studies & testimonials
+• Get instant project quotes
+• Connect with local experts
+
+🚀 Ready to start your project?`;
+        
+        alert(modalContent);
+      });
+
+      // Set data with enhanced properties
+      polygonSeries.data.setAll(serviceData);
+
+      // Enhanced legend with gradient background
+      var legend = chart.children.push(am5.HeatLegend.new(root, {
+        orientation: "vertical",
+        startColor: am5.Color.lighten(lightBlue, 0.3),
+        endColor: primaryBlue,
+        startText: "Limited",
+        endText: "Full Coverage",
+        stepCount: 6,
+        x: am5.p100,
+        centerX: am5.p100,
+        y: am5.p50,
+        centerY: am5.p50,
+        paddingRight: 25,
+        background: am5.RoundedRectangle.new(root, {
+          fill: am5.color(0xffffff),
+          fillOpacity: 0.92,
+          cornerRadiusTL: 12,
+          cornerRadiusTR: 12,
+          cornerRadiusBL: 12,
+          cornerRadiusBR: 12,
+          shadowColor: am5.color(0x000000),
+          shadowOpacity: 0.1,
+          shadowOffsetX: 2,
+          shadowOffsetY: 4,
+          shadowBlur: 8
+        }),
+        paddingTop: 18,
+        paddingBottom: 18,
+        paddingLeft: 18
+      }));
+
+      legend.startLabel.setAll({
+        fontSize: 11,
+        fontWeight: "600",
+        fill: primaryBlue
+      });
+
+      legend.endLabel.setAll({
+        fontSize: 11,
+        fontWeight: "600",
+        fill: primaryBlue
+      });
+
+      // Update legend values when data loads with smooth animation
+      polygonSeries.events.on("datavalidated", function () {
+        legend.set("startValue", polygonSeries.getPrivate("valueLow"));
+        legend.set("endValue", polygonSeries.getPrivate("valueHigh"));
+      });
+
+      // Add zoom controls with enhanced styling
+      var zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {
+        x: 20,
+        y: 20,
+        centerX: 0,
+        centerY: 0,
+        animationDuration: 600,
+        animationEasing: am5.ease.out(am5.ease.cubic)
+      }));
+
+      zoomControl.homeButton.set("visible", true);
+      
+      // Style zoom controls
+      zoomControl.plusButton.setAll({
+        background: am5.RoundedRectangle.new(root, {
+          fill: primaryBlue,
+          cornerRadiusTL: 8,
+          cornerRadiusTR: 8,
+          cornerRadiusBL: 8,
+          cornerRadiusBR: 8
+        }),
+        animationDuration: 300
+      });
+
+      zoomControl.minusButton.setAll({
+        background: am5.RoundedRectangle.new(root, {
+          fill: primaryBlue,
+          cornerRadiusTL: 8,
+          cornerRadiusTR: 8,
+          cornerRadiusBL: 8,
+          cornerRadiusBR: 8
+        }),
+        animationDuration: 300
+      });
+
+      zoomControl.homeButton.setAll({
+        background: am5.RoundedRectangle.new(root, {
+          fill: darkBlue,
+          cornerRadiusTL: 8,
+          cornerRadiusTR: 8,
+          cornerRadiusBL: 8,
+          cornerRadiusBR: 8
+        }),
+        animationDuration: 300
+      });
+
+      // Enhanced chart animation sequence
+      chart.appear(1200, 100);
+      
+      // Staggered polygon appearance for smooth loading effect
+      polygonSeries.mapPolygons.template.set("animationDuration", 800);
+      polygonSeries.appear(1800);
+      
+      // Legend appears last
+      legend.appear(2200);
+
+      // Add subtle pulsing animation to service countries
+      setTimeout(() => {
+        serviceData.forEach((country, index) => {
+          if (country.primary) {
+            setTimeout(() => {
+              var polygon = polygonSeries.getDataItemById(country.id);
+              if (polygon && polygon.get("mapPolygon")) {
+                var pulseAnimation = polygon.get("mapPolygon").animate({
+                  key: "scale",
+                  to: 1.03,
+                  duration: 2000,
+                  easing: am5.ease.inOut(am5.ease.sine),
+                  loops: 3
+                }).then(() => {
+                  return polygon.get("mapPolygon").animate({
+                    key: "scale",
+                    to: 1.0,
+                    duration: 1000,
+                    easing: am5.ease.out(am5.ease.cubic)
+                  });
+                });
+              }
+            }, index * 200);
+          }
+        });
+      }, 3000);
+    }
+
+    }); // end am5.ready()
+    </script>
+</body>
+</html>

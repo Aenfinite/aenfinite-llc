@@ -1,0 +1,106 @@
+/* =========================== */
+/* FAQ HEART ROTATION CSS */
+/* =========================== */
+
+/* FAQ Heart Icon Styles */
+.faq-heart-icon {
+    width: 24px !important;
+    height: 24px !important;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Default state - closed FAQ shows heart-rotate.svg pointing to bottom */
+.faq-item:not(.active) .faq-heart-icon {
+    transform: rotate(90deg) !important;
+}
+
+/* Active state - open FAQ shows normal heart */
+.faq-item.active .faq-heart-icon {
+    transform: rotate(0deg) !important;
+}
+
+/* FAQ Container Styles */
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.faq-header:hover {
+    background-color: #e9ecef;
+}
+
+.faq-header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.faq-header-icon {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.faq-content {
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                padding-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    max-height: 0;
+    opacity: 0;
+    padding-bottom: 0;
+}
+
+.faq-content-text {
+    padding: 0 20px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.faq-content-text p {
+    margin: 10px 0;
+}
+
+.faq-content-text b {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .faq-container {
+        padding: 10px;
+    }
+    
+    .faq-header {
+        padding: 15px;
+    }
+    
+    .faq-header-title {
+        font-size: 16px;
+    }
+    
+    .faq-heart-icon {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}

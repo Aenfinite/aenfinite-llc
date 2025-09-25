@@ -1413,3 +1413,96 @@ z-index:5;
     .inner-wrapper .faq{margin: 0;}
     
 }
+
+/* Mobile Services Dropdown */
+@media screen and (max-width: 991px) {
+    /* Hide the checkbox */
+    .mobile .mobile-accordion-checkbox {
+        display: none !important;
+    }
+    
+    /* Mobile accordion toggle button - styled as label */
+    .mobile .js-mobile-accordion label.js-mobile-accordion-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        cursor: pointer;
+        color: #FFFFFF;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px 0;
+        margin: 0;
+        font-weight: inherit;
+        font-size: inherit;
+        background: none;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+    }
+    
+    /* Make sure the icon is visible */
+    .mobile .js-mobile-accordion .js-dropdown-icon {
+        transition: transform 0.3s ease;
+        font-size: 12px;
+        color: #FFFFFF;
+        display: inline-block;
+    }
+    
+    /* Initially hide the dropdown - IMPORTANT: Start with display none */
+    .mobile .js-mobile-accordion .js-mobile-accordion-list {
+        display: none;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.3s ease-out;
+        background: rgba(0, 0, 0, 0.1);
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Show dropdown when checkbox is checked - Test with just display first */
+    .mobile .mobile-accordion-checkbox:checked ~ .js-mobile-accordion-list {
+        display: block !important;
+        max-height: 500px;
+        opacity: 1;
+        padding: 10px 0;
+    }
+    
+    /* Alternative selector in case the above doesn't work */
+    .mobile .js-mobile-accordion:has(.mobile-accordion-checkbox:checked) .js-mobile-accordion-list {
+        display: block !important;
+        max-height: 500px;
+        opacity: 1;
+        padding: 10px 0;
+    }
+    
+    /* Rotate icon when checkbox is checked */
+    .mobile .mobile-accordion-checkbox:checked ~ label .js-dropdown-icon {
+        transform: rotate(180deg);
+    }
+    
+    /* Style dropdown items */
+    .mobile .js-mobile-accordion-list li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .mobile .js-mobile-accordion-list li a {
+        display: block;
+        color: #FFFFFF;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: background-color 0.2s ease;
+    }
+    
+    .mobile .js-mobile-accordion-list li a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile .js-mobile-accordion-list li:last-child a {
+        border-bottom: none;
+    }
+}

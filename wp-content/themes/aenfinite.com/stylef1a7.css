@@ -132,11 +132,32 @@ button.container { display:none!important; }
 .numbers-item.aos-animate .numbers-title > div div { padding:0 0 5px 0; }
 
 .fab-button { display:none!important; }
-
+.to-meeter {
+position:fixed;
+	right:45px;
+	bottom:45px;
+	
+	border-radius: 73px;
+	background: #227bf3;
+	/*box-shadow: 0px 0px 20px rgba(13, 13, 13, 0.2);*/
+	backdrop-filter: blur(8px);
+	text-decoration:none;
+	padding:21px 41px;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 125%;
+	letter-spacing: -0.035em;
+	color: #FFFFFF;
+	z-index:15;
+	box-shadow: 0 0 0 0 rgba(0,0,0, 0.1);
+	-webkit-animation: pulse 3.0s infinite;
+}
 .to-contact {
 	position:fixed;
 	right:45px;
-	bottom:45px;
+	
+	bottom:120px;
 	border-radius: 73px;
 	background: #000000;
 	/*box-shadow: 0px 0px 20px rgba(13, 13, 13, 0.2);*/
@@ -157,6 +178,8 @@ button.container { display:none!important; }
 .to-contact:hover {
 	-webkit-animation: none;
 }
+
+
 
 @-webkit-keyframes pulse {
 	0% {
@@ -179,6 +202,15 @@ button.container { display:none!important; }
 		padding:15px 32px;
 		font-size: 14px;
 		right: 40px;
+		left: auto;
+		transform: none;
+	}
+	.to-meeter {
+		padding:15px 32px;
+		font-size: 14px;
+		right: 40px;
+		left: auto;
+		transform: none;
 	}
 
 }
@@ -187,11 +219,262 @@ button.container { display:none!important; }
 
 	.to-contact {
 		right: 16px;
+		left: auto;
+		transform: none;
+	}
+	.to-meeter {
+		right: 16px;
+		left: auto;
+		transform: none;
 	}
 
 }
+	
+			/* Service Pills with Glassmorphism Design */
+			.list-item {
+				display: inline-block;
+				background: rgba(255, 255, 255, 0.25);
+				backdrop-filter: blur(10px);
+				-webkit-backdrop-filter: blur(10px);
+				border: 2px solid #d1d5db;
+				border-radius: 25px;
+				padding: 14px 28px;
+				margin: 4px;
+				cursor: pointer;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				font-size: 15px;
+				color: #6b7280;
+				position: relative;
+				box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+			}
+			
+			/* Hide checkbox inputs */
+			.list-item input[type="checkbox"] {
+				display: none;
+			}
+			
+			/* Hover state - just border and effects, no background change */
+			.list-item:hover {
+				border: 2px solid #3b82f6;
+				color: #3b82f6;
+				box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.4);
+				transform: translateY(-3px) scale(1.05);
+			}
+			
+			/* Selected state - fully blue highlighted - TOGGLEABLE */
+			.list-item.selected {
+				background: #3b82f6;
+				border: 2px solid #2563eb;
+				color: white;
+				box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.5);
+				transform: translateY(-2px);
+			}
+			
+			.list-item.selected:hover {
+				background: #2563eb;
+				border: 2px solid #1d4ed8;
+				color: white;
+				box-shadow: 0 16px 48px 0 rgba(37, 99, 235, 0.6);
+				transform: translateY(-3px) scale(1.05);
+			}
+			
+			/* Professional spacing in the checkbox group with top gap */
+			.checkbox-group {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 6px;
+				justify-content: center;
+				margin-top: 15px;
+			}
+			
+			/* Budget dropdown - initially visible */
+			.budget-dropdown {
+				display: block;
+				margin-top: 20px;
+				opacity: 1;
+				transition: all 0.3s ease;
+			}
+			
+			.budget-dropdown.show {
+				display: block;
+				opacity: 1;
+			}
+	
+			/* Contact Page SEO Enhancement Styles */
+			.contact-intro {
+				max-width: 800px;
+				margin: 30px auto 40px;
+				text-align: center;
+			}
+			
+			.contact-description {
+				font-size: 18px;
+				line-height: 1.6;
+				color: #555;
+				margin-bottom: 40px;
+				font-weight: 400;
+			}
+			
+			.contact-benefits {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 30px;
+				margin: 30px 0;
+			}
+			
+			.benefit-item {
+				background: rgba(255, 255, 255, 0.9);
+				border: 1px solid #e0e0e0;
+				border-radius: 12px;
+				padding: 25px;
+				text-align: center;
+				transition: all 0.3s ease;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+			}
+			
+			.benefit-item:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+				border-color: #227bf3;
+			}
+			
+			.benefit-item h3 {
+				font-size: 18px;
+				font-weight: 600;
+				margin: 0 0 10px 0;
+				color: #333;
+			}
+			
+			.benefit-item p {
+				font-size: 14px;
+				color: #666;
+				margin: 0;
+				line-height: 1.5;
+			}
+			
+			/* Form heading optimization */
+			.formss-wrap h1 {
+				font-size: 36px;
+				font-weight: 700;
+				color: #1a1a1a;
+				margin: 0 0 20px 0;
+				line-height: 1.2;
+				text-align: center;
+			}
+			
+			/* Mobile responsiveness */
+			@media (max-width: 768px) {
+				.contact-benefits {
+					grid-template-columns: 1fr;
+					gap: 20px;
+				}
+				
+				.formss-wrap h1 {
+					font-size: 28px;
+				}
+				
+				.contact-description {
+					font-size: 16px;
+				}
+			}
+			
+			/* Contact Methods Section */
+			.contact-methods {
+				background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+				border-radius: 15px;
+				padding: 40px;
+				margin: 50px 0;
+				text-align: center;
+			}
+			
+			.contact-methods h2 {
+				font-size: 28px;
+				font-weight: 700;
+				color: #1a1a1a;
+				margin: 0 0 30px 0;
+			}
+			
+			.contact-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 30px;
+				max-width: 1200px;
+				margin: 0 auto;
+			}
+			
+			.contact-method {
+				background: white;
+				border-radius: 12px;
+				padding: 30px 20px;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+				transition: all 0.3s ease;
+				border: 1px solid #e9ecef;
+			}
+			
+			.contact-method:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 12px 30px rgba(34, 123, 243, 0.15);
+				border-color: #227bf3;
+			}
+			
+			.contact-icon {
+				font-size: 42px;
+				margin-bottom: 15px;
+				display: block;
+			}
+			
+			.contact-method h3 {
+				font-size: 20px;
+				font-weight: 600;
+				margin: 0 0 10px 0;
+				color: #1a1a1a;
+			}
+			
+			.contact-method p {
+				font-size: 16px;
+				color: #333;
+				margin: 0 0 10px 0;
+				line-height: 1.5;
+			}
+			
+			.contact-method p a {
+				color: #227bf3;
+				text-decoration: none;
+				font-weight: 500;
+				transition: color 0.3s ease;
+			}
+			
+			.contact-method p a:hover {
+				color: #0056b3;
+				text-decoration: underline;
+			}
+			
+			.response-time {
+				font-size: 13px;
+				color: #666;
+				font-style: italic;
+				display: block;
+				margin-top: 8px;
+			}
+			
+			/* Mobile contact methods */
+			@media (max-width: 768px) {
+				.contact-methods {
+					padding: 30px 20px;
+					margin: 30px 0;
+				}
+				
+				.contact-grid {
+					grid-template-columns: 1fr;
+					gap: 20px;
+				}
+				
+				.contact-methods h2 {
+					font-size: 24px;
+				}
+			}
 
-.page-id-295 .to-contact { display:none; }
+.page-id-295 .to-contact .to-meeter { display:none; }
 
 .mobile .menu-nav li.page-item-295 { display:none!important; }
 

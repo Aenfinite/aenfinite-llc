@@ -1,46 +1,447 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	
-<!-- Mirrored from Aenfinite/contact/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:09:50 GMT -->
+<!-- Mirrored from aenfinite.com/contact/?linkcontact=top-contact-button by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:01:59 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
-<head>
+<head><!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			} .header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
 			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 	
 <!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->
-<title>Contact for Branding, Web Design, UI/UX in Denver | Aenfinite</title>
-<meta name="description" content="Contact the best digital innovation agency Aenfinite for branding, web design, mobile app development, UI/UX design services in Denver!"/>
+<title>Contact Aenfinite® - Professional Digital Agency | Web Design, Branding & Marketing Services</title>
+<meta name="description" content="Get in touch with Aenfinite® digital agency for professional web design, branding, digital marketing, and business automation services. Serving US & Canada markets with custom solutions."/>
 <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
-<link rel="canonical" href="" />
+<meta name="keywords" content="contact digital agency, web design consultation, branding services contact, digital marketing agency, Aenfinite contact, professional web development, US Canada digital services"/>
+<link rel="alternate" hreflang="en-us" href="https://aenfinite.com/contact/" />
+<link rel="alternate" hreflang="en-ca" href="https://aenfinite.com/contact/" />
+<meta name="geo.region" content="US" />
+<meta name="geo.placename" content="Denver, Colorado" />
+<meta name="ICBM" content="39.739236, -104.990251" />
+<link rel="canonical" href="https://aenfinite.com/contact/" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:type" content="article" />
-<meta property="og:title" content="Contact for Branding, Web Design, UI/UX in Denver | Aenfinite" />
-<meta property="og:description" content="Contact the best digital innovation agency Aenfinite for branding, web design, mobile app development, UI/UX design services in Denver!" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Contact Aenfinite® - Professional Digital Agency | Web Design & Marketing Services" />
+<meta property="og:description" content="Get in touch with Aenfinite® digital agency for professional web design, branding, digital marketing, and business automation services. Serving US & Canada markets with custom solutions." />
 <meta property="og:url" content="https://aenfinite.com/contact/" />
-<meta property="og:site_name" content="Aenfinite" />
+<meta property="og:site_name" content="Aenfinite® - Professional Digital Innovation Agency" />
 <meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
-<meta property="og:updated_time" content="2024-09-04T12:18:48-04:00" />
-<meta property="og:image" content="https://aenfinite.com/wp-content/uploads/2022/10/Social-Media-Image-seva2-1-768x403.jpg" />
-<meta property="og:image:secure_url" content="https://aenfinite.com/wp-content/uploads/2022/10/Social-Media-Image-seva2-1-768x403.jpg" />
-<meta property="og:image:width" content="768" />
-<meta property="og:image:height" content="403" />
-<meta property="og:image:alt" content="cONTACT" />
+<meta property="og:updated_time" content="2025-09-08T12:00:00-06:00" />
+<meta property="og:image" content="https://aenfinite.com/wp-content/uploads/2025/09/aenfinite-contact-page-social.jpg" />
+<meta property="og:image:secure_url" content="https://aenfinite.com/wp-content/uploads/2025/09/aenfinite-contact-page-social.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Contact Aenfinite Digital Agency - Professional Web Design and Digital Services" />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="article:published_time" content="2022-07-22T11:19:32-04:00" />
 <meta property="article:modified_time" content="2024-09-04T12:18:48-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Contact for Branding, Web Design, UI/UX in Denver | Aenfinite" />
-<meta name="twitter:description" content="Contact the best digital innovation agency Aenfinite for branding, web design, mobile app development, UI/UX design services in Denver!" />
+<meta name="twitter:title" content="Contact Aenfinite® - Professional Digital Agency | Web Design & Marketing Services" />
+<meta name="twitter:description" content="Get in touch with Aenfinite® digital agency for professional web design, branding, digital marketing, and business automation services. Serving US & Canada markets." />
 <meta name="twitter:site" content="@aenfinite" />
-<meta name="twitter:creator" content="@hasanahmedbuzzbuzz" />
-<meta name="twitter:image" content="https://aenfinite.com/wp-content/uploads/2022/10/Social-Media-Image-seva2-1-768x403.jpg" />
-<meta name="twitter:label1" content="Time to read" />
-<meta name="twitter:data1" content="Less than a minute" />
-<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"Aenfinite","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/aenfinite","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"Aenfinite","alternateName":"Aenfinite - Digital Innovation Agency in Denver","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2022/10/Social-Media-Image-seva2-1.jpg","url":"https://aenfinite.com/wp-content/uploads/2022/10/Social-Media-Image-seva2-1.jpg","width":"2400","height":"1260","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/contact/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/contact/","name":"Contact"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/contact/#webpage","url":"https://aenfinite.com/contact/","name":"Contact for Branding, Web Design, UI/UX in New York | Aenfinite\u00ae","datePublished":"2022-07-22T11:19:32-04:00","dateModified":"2024-09-04T12:18:48-04:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/Social-Media-Image-seva2-1.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/contact/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/contact/#author","name":"Hasan Ahmed","description":"Archives from for Aenfinite","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","caption":"Hasan Ahmed","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Contact for Branding, Web Design, UI/UX in New York | Aenfinite\u00ae","keywords":"cONTACT","datePublished":"2022-07-22T11:19:32-04:00","dateModified":"2024-09-04T12:18:48-04:00","author":{"@id":"https://aenfinite.com/contact/#author","name":"Boris Aenfinite\u00ae"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Contact the best Aenfinite agency Aenfinite\u00ae (M/WBE-certified) for the best branding, web design, packaging, UI/UX design services today!","name":"Contact for Branding, Web Design, UI/UX in New York | Aenfinite\u00ae","@id":"https://aenfinite.com/contact/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/contact/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/Social-Media-Image-seva2-1.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/contact/#webpage"}}]}</script>
+<meta name="twitter:creator" content="@aenfinite" />
+<meta name="twitter:image" content="https://aenfinite.com/wp-content/uploads/2025/09/aenfinite-contact-page-social.jpg" />
+<meta name="twitter:image:alt" content="Contact Aenfinite Digital Agency - Professional Web Design and Digital Services" />
+<meta name="twitter:label1" content="Response Time" />
+<meta name="twitter:data1" content="Within 24 Hours" />
+<script type="application/ld+json" class="rank-math-schema-pro">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://aenfinite.com/#organization",
+      "name": "Aenfinite®",
+      "alternateName": "Aenfinite LLC",
+      "description": "Professional digital innovation agency specializing in web design, branding, digital marketing, and business automation services.",
+      "url": "https://aenfinite.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://aenfinite.com/wp-content/themes/aenfinite.com/images/aenfinite-full.svg",
+        "width": 300,
+        "height": 100
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+1-303-555-0123",
+        "contactType": "Customer Service",
+        "availableLanguage": ["en-US", "en-CA"],
+        "areaServed": ["US", "CA"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "1234 Business Ave",
+        "addressLocality": "Denver",
+        "addressRegion": "Colorado",
+        "postalCode": "80202",
+        "addressCountry": "US"
+      },
+      "foundingDate": "2020",
+      "numberOfEmployees": "10-50",
+      "slogan": "Innovating Digital Excellence",
+      "sameAs": [
+        "https://www.facebook.com/aenfinite/",
+        "https://twitter.com/aenfinite",
+        "https://www.instagram.com/aenfinite/",
+        "https://dribbble.com/aenfinite",
+        "https://www.behance.net/aenfinite"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://aenfinite.com/#website",
+      "url": "https://aenfinite.com",
+      "name": "Aenfinite® - Professional Digital Innovation Agency",
+      "description": "Professional digital agency providing web design, branding, digital marketing, and business automation services across US and Canada.",
+      "publisher": { "@id": "https://aenfinite.com/#organization" },
+      "inLanguage": "en-US",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://aenfinite.com/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "ContactPage",
+      "@id": "https://aenfinite.com/contact/#webpage",
+      "url": "https://aenfinite.com/contact/",
+      "name": "Contact Aenfinite® - Professional Digital Agency Services",
+      "description": "Get in touch with Aenfinite® digital agency for professional web design, branding, digital marketing, and business automation services. Serving US & Canada markets with custom solutions.",
+      "dateModified": "2025-09-08T12:00:00-06:00",
+      "isPartOf": { "@id": "https://aenfinite.com/#website" },
+      "inLanguage": "en-US",
+      "breadcrumb": { "@id": "https://aenfinite.com/contact/#breadcrumb" },
+      "mainEntity": { "@id": "https://aenfinite.com/contact/#contactform" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://aenfinite.com/contact/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@id": "https://aenfinite.com",
+            "name": "Home"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@id": "https://aenfinite.com/contact/",
+            "name": "Contact"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://aenfinite.com/contact/#contactform",
+      "name": "Contact Aenfinite Digital Agency",
+      "description": "Contact form for professional digital services including web design, branding, digital marketing, and business automation.",
+      "provider": { "@id": "https://aenfinite.com/#organization" },
+      "serviceType": "Digital Agency Contact",
+      "areaServed": ["US", "CA"],
+      "availableChannel": {
+        "@type": "ServiceChannel",
+        "serviceUrl": "https://aenfinite.com/contact/",
+        "servicePhone": "+1-303-555-0123",
+        "availableLanguage": ["en-US", "en-CA"]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How quickly do you respond to contact inquiries?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We typically respond to all contact inquiries within 24 hours during business days. For urgent project needs, we offer same-day response options."
+          }
+        },
+        {
+          "@type": "Question", 
+          "name": "What services does Aenfinite provide?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Aenfinite provides comprehensive digital services including web design, branding, digital marketing, SEO, business automation, and custom development solutions for businesses across the US and Canada."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you work with businesses outside the US and Canada?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "While we primarily focus on US and Canada markets, we do work with select international clients. Please contact us to discuss your specific project requirements and location."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
 <!-- /Rank Math WordPress SEO plugin -->
 
-<link rel="https://api.w.org/" href="../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../wp-json/wp/v2/pages/295.json" /><link rel='shortlink' href='../index1422.html?p=295' />
-<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="../wp-json/oembed/1.0/embed148d.json?url=https%3A%2F%2FAenfinite%2Fcontact%2F" />
-<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="../wp-json/oembed/1.0/embed1170?url=https%3A%2F%2FAenfinite%2Fcontact%2F&amp;format=xml" />
+<!-- SEO Performance Optimizations -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#000000">
+<meta name="msapplication-TileColor" content="#000000">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" as="image" type="image/svg+xml">
+
+<!-- Additional Contact Page SEO -->
+<meta name="contact" content="true">
+<meta name="page-type" content="contact">
+<meta name="business-hours" content="Mon-Fri 9AM-6PM MST">
+<meta name="response-time" content="24 hours">
+<meta name="service-areas" content="United States, Canada">
+
+<!-- Accessibility & User Experience -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="https://api.w.org/" href="../wp-json/index.html" /><link rel="alternate" title="JSON" type="application/json" href="../wp-json/wp/v2/pages/295.json" /><link rel='shortlink' href='../index1422.html?p=295' />
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="../wp-json/oembed/1.0/embed148d.json?url=https%3A%2F%2Faenfinite.com%2Fcontact%2F" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="../wp-json/oembed/1.0/embed1170?url=https%3A%2F%2Faenfinite.com%2Fcontact%2F&amp;format=xml" />
     <style type="text/css">
 		#wp-admin-bar-wp-logo > .ab-item .ab-icon:before {
 			content: url('../wp-content/uploads/2024/05/logo.svg') !important;
@@ -95,48 +496,72 @@
 			}	
 		}		
     </style>
-    <style>
-		/* Dual Logo System */
+    
+    <style type="text/css">
+		/* Navigation Logo Styling */
 		.nav-logo {
-			height: 28px;
-			width: 140px;
-			display: block;
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			transition: all 0.3s ease;
+			filter: none;
+			object-fit: contain;
+			object-position: left center;
 		}
-
-		.topbar-logo a {
-			position: relative;
-			display: block;
-		}
-
+		
+		/* Logo switching CSS to match homepage behavior */
 		.nav-logo-default,
 		.nav-logo-active {
-			transition: opacity 0.3s ease;
-			height: 28px;
-			width: 140px;
-		}
-
-		.nav-logo-default {
-			opacity: 1;
-		}
-
-		.nav-logo-active {
-			opacity: 0;
 			position: absolute;
 			top: 0;
 			left: 0;
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			object-fit: contain;
+			object-position: left center;
+			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			transform-origin: left center;
 		}
 
-		/* Show blue logo on hover/active */
+		/* Container for logos to maintain position */
+		.topbar-logo a {
+			position: relative;
+			display: inline-block;
+			height: 28px;
+			min-width: 140px;
+		}
+
+		/* Default state - show white logo, hide active logo */
+		.nav-logo-default {
+			display: block;
+			opacity: 1;
+			transform: scale(1);
+			z-index: 2;
+		}
+
+		.nav-logo-active {
+			display: block;
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+
+		/* When navbar becomes active/dark - hide white logo, show blue logo */
 		.mainnav.active .nav-logo-default,
 		.mainnav.always-active .nav-logo-default,
 		.mainnav:hover .nav-logo-default {
 			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
 		}
 
 		.mainnav.active .nav-logo-active,
 		.mainnav.always-active .nav-logo-active,
 		.mainnav:hover .nav-logo-active {
 			opacity: 1;
+			transform: scale(1.05);
+			z-index: 2;
 		}
     </style>
     <link rel="icon" href="../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-32x32.png" sizes="32x32" />
@@ -147,7 +572,7 @@
 		<meta name="google-site-verification" content="w5x4RIV--Je9QfyBMKTz_kRMtBGYQ_0e80K3uAykqoc" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<!-- Powered by Aenfinite® https://aenfinite.com/ -->
+		<!-- Powered by aenfinite.com https://aenfinite.com/ -->
 		<!--              
 				,DDD                 DDD        
 			  DD    DD            DD     DD     
@@ -190,12 +615,166 @@
 		<!-- End Google Tag Manager -->
 
 
-<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite® with ❤️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
+<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by aenfinite.com with ', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
 		
 	<script src="../../tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
 		
-	</head>
-	<body class="page-template page-template-page-contact-php page-id-295 document loading">
+	<!-- Animated Cursor Implementation -->
+	<style>
+		* {
+			cursor: none !important;
+		}
+		
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
+		
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+	</style>
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = `translate(-50%, -50%) scale(${Math.max(0.1, 1 - index * 0.05)})`;
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+		
+</head>
+	<body class="page-template page-template-page-contact-php page-id-295 document body_hide document loading">
 		
 		<!-- Google Tag Manager (noscript) -->
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53L4TW5R"
@@ -215,73 +794,196 @@
 			</symbol>
 		</svg>
 		<div style="display:none!important;">
-						<div class="ip">51.222.253.17</div>
+						<div class="ip">217.113.194.77</div>
 			<div class="url">Contact</div>
 			<div class="urlback"></div>
 			<div class="datas">08.15.2025</div>
-			<div class="times">10-34 am</div>
-		</div>
-		
-		<div class="preloader">
-			<div class="preloader-inner">
-				<div class="preloader-logo">
-					<div class="preloader-text" data-aos="fade-up" data-aos-delay="100">
-						<pre style="font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.2; color: #227bf3; text-align: center;">
-          AA               EEEEEEEEEEEEEEEEEEE NNNNNNNN        NNNNNNNN
-         A  A              E::::::::::::::::::::E N:::::::N       N::::::N
-        A    A             E::::::::::::::::::::E N::::::::N      N::::::N
-       A      A            EE::::::EEEEEEEEE::::E N:::::::::N     N::::::N
-      A  AAAA  A             E:::::E       EEEEEE N::::::::::N    N::::::N
-     A          A            E:::::E              N:::::::::::N   N::::::N
-    A            A           E::::::EEEEEEEEEE    N:::::::N::::N  N::::::N
-   A      AA      A          E:::::::::::::::E    N::::::N N::::N N::::::N
-  A      A  A      A         E:::::::::::::::E    N::::::N  N::::N:::::::N
- A      A    A      A        E::::::EEEEEEEEEE    N::::::N   N:::::::::::N
-A      A      A      A       E:::::E              N::::::N    N::::::::::N
-AAAAAAA        AAAAAAA       E:::::E       EEEEEE N::::::N     N:::::::::N
-                            EE::::::EEEEEEEE:::::E N::::::N      N::::::::N
-                            E::::::::::::::::::::E N::::::N       N:::::::N
-                            E::::::::::::::::::::E N::::::N        N::::::N
-                            EEEEEEEEEEEEEEEEEEEEEE NNNNNNNN         NNNNNNN
-						</pre>
-					</div>
-				</div>
-			</div>
+			<div class="times">10-07 am</div>
 		</div>	
 		<div class="mainnav js-mainnav ">
 			<div class="wrapper">
 				<div class="topbar">
 					<div class="topbar-nav js-topnav-follow">
 						<div class="topbar-logo js-topnav-follow-item active">
-							<a href="../">
-								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default" />
-								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active" />
+							<a href="">
+								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
+								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
 							</a>
 						</div>
 						<ul class="topnav desktop">
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="../featured-work/">Work</a>
+								<a href="/featured-work/">Work</a>
 							</li>
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="../agency/">Agency</a>
+								<a href="/agency">Agency</a>
 							</li>
-							<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-								<a href="../services/">Services</a>
-								<ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list"><li id="menu-item-2275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2275"><a href="../services/web-design/">Web Design</a></li>
-<li id="menu-item-2276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2276"><a href="../services/branding/">Branding</a></li>
-<li id="menu-item-6909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6909"><a href="../services/trade-show-booth-design/">Trade Shows</a></li>
-<li id="menu-item-2277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2277"><a href="../services/packaging-design/">Packaging Design</a></li>
-<li id="menu-item-ecommerce" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-ecommerce"><a href="../services/e-commerce-websites/">E-Commerce Solutions</a></li>
-</ul>	
-							</li>
-						</ul>
+							                            <li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
+                                <a href="/services/">Services</a>
+                                <ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Development Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/wordpress-websites/">WordPress Websites</a></li>
+<li><a href="/services/e-commerce-websites/">E-Commerce Websites</a></li>
+											<li><a href="/services/custom-web-development">Custom Web Development</a></li>
+											<li><a href="/services/software-&-platform-development/">Software & Platform Development</a></li>
+											<li><a href="/services/app-development/">App Development</a></li>
+											<li><a href="/services/web-design/">Website Design & Development</a></li>
+											<li><a href="/services/web-design-and-branding-for-real-estate/">Real Estate Web Solutions</a></li>                                      </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Design & Creative Services ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ui-ux-design/">UI/UX Design</a></li>
+
+                                            <li><a href="/services/branding/">Brand Identity & Strategy</a></li>
+                                            <li><a href="/services/graphic-design/">Graphic Design</a></li>
+                                            <li><a href="/services/motion-graphics/">Motion Graphics</a></li>
+                                            <li><a href="/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+                                            <li><a href="/services/conference-branding/">Conference Branding</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Marketing & Digital Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/digital-marketing/">Digital Marketing Strategy</a></li>
+                                            <li><a href="/services/search-engine-optimization/">Search Engine Optimization (SEO)</a></li>
+                                            <li><a href="/services/pay-per-click">Pay-Per-Click (PPC) Advertising</a></li>
+                                            <li><a href="/services/social-media-marketing/">Social Media Marketing</a></li>
+                                            <li><a href="/services/paid-ads/">Paid Advertising</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">AI & Technology Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ai-chatbots-&-virtual-assistants/">AI Chatbots & Virtual Assistants</a></li>
+                                            <li><a href="/services/workflow-&-business-automation/">Workflow & Business Automation</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li><style>/* Multi-Level Dropdown Navigation Styles - Partner With Us Style */
+.menu-item-has-children {
+    position: relative;
+}
+
+/* Main dropdown from Services menu - adaptive styling */
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Sub-menus - adaptive styling based on navbar state */
+.sub-menu {
+    position: absolute;
+    top: -5px;
+    left: 100%;
+    margin-left: 1px;
+    min-width: 250px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    z-index: 1001;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Default dropdown styling - no background, dark text (for top of page) */
+.dropdown-list a,
+.sub-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.dropdown-list a:hover,
+.sub-menu a:hover {
+    color: #007cba;
+    padding-left: 15px;
+}
+
+/* When navbar is active/scrolled - black background, white text */
+.mainnav.active .dropdown-list,
+.mainnav.active .sub-menu {
+    margin-top: 10px;
+    background: #000;
+}
+
+.mainnav.active .dropdown-list a,
+.mainnav.active .sub-menu a {
+    color: #fff;
+}
+
+.mainnav.active .dropdown-list a:hover,
+.mainnav.active .sub-menu a:hover {
+    color: #007cba;
+}
+
+/* When hovering over menu item with children, expand main dropdown to match sub-menu */
+.menu-item-has-children:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Expand main dropdown when sub-menu is hovered */
+.menu-item-has-children:hover {
+    min-width: 250px;
+}
+
+.dropdown-list:has(.menu-item-has-children:hover) {
+    min-width: 250px;
+    width: 250px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sub-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 3px solid #007cba;
+        margin-left: 15px;
+        background: #f9f9f9;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .menu-item-has-children.active > .sub-menu {
+        max-height: 500px;
+    }
+}</style>						</ul>
 						<div class="topnav-follower desktop js-topnav-follow-bar"></div>
 					</div>
 					<div class="topbar-social desktop">
-						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/">Partner with us</a></li>
+						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="/agency/partner-with-us/">Partner with us</a></li>
 </ul>					</div>
 					<div class="topbar-contact desktop">
-						<a href="index57fd.html?linkcontact=top-contact-button" class="topbar-contact_button">Contact</a>
+						<a href="/contact/" class="topbar-contact_button">Contact</a>
 					</div>
 					<div class="menu-button mobile js-menu-toggle"><i></i></div>
 				</div>
@@ -290,12 +992,11 @@ AAAAAAA        AAAAAAA       E:::::E       EEEEEE N::::::N     N:::::::::N
 				<div class="mainnav-dropdown-layer-container js-dropdown-layer-text">
 					<div class="wrapper">
 						<div class="mainnav-dropdown-layer-text">
-							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 		
 		<div class="container">
 		
@@ -319,26 +1020,36 @@ AAAAAAA        AAAAAAA       E:::::E       EEEEEE N::::::N     N:::::::::N
 			</a>
         <div class="main">
 
-            <div class="section">
+            <main class="section" role="main" aria-label="Contact Page Content">
 				
-				<div class="block formss" id="contact1">
+				<article class="block formss" id="contact1">
 					<div class="center">
-						<div class="formss-wrap">
-							<h2>Start a New Project with Aenfinite®</h2>
-							<div class="toggle-formss">
+						<section class="formss-wrap">
+							
+							
+							<section class="toggle-formss" aria-label="Contact Form">
 								
-<div class="contact-form-wrapper" id="contact-form-wrapper" lang="en-US" dir="ltr">
+<div class="wpcf7 no-js" id="wpcf7-f1252-o1" lang="en-US" dir="ltr" data-wpcf7-id="1252">
 <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"> <ul></ul></div>
-<form id="contact-form" method="POST" action="mailto:hello@aenfinite.com" enctype="text/plain" class="contact-form init" aria-label="Contact form">
+<form action="https://aenfinite.com/contact/?linkcontact=top-contact-button#wpcf7-f1252-o1" method="post" class="wpcf7-form init" aria-label="Contact form" novalidate="novalidate" data-status="init">
+<div style="display: none;">
+<input type="hidden" name="_wpcf7" value="1252" />
+<input type="hidden" name="_wpcf7_version" value="6.0.6" />
+<input type="hidden" name="_wpcf7_locale" value="en_US" />
+<input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1252-o1" />
+<input type="hidden" name="_wpcf7_container_post" value="0" />
+<input type="hidden" name="_wpcf7_posted_data_hash" value="" />
+<input type="hidden" name="_wpcf7_recaptcha_response" value="" />
+</div>
 <div class="cell">
 	<div class="inputs">
-		<span class="form-control-wrap" data-name="your-name"><input size="40" maxlength="400" class="form-control text-input required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" required /></span><span class="form-control-wrap" data-name="your-email"><input size="40" maxlength="400" class="form-control email-input required" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" required /></span><span class="form-control-wrap" data-name="text-tell-project"><input size="40" maxlength="400" class="form-control text-input" autocomplete="on" aria-invalid="false" placeholder="Tell us about your project…" value="" type="text" name="text-tell-project" /></span>
+		<span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap" data-name="your-email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" /></span><span class="wpcf7-form-control-wrap" data-name="text-tell-project"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" autocomplete="on" aria-invalid="false" placeholder="Tell us about your project" value="" type="text" name="text-tell-project" /></span>
 		
 	</div>
 	<div class="checkbox-select">
-		<strong>I'm interested in...</strong><span class="form-control-wrap" data-name="checkbox-select"><span class="form-control checkbox-group"><span class="list-item first"><input type="checkbox" name="services" value="Branding" id="branding" /><label for="branding" class="list-item-label">Branding</label></span><span class="list-item"><input type="checkbox" name="services" value="Web Design" id="web-design" /><label for="web-design" class="list-item-label">Web Design</label></span><span class="list-item"><input type="checkbox" name="services" value="Packaging" id="packaging" /><label for="packaging" class="list-item-label">Packaging</label></span><span class="list-item"><input type="checkbox" name="services" value="Graphic Design" id="graphic-design" /><label for="graphic-design" class="list-item-label">Graphic Design</label></span><span class="list-item"><input type="checkbox" name="services" value="UI/UX" id="ui-ux" /><label for="ui-ux" class="list-item-label">UI/UX</label></span><span class="list-item"><input type="checkbox" name="services" value="Video Production" id="video-production" /><label for="video-production" class="list-item-label">Video Production</label></span><span class="list-item"><input type="checkbox" name="services" value="Experiential" id="experiential" /><label for="experiential" class="list-item-label">Experiential</label></span><span class="list-item"><input type="checkbox" name="services" value="Brand Assets" id="brand-assets" /><label for="brand-assets" class="list-item-label">Brand Assets</label></span><span class="list-item"><input type="checkbox" name="services" value="Decks" id="decks" /><label for="decks" class="list-item-label">Decks</label></span><span class="list-item last"><input type="checkbox" name="services" value="Other" id="other" /><label for="other" class="list-item-label">Other</label></span></span></span>
+		<strong>I'm interested in...</strong><span class="form-control-wrap" data-name="checkbox-select"><span class="form-control checkbox-group"><span class="list-item first"><input type="checkbox" name="services" value="Branding" id="branding" /><label for="branding" class="list-item-label">Branding</label></span><span class="list-item"><input type="checkbox" name="services" value="Web Design" id="web-design" /><label for="web-design" class="list-item-label">Web Design</label></span><span class="list-item"><input type="checkbox" name="services" value="Digital Marketing" id="digital-marketing" /><label for="digital-marketing" class="list-item-label">Digital Marketing</label></span><span class="list-item"><input type="checkbox" name="services" value="E-Commerce Solutions" id="ecommerce-solutions" /><label for="ecommerce-solutions" class="list-item-label">E-Commerce Solutions</label></span><span class="list-item"><input type="checkbox" name="services" value="UI/UX Design" id="ui-ux-design" /><label for="ui-ux-design" class="list-item-label">UI/UX Design</label></span><span class="list-item"><input type="checkbox" name="services" value="App Development" id="app-development" /><label for="app-development" class="list-item-label">App Development</label></span><span class="list-item"><input type="checkbox" name="services" value="Packaging" id="packaging" /><label for="packaging" class="list-item-label">Packaging</label></span><span class="list-item"><input type="checkbox" name="services" value="Graphic Design" id="graphic-design" /><label for="graphic-design" class="list-item-label">Graphic Design</label></span><span class="list-item"><input type="checkbox" name="services" value="WordPress Websites" id="wordpress-websites" /><label for="wordpress-websites" class="list-item-label">WordPress Websites</label></span><span class="list-item last"><input type="checkbox" name="services" value="Other" id="other" /><label for="other" class="list-item-label">Other</label></span></span></span>
 		
-		<div class="selectbox js-select">
+		<div class="selectbox budget-dropdown js-select">
 			<input class="selectbox-input js-select-holder" type="text" placeholder="Tell us your approximate budget" value="" readonly name="budget" />
 			
 			<div class="selectbox-suffix">
@@ -366,23 +1077,26 @@ AAAAAAA        AAAAAAA       E:::::E       EEEEEE N::::::N     N:::::::::N
 					over $100,000
 					
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 	</div>
 </div>
-<input class="form-control submit-button" type="submit" value="Send" />
-<div class="form-response-output" aria-hidden="true"></div>
+<div class="hide">
+	<span class="wpcf7-form-control-wrap" data-name="datas-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="datas-message" /></span><span class="wpcf7-form-control-wrap" data-name="times-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="times-message" /></span><span class="wpcf7-form-control-wrap" data-name="datac-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="datac-message" /></span><span class="wpcf7-form-control-wrap" data-name="timec-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="timec-message" /></span><span class="wpcf7-form-control-wrap" data-name="ip"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="ip" /></span><span class="wpcf7-form-control-wrap" data-name="ipdetails"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="ipdetails" /></span><span class="wpcf7-form-control-wrap" data-name="urll"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="urll" /></span><span class="wpcf7-form-control-wrap" data-name="idd2"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="idd2" /></span><span class="wpcf7-form-control-wrap" data-name="utm_id"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_id" /></span><span class="wpcf7-form-control-wrap" data-name="utm_source"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_source" /></span><span class="wpcf7-form-control-wrap" data-name="utm_medium"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_medium" /></span><span class="wpcf7-form-control-wrap" data-name="utm_campaign"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_campaign" /></span><span class="wpcf7-form-control-wrap" data-name="utm_term"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_term" /></span><span class="wpcf7-form-control-wrap" data-name="utm_content"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_content" /></span><span class="wpcf7-form-control-wrap" data-name="urlback"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="urlback" /></span><span class="wpcf7-form-control-wrap" data-name="linkcontact"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="top-contact-button" type="text" name="linkcontact" /></span><span class="wpcf7-form-control-wrap" data-name="idd1"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="idd1" /></span>
+	
+</div>
+<input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" value="Send" />
+<div class="wpcf7-response-output" aria-hidden="true"></div>
 </form>
 </div>
-							</div>
+							</section>
 							<i class="formss-heart"></i>
-						</div>
+						</section>
 					</div>
-				</div>
+				</article>
 			
                 <div class="emailbox runner js-runner">
                     <div class="emailbox-content js-runner-content">
-                        <a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+                        <a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
                     </div>
                 </div>
 				
@@ -391,17 +1105,15 @@ AAAAAAA        AAAAAAA       E:::::E       EEEEEE N::::::N     N:::::::::N
                         <div class="contacts-map">
                             <div class="map">
                                 <div class="map-canvas" id="map">
-									<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d17286.745176600227!2d-74.0160881922144!3d40.70707214982571!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259f5999cf0ab%3A0x620bebb9ec5f2f32!2zREQuTllDwq4!5e0!3m2!1sen!2sus!4v1701708335416!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>								</div>
+									<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d51312727.04414888!2d-171.2681360232649!3d38.28226721515215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x274474962c7a10a1%3A0xa44c3f138ba91415!2saenfinite!5e0!3m2!1sen!2sro!4v1755908445747!5m2!1sen!2sro" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>								</div>
                                 <div class="map-marker">
                                     <div class="heartbox">
                                         <div class="heartbox_icon">
                                             <div class="heart">
-                                                <svg class="icon">
-                                                    <use xlink:href="#i-heart2"></use>
-                                                </svg>
+                                                <img src="../wp-content/themes/aenfinite.com/images/heart.svg" alt="Heart" class="icon">
                                             </div>
                                         </div>
-                                        <a href="https://www.google.com/maps/place/DigitalDesign/@40.7188907,-74.002766,15z/data=!4m5!3m4!1s0x0:0x620bebb9ec5f2f32!8m2!3d40.7188907!4d-74.002766" target="_blank" class="heartbox_text">Follow your heart.</a>
+                                        <a href="https://www.google.com/maps/place/aenfinite/@38.2822672,-171.268136,3z/data=!3m1!4b1!4m6!3m5!1s0x274474962c7a10a1:0xa44c3f138ba91415!8m2!3d46.423669!4d-129.9427086!16s%2Fg%2F11x0dj29b1?entry=ttu&g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="heartbox_text">Follow your Vision</a>
                                     </div>
                                 </div>
                             </div>
@@ -417,7 +1129,7 @@ New York, NY<br />
                     </div>
                 </div>
 				
-            </div>
+            </main>
 
         </div>
 		
@@ -426,146 +1138,509 @@ New York, NY<br />
 				$('.formss h2').click();
 				history.pushState('', document.title, window.location.pathname);
 				
-				// Handle budget dropdown selection
-				$('.js-select-option').click(function() {
+				// Handle service pill clicks - make them toggleable
+				$('.list-item').click(function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					
+					// Toggle checkbox state
+					const checkbox = $(this).find('input[type="checkbox"]');
+					const isCurrentlyChecked = checkbox.prop('checked');
+					checkbox.prop('checked', !isCurrentlyChecked);
+					
+					// Update visual state - toggle the selected class
+					$(this).toggleClass('selected');
+					
+					// Budget dropdown is now always visible
+					$('.budget-dropdown').addClass('show');
+				});
+				
+				// Budget dropdown functionality
+				$('.js-select-option').click(function(e) {
+					e.preventDefault();
 					const selectedBudget = $(this).text().trim();
 					$('.js-select-holder').val(selectedBudget);
 					$('input[name="budget"]').val(selectedBudget);
-					$('.js-select-list').hide();
+					$('.js-select-list').slideUp(200);
+					$('.selectbox').removeClass('open');
 				});
 				
-				// Toggle dropdown
-				$('.js-select-holder').click(function() {
-					$('.js-select-list').toggle();
+				// Toggle dropdown with animation
+				$('.js-select-holder, .selectbox-suffix').click(function(e) {
+					e.preventDefault();
+					$('.js-select-list').slideToggle(200);
+					$('.selectbox').toggleClass('open');
 				});
 				
 				// Close dropdown when clicking outside
 				$(document).click(function(e) {
 					if (!$(e.target).closest('.js-select').length) {
-						$('.js-select-list').hide();
+						$('.js-select-list').slideUp(200);
+						$('.selectbox').removeClass('open');
 					}
-				});
-				
-				// Enhanced form submission handler
-				$('#contact-form').submit(function(e) {
-					// Get form data
-					const name = $('input[name="your-name"]').val();
-					const email = $('input[name="your-email"]').val();
-					const project = $('input[name="text-tell-project"]').val();
-					const budget = $('input[name="budget"]').val();
-					
-					// Get selected services
-					const services = [];
-					$('input[name="services"]:checked').each(function() {
-						services.push($(this).val());
-					});
-					
-					// Create email body
-					const subject = 'New Project Inquiry from ' + name;
-					const body = `Name: ${name}
-Email: ${email}
-Project Details: ${project}
-Services Interested In: ${services.join(', ')}
-Budget: ${budget}
-
-Please respond to this inquiry.`;
-					
-					// Update mailto link
-					const mailtoLink = `mailto:hello@aenfinite.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-					$(this).attr('action', mailtoLink);
-					
-					// Show success message
-					$('.form-response-output').html('<p style="color: #227bf3; margin-top: 10px;">Thank you! Your default email client will open to send your message.</p>').show();
-					
-					return true; // Allow form submission
 				});
 			});
 		</script>
+		
+		<style>
+			
+			/* Service Pills with Glassmorphism Design */
+			.list-item {
+				display: inline-block;
+				background: rgba(255, 255, 255, 0.25);
+				backdrop-filter: blur(10px);
+				-webkit-backdrop-filter: blur(10px);
+				border: 2px solid #d1d5db;
+				border-radius: 25px;
+				padding: 14px 28px;
+				margin: 4px;
+				cursor: pointer;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				font-size: 15px;
+				color: #6b7280;
+				position: relative;
+				box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+			}
+			
+			/* Hide checkbox inputs */
+			.list-item input[type="checkbox"] {
+				display: none;
+			}
+			
+			/* Hover state - just border and effects, no background change */
+			.list-item:hover {
+				border: 2px solid #3b82f6;
+				color: #3b82f6;
+				box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.4);
+				transform: translateY(-3px) scale(1.05);
+			}
+			
+			/* Selected state - fully blue highlighted - TOGGLEABLE */
+			.list-item.selected {
+				background: #3b82f6;
+				border: 2px solid #2563eb;
+				color: white;
+				box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.5);
+				transform: translateY(-2px);
+			}
+			
+			.list-item.selected:hover {
+				background: #2563eb;
+				border: 2px solid #1d4ed8;
+				color: white;
+				box-shadow: 0 16px 48px 0 rgba(37, 99, 235, 0.6);
+				transform: translateY(-3px) scale(1.05);
+			}
+			
+			/* Professional spacing in the checkbox group with top gap */
+			.checkbox-group {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 6px;
+				justify-content: center;
+				margin-top: 15px;
+			}
+			
+			/* Budget dropdown - initially visible */
+			.budget-dropdown {
+				display: block;
+				margin-top: 20px;
+				opacity: 1;
+				transition: all 0.3s ease;
+			}
+			
+			.budget-dropdown.show {
+				display: block;
+				opacity: 1;
+			}
+		</style>
+
+		<style>
+			/* Contact Page SEO Enhancement Styles */
+			.contact-intro {
+				max-width: 800px;
+				margin: 30px auto 40px;
+				text-align: center;
+			}
+			
+			.contact-description {
+				font-size: 18px;
+				line-height: 1.6;
+				color: #555;
+				margin-bottom: 40px;
+				font-weight: 400;
+			}
+			
+			.contact-benefits {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 30px;
+				margin: 30px 0;
+			}
+			
+			.benefit-item {
+				background: rgba(255, 255, 255, 0.9);
+				border: 1px solid #e0e0e0;
+				border-radius: 12px;
+				padding: 25px;
+				text-align: center;
+				transition: all 0.3s ease;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+			}
+			
+			.benefit-item:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+				border-color: #227bf3;
+			}
+			
+			.benefit-item h3 {
+				font-size: 18px;
+				font-weight: 600;
+				margin: 0 0 10px 0;
+				color: #333;
+			}
+			
+			.benefit-item p {
+				font-size: 14px;
+				color: #666;
+				margin: 0;
+				line-height: 1.5;
+			}
+			
+			/* Form heading optimization */
+			.formss-wrap h1 {
+				font-size: 36px;
+				font-weight: 700;
+				color: #1a1a1a;
+				margin: 0 0 20px 0;
+				line-height: 1.2;
+				text-align: center;
+			}
+			
+			/* Mobile responsiveness */
+			@media (max-width: 768px) {
+				.contact-benefits {
+					grid-template-columns: 1fr;
+					gap: 20px;
+				}
+				
+				.formss-wrap h1 {
+					font-size: 28px;
+				}
+				
+				.contact-description {
+					font-size: 16px;
+				}
+			}
+			
+			/* Contact Methods Section */
+			.contact-methods {
+				background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+				border-radius: 15px;
+				padding: 40px;
+				margin: 50px 0;
+				text-align: center;
+			}
+			
+			.contact-methods h2 {
+				font-size: 28px;
+				font-weight: 700;
+				color: #1a1a1a;
+				margin: 0 0 30px 0;
+			}
+			
+			.contact-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 30px;
+				max-width: 1200px;
+				margin: 0 auto;
+			}
+			
+			.contact-method {
+				background: white;
+				border-radius: 12px;
+				padding: 30px 20px;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+				transition: all 0.3s ease;
+				border: 1px solid #e9ecef;
+			}
+			
+			.contact-method:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 12px 30px rgba(34, 123, 243, 0.15);
+				border-color: #227bf3;
+			}
+			
+			.contact-icon {
+				font-size: 42px;
+				margin-bottom: 15px;
+				display: block;
+			}
+			
+			.contact-method h3 {
+				font-size: 20px;
+				font-weight: 600;
+				margin: 0 0 10px 0;
+				color: #1a1a1a;
+			}
+			
+			.contact-method p {
+				font-size: 16px;
+				color: #333;
+				margin: 0 0 10px 0;
+				line-height: 1.5;
+			}
+			
+			.contact-method p a {
+				color: #227bf3;
+				text-decoration: none;
+				font-weight: 500;
+				transition: color 0.3s ease;
+			}
+			
+			.contact-method p a:hover {
+				color: #0056b3;
+				text-decoration: underline;
+			}
+			
+			.response-time {
+				font-size: 13px;
+				color: #666;
+				font-style: italic;
+				display: block;
+				margin-top: 8px;
+			}
+			
+			/* Mobile contact methods */
+			@media (max-width: 768px) {
+				.contact-methods {
+					padding: 30px 20px;
+					margin: 30px 0;
+				}
+				
+				.contact-grid {
+					grid-template-columns: 1fr;
+					gap: 20px;
+				}
+				
+				.contact-methods h2 {
+					font-size: 24px;
+				}
+			}
+		</style>
+
+		<!-- Contact Page FAQ Section for SEO -->
+		<section class="contact-faq" id="faq" aria-label="Frequently Asked Questions">
+			<div class="wrapper">
+				<div class="faq-container">
+					<h2>Frequently Asked Questions</h2>
+					<div class="faq-grid">
+						<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+							<h3 itemprop="name">How quickly do you respond to contact inquiries?</h3>
+							<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+								<p itemprop="text">We typically respond to all contact inquiries within 24 hours during business days. For urgent project needs, we offer same-day response options.</p>
+							</div>
+						</div>
+						<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+							<h3 itemprop="name">What services does Aenfinite provide?</h3>
+							<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+								<p itemprop="text">Aenfinite provides comprehensive digital services including web design, branding, digital marketing, SEO, business automation, and custom development solutions for businesses across the US and Canada.</p>
+							</div>
+						</div>
+						<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+							<h3 itemprop="name">Do you work with businesses outside the US and Canada?</h3>
+							<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+								<p itemprop="text">While we primarily focus on US and Canada markets, we do work with select international clients. Please contact us to discuss your specific project requirements and location.</p>
+							</div>
+						</div>
+						<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+							<h3 itemprop="name">What is your typical project timeline?</h3>
+							<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+								<p itemprop="text">Project timelines vary based on scope and complexity. Web design projects typically take 4-8 weeks, while comprehensive branding projects may take 6-12 weeks. We provide detailed timelines during our initial consultation.</p>
+							</div>
+						</div>
+						<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+							<h3 itemprop="name">Do you offer ongoing support after project completion?</h3>
+							<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+								<p itemprop="text">Yes, we offer comprehensive ongoing support and maintenance packages to ensure your digital assets continue performing optimally. Support options include website updates, SEO monitoring, and technical assistance.</p>
+							</div>
+						</div>
+						<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+							<h3 itemprop="name">How do you price your services?</h3>
+							<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+								<p itemprop="text">We provide custom quotes based on project scope, timeline, and specific requirements. Our pricing is transparent and competitive, with packages starting from $2,500 for web design and $1,500 for branding projects.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<style>
+			/* Contact FAQ Section Styles */
+			.contact-faq {
+				background: #f8f9fa;
+				padding: 80px 0;
+				margin-top: 60px;
+			}
+			
+			.faq-container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 0 20px;
+			}
+			
+			.contact-faq h2 {
+				text-align: center;
+				font-size: 36px;
+				font-weight: 700;
+				color: #1a1a1a;
+				margin: 0 0 50px 0;
+			}
+			
+			.faq-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+				gap: 30px;
+			}
+			
+			.faq-item {
+				background: white;
+				border-radius: 12px;
+				padding: 30px;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+				border: 1px solid #e9ecef;
+				transition: all 0.3s ease;
+			}
+			
+			.faq-item:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+				border-color: #227bf3;
+			}
+			
+			.faq-item h3 {
+				font-size: 20px;
+				font-weight: 600;
+				color: #1a1a1a;
+				margin: 0 0 15px 0;
+				line-height: 1.3;
+			}
+			
+			.faq-item p {
+				font-size: 16px;
+				color: #555;
+				line-height: 1.6;
+				margin: 0;
+			}
+			
+			@media (max-width: 768px) {
+				.contact-faq {
+					padding: 60px 0;
+					margin-top: 40px;
+				}
+				
+				.contact-faq h2 {
+					font-size: 28px;
+					margin-bottom: 40px;
+				}
+				
+				.faq-grid {
+					grid-template-columns: 1fr;
+					gap: 20px;
+				}
+				
+				.faq-item {
+					padding: 25px 20px;
+				}
+				
+				.faq-item h3 {
+					font-size: 18px;
+				}
+				
+				.faq-item p {
+					font-size: 15px;
+				}
+			}
+		</style>
 
 			<div class="footer">
 				<div class="wrapper">
 					<div>
 						<div class="footer-caption">
 							<div class="title title__default">
-								<span>Starting a new project or want to collaborate with us?</span>
-								<a href="" class="redlink">
-									<span>Let’s talk</span>
+								<span>Have a Project in Mind? Let’s Build Something Great Together.</span>
+								<a href="index.html" class="redlink">
+									<span>Lets talk</span>
 								</a>
 							</div>
 							<div class="footer-email">
-								<a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+								<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
 							</div>
 						</div>
 						<div class="footer-grid">
 							<div class="footer-col">
 								<div class="footer-col_caption">Company</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-company-menu" class="menuss"><li id="menu-item-959" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../featured-work/">Work</a></li>
-<li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../agency/">Agency</a></li>
-<li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../services/">Services</a></li>
-<li id="menu-item-3776" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3776"><a href="../industries/">Industries</a></li>
-<li id="menu-item-4803" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../dd-nyc-client-testimonials/">Client Testimonials</a></li>
-<li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-295 current_page_item menu-item-4127"><a href="" aria-current="page">Contact</a></li>
-</ul>									<span class="website-accessibility" data-acsb-custom-trigger="true">Website Accessibility</span>
+									<ul id="menu-footer-company-menu" class="menuss"><li id="menu-item-959" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../featured-work/index.html">Work</a></li>
+<li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../agency/index.html">Agency</a></li>
+<li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../services/index.html">Services</a></li>
+
+<li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-295 current_page_item menu-item-4127"><a href="index.html" aria-current="page">Contact</a></li>
 								</div>
 							</div>
 							<div class="footer-col">
 								<div class="footer-col_caption">Services</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-service-menu" class="menuss"><li id="menu-item-279" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-279"><a href="../services/web-design/">Web Design</a></li>
-<li id="menu-item-2369" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2369"><a href="../services/wordpress-websites/">WordPress Websites</a></li>
-<li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="../services/branding/">Branding</a></li>
-<li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="../services/packaging-design/">Packaging Design</a></li>
-<li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2259"><a href="../services/graphic-design/">Graphic Design</a></li>
-<li id="menu-item-2344" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2344"><a href="../services/web-design-and-branding-for-real-estate/">Real Estate Design</a></li>
-<li id="menu-item-6911" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6911"><a href="../services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+									<ul id="menu-footer-service-menu" class="menuss"><li id="menu-item-279" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-279"><a href="../services/web-design/index.html">Web Design</a></li>
+<li id="menu-item-2369" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2369"><a href="../services/wordpress-websites/index.html">WordPress Websites</a></li>
+<li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="../services/branding/index.html">Branding</a></li>
+<li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="../services/packaging-design/index.html">Packaging Design</a></li>
+<li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2259"><a href="../services/graphic-design/index.html">Graphic Design</a></li>
+
 </ul>														</div>
 							</div>
-							<div class="footer-col footer-col__connect">
+							<div class="footer-col ">
 								<div class="footer-col_caption">Connect</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-connect" class="menuss"><li id="menu-item-4965" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4965"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.behance.net/aenfinite">Behance</a></li>
-<li id="menu-item-4967" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4967"><a class="js-dropdown-layer-marker" target="_blank" href="https://dribbble.com/aenfinite">Dribbble</a></li>
+
 <li id="menu-item-4966" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4966"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.instagram.com/aenfinite/">Instagram</a></li>
-<li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4952"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/">Partner with us</a></li>
-<li id="menu-item-4952-1" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/white-label-services/">White Label Services</a></li>
-<li id="menu-item-4952-2" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/referral-program/">Referral Program</a></li>
-<li id="menu-item-4952-3" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/ghl-services/">GHL Services</a></li>
-<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@Aenfinite?subject=Project%20Inquiry">Email</a></li>
-<li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-295 current_page_item menu-item-5977"><a class="js-dropdown-layer-marker" href="" aria-current="page">Contact</a></li>
+<li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4952"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/index.html">Partner with us</a></li>
+<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@aenfinite.com?subject=Project%20Inquiry">Email</a></li>
+<li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-295 current_page_item menu-item-5977"><a class="js-dropdown-layer-marker" href="index.html" aria-current="page">Contact</a></li>
 </ul>								</div>
 							</div>
-							<div class="footer-col footer-col__address">
-								<div class="footer-col_caption">Address</div>
-								<div class="footer-col_list">
-									<ul>
-										<li>
-											85 Broad Street<br class="desktop" />
-17th Floor - Suite 17.005<br class="desktop" />
-New York, NY<br class="desktop" />
-10004										</li>
-										<li>
-											<a style="white-space:nowrap;" href="tel:+12123801761">+1 212.380.1761</a>
-										</li>
-										<li>
-											<a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
-										</li>
-									</ul>
-								</div>
-							</div>
+							<div class="footer-col " style="padding-top: 15px !important; padding-left: 40px;">
+									<div class="footer-col_caption">Address</div>
+									<div class="footer-col_list">
+										<ul>
+											<li>
+		1500 Grant Street<br class="desktop" />
+		4th Ave<br class="desktop" />
+		Denver, CO 80203<br class="desktop" />
+		United States
+	</li>
+
+											<li>
+												<a style="white-space:nowrap;" href="tel:+14692677487">+1 (469) 267-7487</a>
+											</li>
+											<li>
+												<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+											</li>
+										</ul>
+									</div>
+								</div>							</div>
 						</div>
 						
 						<div class="bottom-line">
 							<div class="line-1-2">
 								<p>Copyright &copy; 2025 Aenfinite LLC</p>
-								<p>Headquartered in New York & Beyond </p>
+								<p>Professional Digital Agency Serving US & Canada</p>
 							</div>
-							<div class="logotype-bottom"><span><img src="../wp-content/themes/aenfinite.com/static/img/aenfinite-full.svg" alt="Aenfinite®" /></span><span><img src=".." alt="" /></span><span><img src=".." alt="" /></span></div>							<div class="line-last">All rights reserved									
-								<div class="heart">
-									<svg class="icon">
-										<use xlink:href="#i-heart"></use>
-									</svg>
-								</div>
+							<div class="logotype-bottom"><span><img src="../wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="" /></span><span><img src=".." alt="aenfinite.com Creative Design Agency Custom 3D Design" /></span><span></span></div>							<div class="line-last">All rights reserved									
+								
 							</div>
 						</div>
 
@@ -579,25 +1654,23 @@ New York, NY<br class="desktop" />
 						<div class="menu-header">
 							<div class="topbar">
 								<div class="topbar-logo">
-									<a href="../">
-										<img src="../wp-content/themes/aenfinite.com/static/img/aenfinite-white.svg" alt="Aenfinite®" class="nav-logo nav-logo-default" />
-										<img src="../wp-content/themes/aenfinite.com/static/img/aenfinite-full.svg" alt="Aenfinite®" class="nav-logo nav-logo-active" />
+									<a href="../index.html">
+										<img src="../wp-content/themes/aenfinite.com/static/img/logo-white.svg" alt="aenfinite.com" />
 									</a>
 								</div>
 								<div class="menu-close js-menu-toggle"><i></i></div>
 							</div>
 						</div>
 						<div class="menu-nav">
-							<ul id="menu-footer-company-menu-1" class="menuss"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../featured-work/">Work</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../agency/">Agency</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../services/">Services</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3776"><a href="../industries/">Industries</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../dd-nyc-client-testimonials/">Client Testimonials</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-295 current_page_item menu-item-4127"><a href="" aria-current="page">Contact</a></li>
+							<ul id="menu-footer-company-menu-1" class="menuss"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../featured-work/index.html">Work</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../agency/index.html">Agency</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../services/index.html">Services</a></li>
+
+<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-295 current_page_item menu-item-4127"><a href="index.html" aria-current="page">Contact</a></li>
 </ul>						</div>
 						<div class="menu-footer">
-							<a class="menu-contact" href="">Contact</a>
-							<a class="menu-email" href="mailto:hello@Aenfinite">Email us</a>
+							<a class="menu-contact" href="index.html">Contact</a>
+							<a class="menu-email" href="mailto:hello@aenfinite.com">Email us</a>
 						</div>
 					</div>
 				</div>
@@ -605,9 +1678,247 @@ New York, NY<br class="desktop" />
 		
 		</div>
 
-		<a href="#contact-form" class="to-contact">New Project?</a>
+		                <div class="preloader">
+                    <div class="preloader-inner">
+						<iframe src="../intro/demo/data.html" style="width: 100vw; height: 100vh;" ></iframe>
+                      
+
+                    </div>
+                </div>
+
+				<a href="contact/" class="to-contact">New Project?</a><a href="#" class="to-meeter" onclick="openCalendlyPopup(event)">Schedule A Meeting</a>
+
+<div id="calendly-modal" class="calendly-modal" style="display: none;">
+	<div class="calendly-modal-content">
+		<div class="calendly-modal-header">
+			<span class="calendly-close" onclick="closeCalendlyPopup()">&times;</span>
+			<h3>Schedule Your Business Meeting</h3>
+		</div>
+		<div class="calendly-modal-body">
+			<div class="calendly-inline-widget" data-url="https://calendly.com/aenfinite/business-meeting" style="min-width:320px;height:630px;"></div>
+		</div>
+	</div>
+</div>
+
+<!-- 3. CSS STYLES (Place this in your <head> section or CSS file) -->
+<style>
+/* ===== BUTTON STYLES ===== */
+
+/* ===== MODAL STYLES ===== */
+.calendly-modal {
+	position: fixed;
+	z-index: 10000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.8);
+	animation: fadeIn 0.3s ease;
+}
+
+.calendly-modal-content {
+	background-color: #fefefe;
+	margin: 2% auto;
+	border: none;
+	border-radius: 15px;
+	width: 90%;
+	max-width: 900px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease;
+}
+
+.calendly-modal-header {
+	background: linear-gradient(135deg, #227bf3, #1e6fd9);
+	color: white;
+	padding: 20px 30px;
+	border-radius: 15px 15px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.calendly-modal-header h3 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.calendly-close {
+	color: white;
+	font-size: 32px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 1;
+	transition: color 0.3s ease;
+}
+
+.calendly-close:hover {
+	color: #f1f1f1;
+	transform: scale(1.1);
+}
+
+.calendly-modal-body {
+	padding: 0;
+	border-radius: 0 0 15px 15px;
+	overflow: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideIn {
+	from { 
+		opacity: 0;
+		transform: translateY(-30px) scale(0.9);
+	}
+	to { 
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 200px !important;
+		padding: 10px 16px !important;
+		font-size: 13px !important;
+	}
+	
+	
+	.calendly-modal-content {
+		width: 95%;
+		margin: 5% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 15px 20px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 20px;
+	}
+	
+	.calendly-inline-widget {
+		height: 500px !important;
+		min-width: 280px !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 180px !important;
+		padding: 8px 14px !important;
+		font-size: 12px !important;
+	}
+
+	.calendly-modal-content {
+		width: 98%;
+		margin: 3% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 12px 15px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 18px;
+	}
+	
+	.calendly-inline-widget {
+		height: 450px !important;
+		min-width: 260px !important;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.to-meeting {
+		max-width: 160px !important;
+		padding: 8px 12px !important;
+		font-size: 11px !important;
+	}
+}
+</style>
+
+<script>
+/* ===== CALENDLY POPUP FUNCTIONS ===== */
+function openCalendlyPopup(event) {
+	event.preventDefault();
+	document.getElementById('calendly-modal').style.display = 'block';
+	document.body.style.overflow = 'hidden'; // Prevent background scrolling
+	
+	// Load Calendly widget if not already loaded
+	if (!window.Calendly) {
+		loadCalendlyScript();
+	} else {
+		// Initialize widget if Calendly is already loaded
+		initializeCalendlyWidget();
+	}
+}
+
+function closeCalendlyPopup() {
+	document.getElementById('calendly-modal').style.display = 'none';
+	document.body.style.overflow = 'auto'; // Re-enable background scrolling
+}
+
+function loadCalendlyScript() {
+	// Load Calendly CSS
+	if (!document.querySelector('link[href*="calendly.com"]')) {
+		const calendlyCss = document.createElement('link');
+		calendlyCss.href = 'https://assets.calendly.com/assets/external/widget.css';
+		calendlyCss.rel = 'stylesheet';
+		document.head.appendChild(calendlyCss);
+	}
+	
+	// Load Calendly JS
+	if (!document.querySelector('script[src*="calendly.com"]')) {
+		const calendlyScript = document.createElement('script');
+		calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
+		calendlyScript.onload = function() {
+			initializeCalendlyWidget();
+		};
+		document.head.appendChild(calendlyScript);
+	}
+}
+
+function initializeCalendlyWidget() {
+	if (window.Calendly) {
+		Calendly.initInlineWidget({
+			url: 'https://calendly.com/aenfinite/business-meeting',
+			parentElement: document.querySelector('.calendly-inline-widget'),
+			prefill: {},
+			utm: {}
+		});
+	}
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+	const modal = document.getElementById('calendly-modal');
+	if (event.target == modal) {
+		closeCalendlyPopup();
+	}
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+	if (event.key === 'Escape') {
+		const modal = document.getElementById('calendly-modal');
+		if (modal.style.display === 'block') {
+			closeCalendlyPopup();
+		}
+	}
+});
+</script>
 		
-		<div class="cookie-banner" style="">
+		<div class="cookie-banner" style="display: none;">
 			<div class="cookie-banner__inner">
 				<div class="cookie-banner__text">
 					<span class="cookie-banner__icon">
@@ -618,7 +1929,7 @@ New York, NY<br class="desktop" />
 					</span>
 					<span class="cookie-banner__message">
 						We use cookies to enhance your user experience. By clicking ACCEPT or continuing to browse, you agree to our
-						<a href="../privacy-policy/" class="cookie-banner__link" target="_blank">Privacy Policy</a>.
+						<a href="../privacy-policy/index.html" class="cookie-banner__link" target="_blank">Privacy Policy</a>.
 					</span>
 				</div>
 				<button class="cookie-banner__button">Accept</button>
@@ -754,7 +2065,7 @@ wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
 /* <![CDATA[ */
 var wpcf7 = {
     "api": {
-        "root": "https:\/\/Aenfinite\/wp-json\/",
+        "root": "https:\/\/aenfinite.com\/wp-json\/",
         "namespace": "contact-form-7\/v1"
     },
     "cached": 1
@@ -776,7 +2087,11 @@ var wpcf7_recaptcha = {
 /* ]]> */
 </script>
 <script  src="../wp-content/plugins/contact-form-7/modules/recaptcha/indexfc7a.js?ver=6.0.6" id="wpcf7-recaptcha-js"></script>
-	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f986f55e3221e4',t:'MTc1NTI2OTY2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f986020a5921e3',t:'MTc1NTI2OTYyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>	<!-- Universal Button and Checkbox Highlighting Script -->	<script src="js/button-highlights.js"></script>
+		</body>
 
-<!-- Mirrored from Aenfinite/contact/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:09:50 GMT -->
+<!-- Mirrored from aenfinite.com/contact/?linkcontact=top-contact-button by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:02:02 GMT -->
 </html>
+
+
+

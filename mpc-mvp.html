@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPC - Mass Page Creator MVP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+        .mvp-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .step-number {
+            display: inline-block;
+            background: #3182ce;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .csv-input {
+            width: 100%;
+            min-height: 200px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .template-input {
+            width: 100%;
+            min-height: 300px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+        .generate-btn {
+            background: #3182ce;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .generate-btn:hover { background: #2c5282; }
+        .generate-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .output {
+            background: #1a202c;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            margin-top: 20px;
+        }
+        .download-section {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        .download-btn {
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: #edf2f7;
+            border-radius: 8px;
+        }
+        .stat-number { font-size: 1.8rem; font-weight: bold; color: #3182ce; }
+        .example-csv {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 MPC - Mass Page Creator</h1>
+            <p><strong>MVP:</strong> CSV → HTML Pages Engine | Generate thousands of SEO pages in minutes</p>
+        </div>
+
+        <!-- Step 1: CSV Data Input -->
+        <div class="mvp-card">
+            <h2><span class="step-number">1</span><span class="step-title">CSV Data Input</span></h2>
+            <p>Paste your CSV data below. Each row = one page. Use these column headers:</p>
+            
+            <div class="example-csv">
+service,city,state,country,price,description
+Web Design,Los Angeles,California,USA,2500,Custom website design
+SEO Services,New York City,New York,USA,1500,Search engine optimization
+Mobile Apps,Chicago,Illinois,USA,10000,iOS and Android development
+            </div>
+            
+            <textarea 
+                id="csvInput" 
+                class="csv-input" 
+                placeholder="Paste your CSV data here..."
+            >service,city,state,country,price,description
+Web Design,Los Angeles,California,USA,2500,Custom website design that converts
+SEO Services,New York City,New York,USA,1500,Professional SEO to boost rankings
+Mobile Apps,Chicago,Illinois,USA,10000,Native iOS and Android development
+E-commerce,Miami,Florida,USA,7500,Complete online store solutions
+Digital Marketing,Houston,Texas,USA,2000,Full-service digital marketing campaigns</textarea>
+        </div>
+
+        <!-- Step 2: HTML Template -->
+        <div class="mvp-card">
+            <h2><span class="step-number">2</span><span class="step-title">HTML Template</span></h2>
+            <p>HTML template with placeholders. Use <code>{columnName}</code> for dynamic content:</p>
+            
+            <textarea 
+                id="templateInput" 
+                class="template-input"
+            ><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{service} in {city}, {state} - Aenfinite®</title>
+    <meta name="description" content="Professional {service} services in {city}, {state}. {description} Starting at ${price}. Contact Aenfinite for a free quote.">
+    <meta name="keywords" content="{service}, {city}, {state}, web design, development, Aenfinite">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; color: #2d3748; background: #f7fafc; 
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .content { 
+            background: white; padding: 40px; border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        }
+        h1 { font-size: 2.5rem; color: #1a202c; margin-bottom: 20px; }
+        .breadcrumb { color: #718096; margin-bottom: 20px; font-size: 14px; }
+        .breadcrumb a { color: #3182ce; text-decoration: none; }
+        .description { font-size: 1.1rem; margin-bottom: 30px; color: #4a5568; }
+        .pricing { 
+            background: linear-gradient(135deg, #4299e1, #3182ce); 
+            color: white; padding: 25px; border-radius: 10px; text-align: center; margin: 30px 0; 
+        }
+        .cta { 
+            text-align: center; background: #1a202c; color: white; 
+            padding: 30px; border-radius: 10px; margin-top: 30px; 
+        }
+        .cta-btn { 
+            display: inline-block; background: #3182ce; color: white; 
+            padding: 12px 25px; border-radius: 6px; text-decoration: none; 
+            font-weight: 600; margin: 10px; 
+        }
+        .footer { text-align: center; margin-top: 30px; color: #718096; }
+        @media (max-width: 768px) { .content { padding: 25px; } h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <nav class="breadcrumb">
+                <a href="/services">Services</a> > 
+                <a href="/services/{country}">{country}</a> > 
+                <a href="/services/{country}/{state}">{state}</a> > 
+                {city}
+            </nav>
+            
+            <h1>{service} Services in {city}, {state}</h1>
+            
+            <div class="description">
+                <p>Looking for professional <strong>{service}</strong> in {city}, {state}? 
+                Aenfinite delivers exceptional results for {city} businesses.</p>
+                
+                <p>{description} Our team combines local market knowledge with proven expertise 
+                to help your {city} business succeed online.</p>
+                
+                <h3>Why Choose Aenfinite for {service} in {city}?</h3>
+                <ul>
+                    <li>✅ Local {state} expertise with global standards</li>
+                    <li>✅ Proven results for {city} businesses</li>
+                    <li>✅ Custom solutions tailored for your needs</li>
+                    <li>✅ 24/7 support and ongoing maintenance</li>
+                </ul>
+            </div>
+            
+            <div class="pricing">
+                <h2>Investment</h2>
+                <p style="font-size: 1.5rem; margin-top: 10px;">Starting at ${price}</p>
+                <p style="opacity: 0.9;">Custom quotes available based on your requirements</p>
+            </div>
+            
+            <div class="cta">
+                <h2>Ready to Get Started?</h2>
+                <p>Let's discuss your {service} project in {city} and create something amazing.</p>
+                <a href="/contact" class="cta-btn">Get Free Quote</a>
+                <a href="/portfolio" class="cta-btn">View Our Work</a>
+            </div>
+            
+            <div class="footer">
+                <p>Professional {service} services by <strong>Aenfinite®</strong> | Serving {city}, {state}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html></textarea>
+        </div>
+
+        <!-- Step 3: Generate -->
+        <div class="mvp-card">
+            <h2><span class="step-number">3</span><span class="step-title">Generate Pages</span></h2>
+            <button class="generate-btn" onclick="generatePages()">🏗️ Generate HTML Pages</button>
+            
+            <div id="stats" class="stats" style="display: none;">
+                <div class="stat">
+                    <div class="stat-number" id="totalPages">0</div>
+                    <div>Pages Created</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="totalSize">0</div>
+                    <div>Total Size (KB)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="generateTime">0</div>
+                    <div>Generation Time (s)</div>
+                </div>
+            </div>
+            
+            <div id="output" class="output"></div>
+            
+            <div id="downloadSection" class="download-section">
+                <button class="download-btn" onclick="downloadAllPages()">📁 Download All Pages (.zip)</button>
+                <button class="download-btn" onclick="downloadSample()">📄 Download Sample</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let generatedPages = [];
+        
+        function generatePages() {
+            const startTime = performance.now();
+            const csvInput = document.getElementById('csvInput').value.trim();
+            const template = document.getElementById('templateInput').value.trim();
+            const output = document.getElementById('output');
+            
+            if (!csvInput || !template) {
+                alert('Please provide both CSV data and HTML template');
+                return;
+            }
+            
+            // Parse CSV
+            const rows = csvInput.split('\n');
+            const headers = rows[0].split(',').map(h => h.trim());
+            const dataRows = rows.slice(1).filter(row => row.trim());
+            
+            output.style.display = 'block';
+            output.innerHTML = '🚀 Starting page generation...\n\n';
+            
+            generatedPages = [];
+            let totalSize = 0;
+            
+            dataRows.forEach((row, index) => {
+                const values = row.split(',').map(v => v.trim());
+                const data = {};
+                
+                headers.forEach((header, i) => {
+                    data[header] = values[i] || '';
+                });
+                
+                // Generate HTML by replacing placeholders
+                let html = template;
+                headers.forEach(header => {
+                    const placeholder = new RegExp(`{${header}}`, 'g');
+                    html = html.replace(placeholder, data[header]);
+                });
+                
+                // Create filename
+                const service = (data.service || 'service').toLowerCase().replace(/\s+/g, '-');
+                const city = (data.city || 'city').toLowerCase().replace(/\s+/g, '-');
+                const state = (data.state || 'state').toLowerCase().replace(/\s+/g, '-');
+                const filename = `${service}-${city}-${state}.html`;
+                
+                generatedPages.push({
+                    filename: filename,
+                    html: html,
+                    size: new Blob([html]).size,
+                    data: data
+                });
+                
+                totalSize += new Blob([html]).size;
+                
+                output.innerHTML += `✅ ${filename} (${Math.round(new Blob([html]).size / 1024)} KB)\n`;
+                output.scrollTop = output.scrollHeight;
+            });
+            
+            const endTime = performance.now();
+            const generateTime = ((endTime - startTime) / 1000).toFixed(2);
+            
+            // Update stats
+            document.getElementById('totalPages').textContent = generatedPages.length;
+            document.getElementById('totalSize').textContent = Math.round(totalSize / 1024);
+            document.getElementById('generateTime').textContent = generateTime;
+            document.getElementById('stats').style.display = 'grid';
+            document.getElementById('downloadSection').style.display = 'block';
+            
+            output.innerHTML += `\n🎉 Generated ${generatedPages.length} pages in ${generateTime}s\n`;
+            output.innerHTML += `💾 Total size: ${Math.round(totalSize / 1024)} KB\n`;
+        }
+        
+        function downloadAllPages() {
+            if (generatedPages.length === 0) {
+                alert('No pages generated yet');
+                return;
+            }
+            
+            // Create a summary file with all generated pages
+            let summary = `# Generated Pages Summary\n\nTotal Pages: ${generatedPages.length}\n\n`;
+            
+            generatedPages.forEach((page, index) => {
+                summary += `## Page ${index + 1}: ${page.filename}\n`;
+                summary += `Size: ${Math.round(page.size / 1024)} KB\n`;
+                summary += `Service: ${page.data.service}\n`;
+                summary += `Location: ${page.data.city}, ${page.data.state}\n\n`;
+            });
+            
+            downloadFile('pages-summary.txt', summary);
+            
+            // Download first 3 pages as examples
+            generatedPages.slice(0, 3).forEach(page => {
+                downloadFile(page.filename, page.html);
+            });
+            
+            alert(`Downloaded summary + first 3 pages as examples.\n\nTo get all ${generatedPages.length} pages:\n1. Copy the HTML from each page in the output\n2. Or use the Node.js version for bulk export`);
+        }
+        
+        function downloadSample() {
+            if (generatedPages.length > 0) {
+                const sample = generatedPages[0];
+                downloadFile(sample.filename, sample.html);
+            }
+        }
+        
+        function downloadFile(filename, content) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+    </script>
+</body>
+</html>

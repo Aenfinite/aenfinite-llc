@@ -1,22 +1,259 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	
 <!-- Mirrored from aenfinite.com/industries/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:00:40 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
-<head>
+<head><!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			} .header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
 			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 	
 <!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->
-<title>Industry Specializations of aenfinite.com®</title>
+<title>Industry Specializations of aenfinite.com</title>
 <meta name="description" content="Award-winning design agency in Denver. We excel in branding and Aenfinite for diverse industries."/>
 <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
 <link rel="canonical" href="" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Industry Specializations of aenfinite.com®" />
+<meta property="og:title" content="Industry Specializations of aenfinite.com" />
 <meta property="og:description" content="Award-winning design agency in Denver. We excel in branding and Aenfinite for diverse industries." />
 <meta property="og:url" content="https://aenfinite.com/industries/" />
-<meta property="og:site_name" content="aenfinite.com®" />
+<meta property="og:site_name" content="aenfinite.com" />
 <meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
 <meta property="og:updated_time" content="2025-07-21T12:34:05-04:00" />
 <meta property="og:image" content="https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image-768x480.jpg" />
@@ -28,14 +265,14 @@
 <meta property="article:published_time" content="2023-12-09T10:08:07-05:00" />
 <meta property="article:modified_time" content="2025-07-21T12:34:05-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Industry Specializations of aenfinite.com®" />
+<meta name="twitter:title" content="Industry Specializations of aenfinite.com" />
 <meta name="twitter:description" content="Award-winning design agency in Denver. We excel in branding and Aenfinite for diverse industries." />
 <meta name="twitter:site" content="@aenfinite" />
 <meta name="twitter:creator" content="@aenfinite" />
 <meta name="twitter:image" content="https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image-768x480.jpg" />
 <meta name="twitter:label1" content="Time to read" />
 <meta name="twitter:data1" content="Less than a minute" />
-<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"aenfinite.com\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"aenfinite.com\u00ae","alternateName":"aenfinite.com\u00ae - Branding &amp; Web Design Division of DigitalDesign.NYC","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","url":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","width":"8000","height":"5000","caption":"Darkmode","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/industries/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/industries/","name":"Industries"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/industries/#webpage","url":"https://aenfinite.com/industries/","name":"Industry Specializations of aenfinite.com\u00ae","datePublished":"2023-12-09T10:08:07-05:00","dateModified":"2025-07-21T12:34:05-04:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/industries/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/industries/#author","name":"Anjelika aenfinite.com\u00ae","description":"Archives from for aenfinite.com\u00ae (DigitalDesign.NYC)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","caption":"Anjelika aenfinite.com\u00ae","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Industry Specializations of aenfinite.com\u00ae","keywords":"NYC","datePublished":"2023-12-09T10:08:07-05:00","dateModified":"2025-07-21T12:34:05-04:00","author":{"@id":"https://aenfinite.com/industries/#author","name":"Anjelika aenfinite.com\u00ae"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Award-winning design agency in Denver. We excel in branding and Aenfinite for diverse industries.","name":"Industry Specializations of aenfinite.com\u00ae","@id":"https://aenfinite.com/industries/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/industries/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/industries/#webpage"}}]}</script>
+<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"aenfinite.com\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"aenfinite.com\u00ae","alternateName":"aenfinite.com\u00ae - Branding &amp; Web Design Division of Aenfinite.com","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","url":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","width":"8000","height":"5000","caption":"Darkmode","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/industries/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/industries/","name":"Industries"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/industries/#webpage","url":"https://aenfinite.com/industries/","name":"Industry Specializations of aenfinite.com\u00ae","datePublished":"2023-12-09T10:08:07-05:00","dateModified":"2025-07-21T12:34:05-04:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/industries/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/industries/#author","name":"Anjelika aenfinite.com\u00ae","description":"Archives from for aenfinite.com\u00ae (Aenfinite.com)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","caption":"Anjelika aenfinite.com\u00ae","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Industry Specializations of aenfinite.com\u00ae","keywords":"NYC","datePublished":"2023-12-09T10:08:07-05:00","dateModified":"2025-07-21T12:34:05-04:00","author":{"@id":"https://aenfinite.com/industries/#author","name":"Anjelika aenfinite.com\u00ae"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Award-winning design agency in Denver. We excel in branding and Aenfinite for diverse industries.","name":"Industry Specializations of aenfinite.com\u00ae","@id":"https://aenfinite.com/industries/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/industries/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/industries/#webpage"}}]}</script>
 <!-- /Rank Math WordPress SEO plugin -->
 
 <link rel="https://api.w.org/" href="../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../wp-json/wp/v2/pages/3496.json" /><link rel='shortlink' href='../index30e5.html?p=3496' />
@@ -103,7 +340,7 @@
 		<meta name="google-site-verification" content="w5x4RIV--Je9QfyBMKTz_kRMtBGYQ_0e80K3uAykqoc" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<!-- Powered by aenfinite.com® https://aenfinite.com/ -->
+		<!-- Powered by aenfinite.com https://aenfinite.com/ -->
 		<!--              
 				,DDD                 DDD        
 			  DD    DD            DD     DD     
@@ -146,11 +383,165 @@
 		<!-- End Google Tag Manager -->
 
 
-<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by aenfinite.com® with ❤️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
+<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by aenfinite.com with ??', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
 		
 	<script src="../../tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
 		
-	</head>
+
+	<!-- Animated Cursor Implementation -->
+	<style>
+		* {
+			cursor: none !important;
+		}
+		
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
+		
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+	</style>
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.1, 1 - index * 0.05) + ")";
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+		</head>
 	<body class="page-template page-template-page-service-php page-id-3496 document loading body_hide document">
 		
 		<!-- Google Tag Manager (noscript) -->
@@ -182,50 +573,185 @@
 				<div class="topbar">
 					<div class="topbar-nav js-topnav-follow">
 						<div class="topbar-logo js-topnav-follow-item active">
-							<a href="../">
-								<svg width="100%" viewBox="0 0 168 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path d="M29.1857 11.4514C29.1857 13.2067 28.9823 14.7056 28.5755 15.9568C28.1687 17.2081 27.6293 18.256 26.9573 19.1005C26.2852 19.9449 25.5247 20.617 24.6803 21.121C23.8358 21.6251 22.9648 22.0097 22.0672 22.275C21.1697 22.5447 20.2854 22.7127 19.4232 22.7879C18.5566 22.8631 17.7829 22.8984 17.0976 22.8984H0V0H17.0931C17.7785 0 18.5522 0.0353712 19.4188 0.110535C20.2854 0.185699 21.1652 0.358133 22.0628 0.623418C22.9603 0.893123 23.8314 1.27778 24.6758 1.7774C25.5203 2.28144 26.2808 2.9535 26.9529 3.79798C27.6249 4.64247 28.1643 5.69034 28.5711 6.9416C28.9779 8.19286 29.1812 9.69613 29.1812 11.447L29.1857 11.4514ZM18.76 17.1595C19.5735 17.1595 20.2368 17.0003 20.7496 16.6775C21.2625 16.3548 21.6693 15.9303 21.9699 15.3953C22.2706 14.8603 22.4784 14.2502 22.5934 13.5693C22.7127 12.884 22.7702 12.181 22.7702 11.4514C22.7702 10.7219 22.7127 10.0189 22.5934 9.33358C22.474 8.64826 22.2662 8.04695 21.9699 7.5208C21.6693 6.99908 21.2625 6.57462 20.7496 6.25186C20.2368 5.9291 19.5735 5.76993 18.76 5.76993H6.09269V17.155H18.76V17.1595Z" fill="currentColor" />
-									<path d="M60.1344 11.4514C60.1344 13.2067 59.931 14.7056 59.5242 15.9568C59.1175 17.2081 58.578 18.256 57.906 19.1005C57.2339 19.9449 56.4734 20.617 55.629 21.121C54.7845 21.6251 53.9135 22.0097 53.0159 22.275C52.1184 22.5447 51.2341 22.7127 50.3719 22.7879C49.5053 22.8631 48.7316 22.8984 48.0463 22.8984H30.9531V0H48.0463C48.7316 0 49.5053 0.0353712 50.3719 0.110535C51.2385 0.185699 52.1184 0.358133 53.0159 0.623418C53.9135 0.893123 54.7845 1.27778 55.629 1.7774C56.4734 2.28144 57.2339 2.9535 57.906 3.79798C58.578 4.64247 59.1175 5.69034 59.5242 6.9416C59.931 8.19286 60.1344 9.69613 60.1344 11.447V11.4514ZM49.7087 17.1595C50.5222 17.1595 51.1855 17.0003 51.6983 16.6775C52.2112 16.3548 52.618 15.9303 52.9186 15.3953C53.2193 14.8603 53.4271 14.2502 53.5421 13.5693C53.6614 12.884 53.7189 12.181 53.7189 11.4514C53.7189 10.7219 53.6614 10.0189 53.5421 9.33358C53.4227 8.64826 53.2149 8.04695 52.9186 7.5208C52.618 6.99908 52.2112 6.57462 51.6983 6.25186C51.1855 5.9291 50.5222 5.76993 49.7087 5.76993H37.0414V17.155H49.7087V17.1595Z" fill="currentColor" />
-									<path d="M105.782 0H111.844V22.8984H102.864L88.7512 6.57462V22.8984H82.6895V0H91.6693L105.782 16.3238V0Z" fill="currentColor" />
-									<path d="M141.029 0L129.387 14.5597V22.8984H123.326V14.5597L111.68 0H119.475L126.337 9.36453L133.234 0H141.029Z" fill="currentColor" />
-									<path d="M149.367 5.77476C148.554 5.77476 147.89 5.93393 147.377 6.25669C146.865 6.57945 146.458 6.99949 146.157 7.52563C145.856 8.05178 145.649 8.65309 145.534 9.33841C145.414 10.0237 145.357 10.7267 145.357 11.4563C145.357 12.1858 145.414 12.8888 145.534 13.5741C145.653 14.2594 145.861 14.8696 146.157 15.4001C146.458 15.9351 146.865 16.364 147.377 16.6824C147.89 17.0007 148.554 17.1643 149.367 17.1643H157.706C158.926 17.1643 159.81 16.8636 160.368 16.2667C160.925 15.6699 161.318 14.759 161.552 13.5387H167.999C167.826 14.9713 167.504 16.196 167.022 17.2129C166.54 18.2298 165.965 19.0832 165.289 19.7773C164.616 20.4715 163.878 21.0242 163.073 21.4309C162.273 21.8377 161.455 22.1516 160.62 22.3771C159.784 22.6026 158.975 22.7441 158.183 22.8104C157.392 22.8723 156.676 22.9077 156.035 22.9077H151.03C150.344 22.9077 149.57 22.8723 148.704 22.7972C147.837 22.722 146.957 22.5496 146.06 22.2843C145.162 22.019 144.291 21.6343 143.447 21.1303C142.602 20.6262 141.842 19.9542 141.17 19.1097C140.498 18.2652 139.954 17.2173 139.552 15.9661C139.145 14.7148 138.941 13.2116 138.941 11.4607C138.941 9.7098 139.145 8.20653 139.552 6.95527C139.958 5.70401 140.498 4.65614 141.17 3.81166C141.842 2.96717 142.602 2.29511 143.447 1.79108C144.291 1.28704 145.162 0.902374 146.06 0.637089C146.957 0.371805 147.842 0.199371 148.704 0.124207C149.57 0.0490431 150.344 0.0136719 151.03 0.0136719H156.035C156.676 0.0136719 157.392 0.0446217 158.183 0.110943C158.975 0.177264 159.788 0.318749 160.62 0.54424C161.455 0.769731 162.273 1.08365 163.073 1.49042C163.874 1.89719 164.612 2.44986 165.289 3.14402C165.965 3.83818 166.54 4.69594 167.022 5.70844C167.504 6.72094 167.826 7.95009 167.999 9.38262H161.552C161.402 8.27285 161.026 7.39299 160.429 6.75189C159.833 6.11078 158.922 5.78802 157.701 5.78802H149.363L149.367 5.77476Z" fill="currentColor" />
-									<path d="M66.438 22.8739L70.9807 27.4165L80.4443 17.9529L75.9016 13.4102L66.438 22.8739Z" fill="#227bf3" />
-									<path d="M65.9997 13.4707L61.457 18.0134L70.9207 27.477L75.4633 22.9343L65.9997 13.4707Z" fill="#227bf3" />
-								</svg>
+							<a href="">
+								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
+								<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
 							</a>
 						</div>
 						<ul class="topnav desktop">
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="../featured-work/">Work</a>
+								<a href="/featured-work/">Work</a>
 							</li>
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="../agency/">Agency</a>
+								<a href="/agency">Agency</a>
 							</li>
-							<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-								<a href="../services/">Services</a>
-								<ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list"><li id="menu-item-2275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2275"><a href="../services/web-design/">Web Design</a></li>
-<li id="menu-item-2276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2276"><a href="../services/branding/">Branding</a></li>
-<li id="menu-item-6909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6909"><a href="../services/trade-show-booth-design/">Trade Shows</a></li>
-<li id="menu-item-2277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2277"><a href="../services/packaging-design/">Packaging Design</a></li>
-</ul>	
-							</li>
-							<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-								<a href="">Industries</a>
-								<ul id="menu-header-industries-menu" class="dropdown-list js-dropdown-list"><li id="menu-item-3774" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3774"><a href="../services/real-estate/">Real Estate</a></li>
-<li id="menu-item-7019" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7019"><a href="../services/healthcare-industry/">Healthcare</a></li>
-<li id="menu-item-3771" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3771"><a href="../services/financial-industry/">Finance &#038; Tech</a></li>
-<li id="menu-item-3772" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3772"><a href="../services/industrial-sector/">Industrial</a></li>
-<li id="menu-item-6731" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6731"><a href="../services/manufacturing-industry/">Manufacturing</a></li>
-</ul>	
-							</li>
-						</ul>
+							                            <li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
+                                <a href="/services/">Services</a>
+                                <ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Development Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/wordpress-websites/">WordPress Websites</a></li>
+<li><a href="/services/e-commerce-websites/">E-Commerce Websites</a></li>
+											<li><a href="/services/custom-web-development">Custom Web Development</a></li>
+											<li><a href="/services/software-&-platform-development/">Software & Platform Development</a></li>
+											<li><a href="/services/app-development/">App Development</a></li>
+											<li><a href="/services/web-design/">Website Design & Development</a></li>
+											<li><a href="/services/web-design-and-branding-for-real-estate/">Real Estate Web Solutions</a></li>                                      </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Design & Creative Services ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ui-ux-design/">UI/UX Design</a></li>
+
+                                            <li><a href="/services/branding/">Brand Identity & Strategy</a></li>
+                                            <li><a href="/services/graphic-design/">Graphic Design</a></li>
+                                            <li><a href="/services/motion-graphics/">Motion Graphics</a></li>
+                                            <li><a href="/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+                                            <li><a href="/services/conference-branding/">Conference Branding</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Marketing & Digital Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/digital-marketing/">Digital Marketing Strategy</a></li>
+                                            <li><a href="/services/search-engine-optimization/">Search Engine Optimization (SEO)</a></li>
+                                            <li><a href="/services/pay-per-click">Pay-Per-Click (PPC) Advertising</a></li>
+                                            <li><a href="/services/social-media-marketing/">Social Media Marketing</a></li>
+                                            <li><a href="/services/paid-ads/">Paid Advertising</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">AI & Technology Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ai-chatbots-&-virtual-assistants/">AI Chatbots & Virtual Assistants</a></li>
+                                            <li><a href="/services/workflow-&-business-automation/">Workflow & Business Automation</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li><style>/* Multi-Level Dropdown Navigation Styles - Partner With Us Style */
+.menu-item-has-children {
+    position: relative;
+}
+
+/* Main dropdown from Services menu - adaptive styling */
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Sub-menus - adaptive styling based on navbar state */
+.sub-menu {
+    position: absolute;
+    top: -5px;
+    left: 100%;
+    margin-left: 1px;
+    min-width: 250px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    z-index: 1001;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Default dropdown styling - no background, dark text (for top of page) */
+.dropdown-list a,
+.sub-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.dropdown-list a:hover,
+.sub-menu a:hover {
+    color: #007cba;
+    padding-left: 15px;
+}
+
+/* When navbar is active/scrolled - black background, white text */
+.mainnav.active .dropdown-list,
+.mainnav.active .sub-menu {
+    margin-top: 10px;
+    background: #000;
+}
+
+.mainnav.active .dropdown-list a,
+.mainnav.active .sub-menu a {
+    color: #fff;
+}
+
+.mainnav.active .dropdown-list a:hover,
+.mainnav.active .sub-menu a:hover {
+    color: #007cba;
+}
+
+/* When hovering over menu item with children, expand main dropdown to match sub-menu */
+.menu-item-has-children:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Expand main dropdown when sub-menu is hovered */
+.menu-item-has-children:hover {
+    min-width: 250px;
+}
+
+.dropdown-list:has(.menu-item-has-children:hover) {
+    min-width: 250px;
+    width: 250px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sub-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 3px solid #007cba;
+        margin-left: 15px;
+        background: #f9f9f9;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .menu-item-has-children.active > .sub-menu {
+        max-height: 500px;
+    }
+}</style>						</ul>
 						<div class="topnav-follower desktop js-topnav-follow-bar"></div>
 					</div>
 					<div class="topbar-social desktop">
-						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/">Partner with us</a></li>
+						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="/agency/partner-with-us/">Partner with us</a></li>
 </ul>					</div>
 					<div class="topbar-contact desktop">
-						<a href="../contact/index57fd.html?linkcontact=top-contact-button" class="topbar-contact_button">Contact</a>
+						<a href="/contact/" class="topbar-contact_button">Contact</a>
 					</div>
 					<div class="menu-button mobile js-menu-toggle"><i></i></div>
 				</div>
@@ -238,8 +764,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 		
 		<div class="container">
 		
@@ -258,14 +783,14 @@
 					<line x1="100%" y1="0" x2="0" y2="100%" vector-effect="non-scaling-stroke"></line>
 				</g>
 			</svg>
-			<span class="header-cross_text">Innovating in your industry</span>
+			<span class="header-cross_text">Redefine Infinite Possibilities</span>
 		</div>
 		<div class="header-wrapper">
 			<div class="header-caption">
 				<div class="title title__main js-header-title">
 					<h1>
 						<span>Industry Specializations</span>
-													<span> of aenfinite.com® Design</span>	
+													<span> of aenfinite.com Design</span>	
 											</h1>
 									</div>
 			</div>
@@ -288,90 +813,12 @@
 
 		</div>
 
-		                <div class="preloader">
+		            <div class="preloader">
                     <div class="preloader-inner">
-                        <div class="preloader-logo">
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 143.2 147" style="enable-background:new 0 0 143.2 147;" xml:space="preserve">
-                                    <path d="M140.2,34.8c-2-6.3-4.7-11.5-8.1-15.7c-3.4-4.2-7.2-7.6-11.4-10.1c-4.2-2.5-8.6-4.4-13.1-5.8c-4.5-1.3-8.9-2.2-13.2-2.6
-	S86.1,0,82.7,0H0v114.6h25.1v0.1h57.7c3.4,0,7.3-0.2,11.6-0.6s8.7-1.2,13.2-2.6c4.5-1.3,8.9-3.3,13.1-5.8c4.2-2.5,8-5.9,11.4-10.1
-	c3.4-4.2,6.1-9.5,8.1-15.7c2-6.3,3-13.8,3-22.5v-0.1C143.2,48.6,142.2,41.1,140.2,34.8z M113.5,64.2c-1.2,10.8-9.8,21.8-21.8,21.8
-	h-63V28.7h63c12,0,20.6,11,21.8,21.8c0.3,2.3,0.5,4.4,0.5,6.9C113.9,59.8,113.8,61.9,113.5,64.2z" />
-                                </svg>
-                            </div>
-                            <div class="logo-cut">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 607.6 147" style="enable-background:new 0 0 607.6 147;" xml:space="preserve">
+						<iframe src="/intro/demo/data.html" style="width: 100vw; height: 100vh;" ></iframe>
+                      
 
-                                    <path d="M49.8,114.6V0h-3.6H21.1v114.5h25.1v0.1H49.8z" />
-                                    <path d="M249.5,114.6V0h-3.6h-25.1v114.5h25.1v0.1H249.5z" />
-                                    <path d="M438.8,0L493,114.6h-32l-11-24.9h-57.2l-11,24.9h-32L404.1,0H438.8z M437.9,62.6l-16.4-37.4l-16.6,37.4H437.9z" />
-                                    <path d="M332.1,0h-3.6h-25.1h-43v3.6v25.1h43v85.9h25.1v0.1h3.6v-86H375V3.6h0.1V0H332.1z" />
-                                    <path d="M521.6,86V0H518h-25v86v3.6v25v0.1h25h3.6h85.9V89.6h0.1V86H521.6z" />
-                                    <path d="M123.1,54.8v20.1h52.1c-0.7,3.5-2.6,6.5-5.6,9c-3,2.4-6.9,3.6-11.6,3.6h-46.1c-12,0-20.6-12.5-21.8-23.3
-	c-0.3-2.3-0.5-4.4-0.5-6.9c0-2.4,0.2-4.6,0.5-6.9c1.2-10.8,9.8-21.8,21.8-21.8h42.3c10.8,0,19.8,7.9,21.5,18.2h30
-	c-0.9-7.2-2.5-13.3-4.9-18.4c-2.4-5.1-5.3-9.4-8.7-12.8c-3.4-3.5-7.1-6.2-11.1-8.3c-4-2-8.1-3.6-12.3-4.7c-4.2-1.1-8.2-1.8-12.2-2.2
-	c-4-0.3-7.5-0.5-10.7-0.5h-25c-3.4,0-7.3,0.2-11.6,0.6C104.9,1,100.5,1.8,96,3.2c-4.5,1.3-8.9,3.3-13.1,5.8
-	c-4.2,2.5-8,5.9-11.4,10.1c-3.4,4.2-6.1,9.5-8.1,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5c2,6.3,4.7,11.5,8.1,15.7
-	c3.4,4.2,7.2,7.6,11.4,10.1c4.2,2.5,8.6,4.4,13.1,5.8c4.5,1.3,8.9,2.2,13.2,2.6c4.3,0.4,8.2,0.6,11.6,0.6h25.5
-	c2.4,0,5.1-0.1,7.9-0.3c2.8-0.2,5.8-0.6,8.9-1.1c3.1-0.6,6.2-1.3,9.3-2.3c3.1-1,6.2-2.4,9.1-4.1l3.5,7.9h20.7V54.8H123.1L123.1,54.8
-	z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 143.2 147" style="enable-background:new 0 0 143.2 147;" xml:space="preserve">
-                                    <path d="M140.2,34.8c-2-6.3-4.7-11.5-8.1-15.7c-3.4-4.2-7.2-7.6-11.4-10.1c-4.2-2.5-8.6-4.4-13.1-5.8c-4.5-1.3-8.9-2.2-13.2-2.6
-	S86.1,0,82.7,0H0v114.6h25.1v0.1h57.7c3.4,0,7.3-0.2,11.6-0.6s8.7-1.2,13.2-2.6c4.5-1.3,8.9-3.3,13.1-5.8c4.2-2.5,8-5.9,11.4-10.1
-	c3.4-4.2,6.1-9.5,8.1-15.7c2-6.3,3-13.8,3-22.5v-0.1C143.2,48.6,142.2,41.1,140.2,34.8z M113.5,64.2c-1.2,10.8-9.8,21.8-21.8,21.8
-	h-63V28.7h63c12,0,20.6,11,21.8,21.8c0.3,2.3,0.5,4.4,0.5,6.9C113.9,59.8,113.8,61.9,113.5,64.2z" />
-                                </svg>
-                            </div>
-                            <div class="logo-cut">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 607.6 147" style="enable-background:new 0 0 607.6 147;" xml:space="preserve">
-                                    <path d="M164.2,35.4c0,2.4,1.4,4.1,4.1,5.1c2.8,1.1,6.4,1.8,10.9,2.2c4.5,0.4,9.6,0.7,15.3,0.8c5.7,0.1,11.6,0.4,17.7,0.9
-	c6,0.5,12,1.3,17.7,2.5c5.7,1.2,10.9,3.1,15.3,5.7c4.5,2.6,8.1,6.1,10.9,10.4c2.7,4.3,4.1,9.8,4.1,16.5c0,2.1-0.2,4.5-0.6,7.1
-	c-0.4,2.6-1.2,5.2-2.4,7.8c-1.2,2.6-3,5.2-5.4,7.6c-2.3,2.5-5.5,4.6-9.4,6.5c-3.9,1.9-8.7,3.4-14.5,4.5c-5.7,1.1-12.6,1.7-20.5,1.7
-	h-20c-7.9,0-14.8-0.7-20.5-2.1c-5.7-1.4-10.6-3.2-14.5-5.4c-3.9-2.2-7-4.7-9.4-7.6c-2.3-2.9-4.2-5.8-5.4-8.8
-	c-1.2-2.9-2.1-5.8-2.4-8.7c-0.4-2.8-0.5-5.3-0.5-7.5h29.6c0,0.9,0.2,1.9,0.6,3.2s1.1,2.5,2.1,3.7c1,1.2,2.6,2.2,4.6,3.1
-	c2,0.9,4.7,1.3,7.9,1.3h40.7c4.2,0,7-0.6,8.4-1.9c1.4-1.3,2.1-2.8,2.1-4.5c0-2.6-1.4-4.4-4.1-5.6c-2.8-1.2-6.4-2-10.9-2.4
-	c-4.5-0.4-9.6-0.7-15.4-0.7c-5.8-0.1-11.7-0.3-17.7-0.8c-6-0.5-11.9-1.3-17.7-2.4c-5.8-1.1-10.9-2.9-15.4-5.5
-	c-4.5-2.5-8.1-5.9-10.9-10.2c-2.7-4.3-4.1-9.8-4.1-16.5c0-3.3,0.5-7,1.5-11.1c1-4.1,3.3-7.9,6.9-11.5c3.6-3.6,8.9-6.6,16-9.1
-	c7-2.5,16.6-3.7,28.6-3.7h19.9c8,0,14.9,0.7,20.7,2.1c5.7,1.4,10.6,3.2,14.5,5.5c3.9,2.2,7,4.8,9.4,7.6c2.3,2.8,4.2,5.8,5.4,8.8
-	c1.2,3,2.1,5.9,2.4,8.7c0.4,2.8,0.5,5.3,0.5,7.5h-29.8c0-0.9-0.2-1.9-0.5-3.2c-0.3-1.3-1-2.5-2.1-3.7c-1.1-1.2-2.6-2.2-4.6-3.1
-	c-2-0.9-4.6-1.3-8-1.3h-40.7c-4.3,0-7.1,0.6-8.4,1.8C164.9,32,164.2,33.5,164.2,35.4L164.2,35.4z" />
-                                    <path d="M579.7,28.7v28.6V86L509.9,0.1h-13.9h-14H468v28.6v28.6V86v28.6h27.9V86V57.3V28.7l69.8,85.9h13.9h14h13.9V86V57.3V28.7V0.1
-	h-27.9V28.7z" />
-                                    <path d="M119.8,68.4V49.1h0.1v-2.8h-92V28.7h91.9V3.6h0.1V0h-92h-3.5H0v3.6v25.1V86v3.6v25v0.1h119.8v-25h0.1V86h-92V68.4H119.8z" />
-                                    <path d="M300.9,114.7V0.1h-3.5H273v114.5h24.4v0.1H300.9z" />
-                                    <path d="M374.7,54.8v20.1h50.8c-0.7,3.5-2.5,6.5-5.4,9c-2.9,2.4-6.7,3.6-11.3,3.6h-44.9c-11.7,0-20.1-12.5-21.3-23.3
-	c-0.3-2.3-0.4-4.4-0.4-6.9c0-2.4,0.2-4.6,0.4-6.9c1.2-10.8,9.5-21.8,21.3-21.8h41.2c10.6,0,19.3,7.9,21,18.2h29.3
-	c-0.8-7.2-2.4-13.3-4.8-18.4c-2.3-5.1-5.2-9.4-8.5-12.8c-3.3-3.5-6.9-6.2-10.8-8.3c-3.9-2-7.9-3.6-12-4.7c-4.1-1.1-8-1.8-11.9-2.2
-	c-3.9-0.3-7.4-0.5-10.5-0.5h-24.4c-3.3,0-7.1,0.2-11.3,0.6c-4.2,0.4-8.5,1.2-12.9,2.6c-4.4,1.3-8.6,3.3-12.7,5.8
-	c-4.1,2.5-7.8,5.9-11.1,10.1c-3.3,4.2-5.9,9.5-7.9,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5c2,6.3,4.6,11.5,7.9,15.7
-	c3.3,4.2,7,7.6,11.1,10.1c4.1,2.5,8.4,4.4,12.7,5.8c4.4,1.3,8.7,2.2,12.9,2.6c4.2,0.4,8,0.6,11.3,0.6h24.8c2.4,0,4.9-0.1,7.7-0.3
-	c2.8-0.2,5.7-0.6,8.7-1.1c3-0.6,6-1.3,9.1-2.3c3.1-1,6-2.4,8.9-4.1l3.4,7.9h20.2V54.8H374.7L374.7,54.8z" />
-                                </svg>
-
-                            </div>
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 508.3 147" style="enable-background:new 0 0 508.3 147;" xml:space="preserve">
-
-                                    <path d="M205.4,28.7v28.6V86L133.8,0.1h-14.3h-14.3H90.8v28.6v28.6V86v28.6h28.6V86V57.3V28.7l71.6,85.9h14.3h14.3H234V86V57.3V28.7
-	V0.1h-28.6V28.7z" />
-                                    <path d="M377.2,0.1h-35.8l-35.8,43l-35.8-43H234l57.3,68.7V86v28.6H320V86V68.8L377.2,0.1z" />
-                                    <path d="M456.7,86.1h-42.3c-12,0-20.6-11-21.8-21.8c-0.3-2.3-0.5-4.4-0.5-6.9c0-2.4,0.2-4.6,0.5-6.9c1.2-10.8,9.8-21.8,21.8-21.8
-	h42.3c10.8,0,19.8,7.9,21.5,18.2h30c-0.9-7.2-2.5-13.3-4.9-18.4c-2.4-5.1-5.3-9.4-8.7-12.8c-3.4-3.5-7.1-6.2-11.1-8.3
-	c-4-2-8.1-3.6-12.3-4.7c-4.2-1.1-8.2-1.8-12.2-2.2s-7.5-0.5-10.7-0.5h-25c-3.4,0-7.3,0.2-11.6,0.6c-4.3,0.4-8.7,1.2-13.2,2.6
-	c-4.5,1.3-8.9,3.3-13.1,5.8c-4.2,2.5-8,5.9-11.4,10.1c-3.4,4.2-6.1,9.5-8.1,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5
-	c2,6.3,4.7,11.5,8.1,15.7c3.4,4.2,7.2,7.6,11.4,10.1c4.2,2.5,8.6,4.4,13.1,5.8c4.5,1.3,8.9,2.2,13.2,2.6c4.3,0.4,8.2,0.6,11.6,0.6
-	h25c3.2,0,6.8-0.2,10.7-0.5c4-0.3,8-1,12.2-2.2c4.2-1.1,8.2-2.7,12.3-4.7c4-2,7.7-4.8,11.1-8.3c3.4-3.5,6.3-7.8,8.7-12.8
-	s4-11.2,4.9-18.4h-30C476.5,78.2,467.5,86.1,456.7,86.1L456.7,86.1z" />
-                                    <path fill="#227bf3" d="M20.2,126.5l20.3,20.2l20.3-20.2L81,106.2L60.8,86l-20.3,20.3L20.2,86L0,106.2L20.2,126.5z" />
-                                </svg>
-                            </div>
-                        </div>
                     </div>
-                </div>
 	</div>
 </div>		
 			<a class="fab js-fab" href="#contact">
@@ -400,12 +847,19 @@
                 <div class="header-marquee runner js-runner">
                     <div class="js-runner-content">
 													<div class="marquee-line">
-																	<span class="marquee-line_text">Best-rated UI/UX design company</span>
-																	<span class="marquee-line_text">5-star Clutch Rating</span>
-																	<span class="marquee-line_text">Top Systems - Figma, Adobe, Geometry, Texture</span>
-																	<span class="marquee-line_text">AGILE Process</span>
-																	<span class="marquee-line_text">WBE Certified in Denver</span>
-															</div>
+    <span class="marquee-line_text">Innovative Design & Development Agency</span>
+    <span class="marquee-line_text">Custom Websites, Apps & Brand Experiences</span>
+    <span class="marquee-line_text">Serving Clients Across the US, Canada & Beyond</span>
+    <span class="marquee-line_text">Experts in UI/UX, SEO & Growth Marketing</span>
+    <span class="marquee-line_text">Trusted by Startups & Global Enterprises</span>
+    <span class="marquee-line_text">Skilled Team – React, WordPress, Firebase, Figma</span>
+    <span class="marquee-line_text">Agile & Data-Driven Development Process</span>
+    <span class="marquee-line_text">Global Agency with Southeast Asian Roots</span>
+    <span class="marquee-line_text">Empowering Businesses with Scalable Solutions</span>
+    <span class="marquee-line_text">Tailor-Made Strategies for Every Industry</span>
+    <span class="marquee-line_text">Web, Mobile, and SaaS Development Experts</span>
+    <span class="marquee-line_text">Results-Driven Digital Marketing Solutions</span>
+</div>
 						                    </div>
                 </div>
             </div>
@@ -413,7 +867,7 @@
 				<div class="section">
 		<div class="wrapper">
 			<div class="textbox appear js-aos">
-				<div class="textbox-content">aenfinite.com® brings a comprehensive array of industry expertise, meticulously tailored to address the distinct needs of your business.</div>
+				<div class="textbox-content">aenfinite.com brings a comprehensive array of industry expertise, meticulously tailored to address the distinct needs of your business.</div>
 									<div class="textbox-action">
 						<a href="../work/" class="redlink">
 							<span>See our work</span>
@@ -427,7 +881,7 @@
 			<div class="inner-wrapper">
 				<div class="section-caption js-aos">
 					<div class="section-caption_text">
-						<h2>aenfinite.com® Industry Expertise</h2>
+						<h2>aenfinite.com Industry Expertise</h2>
 					</div>
 				</div>
 				<div class="service-grid">
@@ -459,7 +913,7 @@
 																							</div>
 										</div>
 										<div class="service-text">
-											<p>Whatever your real estate aspirations, aenfinite.com® is your strategic partner, delivering specialized expertise that aligns with the unique requirements of the real estate industry. Trust us to amplify your brand, streamline your processes, and drive success in the ever-evolving real estate landscape.</p>
+											<p>Whatever your real estate aspirations, aenfinite.com is your strategic partner, delivering specialized expertise that aligns with the unique requirements of the real estate industry. Trust us to amplify your brand, streamline your processes, and drive success in the ever-evolving real estate landscape.</p>
 										</div>
 																					<div class="service-action">
 												<a href="../services/real-estate/" class="redlink">
@@ -517,7 +971,7 @@
 																							</div>
 										</div>
 										<div class="service-text">
-											<p>aenfinite.com® leads in financial design innovation, crafting intricate narratives and captivating visuals that redefine the intersection of numbers and aesthetics.</p>
+											<p>aenfinite.com leads in financial design innovation, crafting intricate narratives and captivating visuals that redefine the intersection of numbers and aesthetics.</p>
 										</div>
 																					<div class="service-action">
 												<a href="../services/financial-industry/" class="redlink">
@@ -543,7 +997,7 @@
 																							</div>
 										</div>
 										<div class="service-text">
-											<p>aenfinite.com® Design Agency: Your premier partner for transformative industrial sector corporate design, seamlessly blending innovation with functionality to elevate your brand to new heights.</p>
+											<p>aenfinite.com Design Agency: Your premier partner for transformative industrial sector corporate design, seamlessly blending innovation with functionality to elevate your brand to new heights.</p>
 										</div>
 																					<div class="service-action">
 												<a href="../services/industrial-sector-industry/" class="redlink">
@@ -566,7 +1020,7 @@
 	<div class="block formss">
 		<div class="center">
 			<div class="formss-wrap">
-				<h2>Start Your Project with aenfinite.com®</h2>
+				<h2>Start Your Project with aenfinite.com</h2>
 				<div class="toggle-formss">
 					
 <div class="wpcf7 no-js" id="wpcf7-f1252-o1" lang="en-US" dir="ltr" data-wpcf7-id="1252">
@@ -583,14 +1037,14 @@
 </div>
 <div class="cell">
 	<div class="inputs">
-		<span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap" data-name="your-email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" /></span><span class="wpcf7-form-control-wrap" data-name="text-tell-project"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" autocomplete="on" aria-invalid="false" placeholder="Tell us about your project…" value="" type="text" name="text-tell-project" /></span>
+		<span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap" data-name="your-email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" /></span><span class="wpcf7-form-control-wrap" data-name="text-tell-project"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" autocomplete="on" aria-invalid="false" placeholder="Tell us about your project" value="" type="text" name="text-tell-project" /></span>
 		
 	</div>
 	<div class="checkbox-select">
-		<strong>I'm interested in...</strong><span class="wpcf7-form-control-wrap" data-name="checkbox-select"><span class="wpcf7-form-control wpcf7-checkbox"><span class="wpcf7-list-item first"><input type="checkbox" name="checkbox-select[]" value="Branding" /><span class="wpcf7-list-item-label">Branding</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Web Design" /><span class="wpcf7-list-item-label">Web Design</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Packaging" /><span class="wpcf7-list-item-label">Packaging</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Graphic Design" /><span class="wpcf7-list-item-label">Graphic Design</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="UI/UX" /><span class="wpcf7-list-item-label">UI/UX</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Video Production" /><span class="wpcf7-list-item-label">Video Production</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Experiential" /><span class="wpcf7-list-item-label">Experiential</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Brand Assets" /><span class="wpcf7-list-item-label">Brand Assets</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Decks" /><span class="wpcf7-list-item-label">Decks</span></span><span class="wpcf7-list-item last"><input type="checkbox" name="checkbox-select[]" value="Other" /><span class="wpcf7-list-item-label">Other</span></span></span></span>
+		<strong>I'm interested in...</strong><span class="form-control-wrap" data-name="checkbox-select"><span class="form-control checkbox-group"><span class="list-item first"><input type="checkbox" name="services" value="Branding" id="branding" /><label for="branding" class="list-item-label">Branding</label></span><span class="list-item"><input type="checkbox" name="services" value="Web Design" id="web-design" /><label for="web-design" class="list-item-label">Web Design</label></span><span class="list-item"><input type="checkbox" name="services" value="Digital Marketing" id="digital-marketing" /><label for="digital-marketing" class="list-item-label">Digital Marketing</label></span><span class="list-item"><input type="checkbox" name="services" value="E-Commerce Solutions" id="ecommerce-solutions" /><label for="ecommerce-solutions" class="list-item-label">E-Commerce Solutions</label></span><span class="list-item"><input type="checkbox" name="services" value="UI/UX Design" id="ui-ux-design" /><label for="ui-ux-design" class="list-item-label">UI/UX Design</label></span><span class="list-item"><input type="checkbox" name="services" value="App Development" id="app-development" /><label for="app-development" class="list-item-label">App Development</label></span><span class="list-item"><input type="checkbox" name="services" value="Packaging" id="packaging" /><label for="packaging" class="list-item-label">Packaging</label></span><span class="list-item"><input type="checkbox" name="services" value="Graphic Design" id="graphic-design" /><label for="graphic-design" class="list-item-label">Graphic Design</label></span><span class="list-item"><input type="checkbox" name="services" value="WordPress Websites" id="wordpress-websites" /><label for="wordpress-websites" class="list-item-label">WordPress Websites</label></span><span class="list-item last"><input type="checkbox" name="services" value="Other" id="other" /><label for="other" class="list-item-label">Other</label></span></span></span>
 		
 		<div class="selectbox js-select">
-			<input class="selectbox-input js-select-holder" type="text" placeholder="Tell us your approximate budget" value="" readonly />
+			<input class="selectbox-input js-select-holder" type="text" placeholder="Tell us your approximate budget" value="" readonly name="budget" />
 			
 			<div class="selectbox-suffix">
 				<svg width="18" height="10" viewBox="0 0 18 10"><path d="M1 1L9 9L17 1" stroke="#CCC" fill="none"></path></svg>
@@ -617,8 +1071,7 @@
 					over $100,000
 					
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 	</div>
 </div>
 <div class="hide">
@@ -700,7 +1153,7 @@
 									</div>									
 									<div class="preview-content" data-index="03">
 										<div class="preview-name preview-name__caption">
-											<a href="../work/munoz-group/">Muñoz Group Austin &#8211; Real Estate Branding &#038; Website</a>
+											<a href="../work/munoz-group/">Muoz Group Austin &#8211; Real Estate Branding &#038; Website</a>
 										</div>
 																					<div class="preview-name">Branding</div>
 																					<div class="preview-name">Web Design</div>
@@ -719,7 +1172,7 @@
 									</div>									
 									<div class="preview-content" data-index="04">
 										<div class="preview-name preview-name__caption">
-											<a href="../work/symphony-sleep/">Symphony Sleep®</a>
+											<a href="../work/symphony-sleep/">Symphony Sleep</a>
 										</div>
 																					<div class="preview-name">Branding</div>
 																					<div class="preview-name">Packaging Design</div>
@@ -734,7 +1187,7 @@
 													<div>
 								<div class="preview">									
 									<div class="preview-media">										
-										<img src="../wp-content/uploads/2023/07/Ms.-Foundation-aenfinite.com_.webp" alt="awards gala design in new york by aenfinite.com®" />
+										<img src="../wp-content/uploads/2023/07/Ms.-Foundation-aenfinite.com_.webp" alt="awards gala design in new york by aenfinite.com" />
 										<div class="preview-action"><a href="../work/ms-foundation-50th-anniversary-gala/" class="not-index">View project</a></div>										
 									</div>									
 									<div class="preview-content" data-index="05">
@@ -828,38 +1281,446 @@
 						<div class="faq">
 															<div class="faq-item active" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
 									<div class="faq-header">
-										<div class="faq-header-title" itemprop="name">What industries does Aenfinite® specialize in?</div>
+										<div class="faq-header-title" itemprop="name">What industries does Aenfinite specialize in?</div>
 										<div class="faq-header-icon">
-											<svg class="icon">
-												<use xlink:href="#i-heart2"></use>
-											</svg>
-										</div>
-									</div>
+                    <!-- For OPEN FAQ: use heart.svg -->
+                    <img src="/wp-content/themes/aenfinite.com/images/heart.svg" alt="FAQ Toggle" class="faq-heart-icon">
+                </div><script>// =========================== 
+// FAQ HEART ROTATION JAVASCRIPT
+// ===========================
+
+/**
+ * Initialize FAQ Heart Rotation Functionality
+ * Call this function after your HTML is loaded
+ */
+function initializeFAQHeartRotation() {
+    var faqItems = document.getElementsByClassName('faq-item');
+    
+    /**
+     * Close all FAQ items and reset icons to closed state
+     */
+    function closeAllFAQ() {
+        for (var j = 0; j < faqItems.length; j++) {
+            var item = faqItems[j];
+            var content = item.querySelector('.faq-content');
+            var heartIcon = item.querySelector('.faq-heart-icon');
+            
+            if (content) {
+                item.classList.remove('active');
+                content.style.maxHeight = "0px";
+                content.style.opacity = "0";
+                content.style.paddingBottom = "0px";
+            }
+            
+            // Reset all icons to closed state (heart-rotate.svg pointing down)
+            if (heartIcon) {
+                heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart-rotate.svg";
+            }
+        }
+    }
+    
+    // Loop through all FAQ items and set up functionality
+    for (var i = 0; i < faqItems.length; i++) {
+        var faqItem = faqItems[i];
+        var faqHeader = faqItem.querySelector('.faq-header');
+        var faqContent = faqItem.querySelector('.faq-content');
+        
+        if (faqHeader && faqContent) {
+            // Set initial state based on active class
+            if (faqItem.classList.contains('active')) {
+                faqContent.style.maxHeight = faqContent.scrollHeight + "px";
+                faqContent.style.opacity = "1";
+                faqContent.style.paddingBottom = "30px";
+            } else {
+                faqContent.style.maxHeight = "0px";
+                faqContent.style.opacity = "0";
+                faqContent.style.paddingBottom = "0px";
+            }
+            
+            // Create closure to preserve item and content references
+            (function(item, content) {
+                item.querySelector('.faq-header').onclick = function(e) {
+                    e.preventDefault();
+                    
+                    var heartIcon = item.querySelector('.faq-heart-icon');
+                    
+                    if (item.classList.contains('active')) {
+                        // Close FAQ
+                        item.classList.remove('active');
+                        content.style.maxHeight = "0px";
+                        content.style.opacity = "0";
+                        content.style.paddingBottom = "0px";
+                        
+                        // Switch to closed heart (heart-rotate.svg) - points to bottom with CSS rotation
+                        if (heartIcon) {
+                            heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart-rotate.svg";
+                        }
+                    } else {
+                        // Open FAQ (close all others first)
+                        closeAllFAQ();
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.style.opacity = "1";
+                        content.style.paddingBottom = "30px";
+                        
+                        // Switch to open heart (heart.svg) - points upward normally
+                        if (heartIcon) {
+                            heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart.svg";
+                        }
+                    }
+                };
+            })(faqItem, faqContent);
+        }
+    }
+}
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeFAQHeartRotation);
+} else {
+    initializeFAQHeartRotation();
+}
+
+// Export for manual initialization if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initializeFAQHeartRotation };
+}
+</script><style>/* =========================== */
+/* FAQ HEART ROTATION CSS */
+/* =========================== */
+
+/* FAQ Heart Icon Styles */
+.faq-heart-icon {
+    width: 24px !important;
+    height: 24px !important;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Default state - closed FAQ shows heart-rotate.svg pointing to bottom */
+.faq-item:not(.active) .faq-heart-icon {
+    transform: rotate(90deg) !important;
+}
+
+/* Active state - open FAQ shows normal heart */
+.faq-item.active .faq-heart-icon {
+    transform: rotate(0deg) !important;
+}
+
+/* FAQ Container Styles */
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.faq-header:hover {
+    background-color: #e9ecef;
+}
+
+.faq-header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.faq-header-icon {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.faq-content {
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                padding-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    max-height: 0;
+    opacity: 0;
+    padding-bottom: 0;
+}
+
+.faq-content-text {
+    padding: 0 20px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.faq-content-text p {
+    margin: 10px 0;
+}
+
+.faq-content-text b {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .faq-container {
+        padding: 10px;
+    }
+    
+    .faq-header {
+        padding: 15px;
+    }
+    
+    .faq-header-title {
+        font-size: 16px;
+    }
+    
+    .faq-heart-icon {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}
+</style>									</div>
 									<div class="faq-content" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
 																					<div class="faq-content-text" itemprop="text">
-											<p class="p1">Aenfinite® specializes in high-impact design across diverse industries including:</p>
+											<p class="p1">Aenfinite specializes in high-impact design across diverse industries including:</p>
 <ul>
-<li class="p1">– Healthcare & Medical Devices (WillowWood, Faction Medical)</li>
-<li class="p1">– Real Estate & Development (SJP Properties, B2K Development)</li>
-<li class="p1">– Technology, SaaS & Finance (Match Group, VTS, Marwood Group)</li>
-<li class="p1">– Sports & Entertainment (FIFA World Cup 2026™ NYNJ, Denver City FC)</li>
-<li class="p1">– Consumer Goods & Beauty (EVERY®, Innersense Haircare)</li>
-<li class="p1">– Nonprofit & Foundations (Ms. Foundation for Women)</li>
-<li class="p1">– Hospitality & Luxury (Chef Antoine Lours, CyberYachts)</li>
+<li class="p1"> Healthcare & Medical Devices (WillowWood, Faction Medical)</li>
+<li class="p1"> Real Estate & Development (SJP Properties, B2K Development)</li>
+<li class="p1"> Technology, SaaS & Finance (Match Group, VTS, Marwood Group)</li>
+<li class="p1"> Sports & Entertainment (FIFA World Cup 2026 NYNJ, Denver City FC)</li>
+<li class="p1"> Consumer Goods & Beauty (EVERY, Innersense Haircare)</li>
+<li class="p1"> Nonprofit & Foundations (Ms. Foundation for Women)</li>
+<li class="p1"> Hospitality & Luxury (Chef Antoine Lours, CyberYachts)</li>
 </ul>
-<p>Our deep industry expertise enables us to create tailored branding, digital, and experiential solutions that resonate across sectors—whether launching a biotech product, branding a luxury development, or designing the official website for the FIFA World Cup 2026™ NYNJ Host City.</p>
+<p>Our deep industry expertise enables us to create tailored branding, digital, and experiential solutions that resonate across sectorswhether launching a biotech product, branding a luxury development, or designing the official website for the FIFA World Cup 2026 NYNJ Host City.</p>
 										</div>
 									</div>
 								</div>		
 															<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
 									<div class="faq-header">
-										<div class="faq-header-title" itemprop="name">How does Aenfinite® adapt its design approach for different industries?</div>
+										<div class="faq-header-title" itemprop="name">How does Aenfinite adapt its design approach for different industries?</div>
 										<div class="faq-header-icon">
-											<svg class="icon">
-												<use xlink:href="#i-heart2"></use>
-											</svg>
-										</div>
-									</div>
+                    <!-- For OPEN FAQ: use heart.svg -->
+                    <img src="/wp-content/themes/aenfinite.com/images/heart.svg" alt="FAQ Toggle" class="faq-heart-icon">
+                </div><script>// =========================== 
+// FAQ HEART ROTATION JAVASCRIPT
+// ===========================
+
+/**
+ * Initialize FAQ Heart Rotation Functionality
+ * Call this function after your HTML is loaded
+ */
+function initializeFAQHeartRotation() {
+    var faqItems = document.getElementsByClassName('faq-item');
+    
+    /**
+     * Close all FAQ items and reset icons to closed state
+     */
+    function closeAllFAQ() {
+        for (var j = 0; j < faqItems.length; j++) {
+            var item = faqItems[j];
+            var content = item.querySelector('.faq-content');
+            var heartIcon = item.querySelector('.faq-heart-icon');
+            
+            if (content) {
+                item.classList.remove('active');
+                content.style.maxHeight = "0px";
+                content.style.opacity = "0";
+                content.style.paddingBottom = "0px";
+            }
+            
+            // Reset all icons to closed state (heart-rotate.svg pointing down)
+            if (heartIcon) {
+                heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart-rotate.svg";
+            }
+        }
+    }
+    
+    // Loop through all FAQ items and set up functionality
+    for (var i = 0; i < faqItems.length; i++) {
+        var faqItem = faqItems[i];
+        var faqHeader = faqItem.querySelector('.faq-header');
+        var faqContent = faqItem.querySelector('.faq-content');
+        
+        if (faqHeader && faqContent) {
+            // Set initial state based on active class
+            if (faqItem.classList.contains('active')) {
+                faqContent.style.maxHeight = faqContent.scrollHeight + "px";
+                faqContent.style.opacity = "1";
+                faqContent.style.paddingBottom = "30px";
+            } else {
+                faqContent.style.maxHeight = "0px";
+                faqContent.style.opacity = "0";
+                faqContent.style.paddingBottom = "0px";
+            }
+            
+            // Create closure to preserve item and content references
+            (function(item, content) {
+                item.querySelector('.faq-header').onclick = function(e) {
+                    e.preventDefault();
+                    
+                    var heartIcon = item.querySelector('.faq-heart-icon');
+                    
+                    if (item.classList.contains('active')) {
+                        // Close FAQ
+                        item.classList.remove('active');
+                        content.style.maxHeight = "0px";
+                        content.style.opacity = "0";
+                        content.style.paddingBottom = "0px";
+                        
+                        // Switch to closed heart (heart-rotate.svg) - points to bottom with CSS rotation
+                        if (heartIcon) {
+                            heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart-rotate.svg";
+                        }
+                    } else {
+                        // Open FAQ (close all others first)
+                        closeAllFAQ();
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.style.opacity = "1";
+                        content.style.paddingBottom = "30px";
+                        
+                        // Switch to open heart (heart.svg) - points upward normally
+                        if (heartIcon) {
+                            heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart.svg";
+                        }
+                    }
+                };
+            })(faqItem, faqContent);
+        }
+    }
+}
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeFAQHeartRotation);
+} else {
+    initializeFAQHeartRotation();
+}
+
+// Export for manual initialization if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initializeFAQHeartRotation };
+}
+</script><style>/* =========================== */
+/* FAQ HEART ROTATION CSS */
+/* =========================== */
+
+/* FAQ Heart Icon Styles */
+.faq-heart-icon {
+    width: 24px !important;
+    height: 24px !important;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Default state - closed FAQ shows heart-rotate.svg pointing to bottom */
+.faq-item:not(.active) .faq-heart-icon {
+    transform: rotate(90deg) !important;
+}
+
+/* Active state - open FAQ shows normal heart */
+.faq-item.active .faq-heart-icon {
+    transform: rotate(0deg) !important;
+}
+
+/* FAQ Container Styles */
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.faq-header:hover {
+    background-color: #e9ecef;
+}
+
+.faq-header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.faq-header-icon {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.faq-content {
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                padding-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    max-height: 0;
+    opacity: 0;
+    padding-bottom: 0;
+}
+
+.faq-content-text {
+    padding: 0 20px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.faq-content-text p {
+    margin: 10px 0;
+}
+
+.faq-content-text b {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .faq-container {
+        padding: 10px;
+    }
+    
+    .faq-header {
+        padding: 15px;
+    }
+    
+    .faq-header-title {
+        font-size: 16px;
+    }
+    
+    .faq-heart-icon {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}
+</style>									</div>
 									<div class="faq-content" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
 																					<div class="faq-content-text" itemprop="text">
 											<p class="p1">We customize our creative approach based on each industry's unique requirements, regulations, and audience expectations:</p>
@@ -876,23 +1737,227 @@
 								</div>		
 															<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
 									<div class="faq-header">
-										<div class="faq-header-title" itemprop="name">Can Aenfinite® handle projects outside of these core industries?</div>
+										<div class="faq-header-title" itemprop="name">Can Aenfinite handle projects outside of these core industries?</div>
 										<div class="faq-header-icon">
-											<svg class="icon">
-												<use xlink:href="#i-heart2"></use>
-											</svg>
-										</div>
-									</div>
+                    <!-- For OPEN FAQ: use heart.svg -->
+                    <img src="/wp-content/themes/aenfinite.com/images/heart.svg" alt="FAQ Toggle" class="faq-heart-icon">
+                </div><script>// =========================== 
+// FAQ HEART ROTATION JAVASCRIPT
+// ===========================
+
+/**
+ * Initialize FAQ Heart Rotation Functionality
+ * Call this function after your HTML is loaded
+ */
+function initializeFAQHeartRotation() {
+    var faqItems = document.getElementsByClassName('faq-item');
+    
+    /**
+     * Close all FAQ items and reset icons to closed state
+     */
+    function closeAllFAQ() {
+        for (var j = 0; j < faqItems.length; j++) {
+            var item = faqItems[j];
+            var content = item.querySelector('.faq-content');
+            var heartIcon = item.querySelector('.faq-heart-icon');
+            
+            if (content) {
+                item.classList.remove('active');
+                content.style.maxHeight = "0px";
+                content.style.opacity = "0";
+                content.style.paddingBottom = "0px";
+            }
+            
+            // Reset all icons to closed state (heart-rotate.svg pointing down)
+            if (heartIcon) {
+                heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart-rotate.svg";
+            }
+        }
+    }
+    
+    // Loop through all FAQ items and set up functionality
+    for (var i = 0; i < faqItems.length; i++) {
+        var faqItem = faqItems[i];
+        var faqHeader = faqItem.querySelector('.faq-header');
+        var faqContent = faqItem.querySelector('.faq-content');
+        
+        if (faqHeader && faqContent) {
+            // Set initial state based on active class
+            if (faqItem.classList.contains('active')) {
+                faqContent.style.maxHeight = faqContent.scrollHeight + "px";
+                faqContent.style.opacity = "1";
+                faqContent.style.paddingBottom = "30px";
+            } else {
+                faqContent.style.maxHeight = "0px";
+                faqContent.style.opacity = "0";
+                faqContent.style.paddingBottom = "0px";
+            }
+            
+            // Create closure to preserve item and content references
+            (function(item, content) {
+                item.querySelector('.faq-header').onclick = function(e) {
+                    e.preventDefault();
+                    
+                    var heartIcon = item.querySelector('.faq-heart-icon');
+                    
+                    if (item.classList.contains('active')) {
+                        // Close FAQ
+                        item.classList.remove('active');
+                        content.style.maxHeight = "0px";
+                        content.style.opacity = "0";
+                        content.style.paddingBottom = "0px";
+                        
+                        // Switch to closed heart (heart-rotate.svg) - points to bottom with CSS rotation
+                        if (heartIcon) {
+                            heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart-rotate.svg";
+                        }
+                    } else {
+                        // Open FAQ (close all others first)
+                        closeAllFAQ();
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.style.opacity = "1";
+                        content.style.paddingBottom = "30px";
+                        
+                        // Switch to open heart (heart.svg) - points upward normally
+                        if (heartIcon) {
+                            heartIcon.src = "/wp-content/themes/aenfinite.com/images/heart.svg";
+                        }
+                    }
+                };
+            })(faqItem, faqContent);
+        }
+    }
+}
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeFAQHeartRotation);
+} else {
+    initializeFAQHeartRotation();
+}
+
+// Export for manual initialization if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initializeFAQHeartRotation };
+}
+</script><style>/* =========================== */
+/* FAQ HEART ROTATION CSS */
+/* =========================== */
+
+/* FAQ Heart Icon Styles */
+.faq-heart-icon {
+    width: 24px !important;
+    height: 24px !important;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Default state - closed FAQ shows heart-rotate.svg pointing to bottom */
+.faq-item:not(.active) .faq-heart-icon {
+    transform: rotate(90deg) !important;
+}
+
+/* Active state - open FAQ shows normal heart */
+.faq-item.active .faq-heart-icon {
+    transform: rotate(0deg) !important;
+}
+
+/* FAQ Container Styles */
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.faq-header:hover {
+    background-color: #e9ecef;
+}
+
+.faq-header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.faq-header-icon {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.faq-content {
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                padding-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    max-height: 0;
+    opacity: 0;
+    padding-bottom: 0;
+}
+
+.faq-content-text {
+    padding: 0 20px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.faq-content-text p {
+    margin: 10px 0;
+}
+
+.faq-content-text b {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .faq-container {
+        padding: 10px;
+    }
+    
+    .faq-header {
+        padding: 15px;
+    }
+    
+    .faq-header-title {
+        font-size: 16px;
+    }
+    
+    .faq-heart-icon {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}
+</style>									</div>
 									<div class="faq-content" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
 																					<div class="faq-content-text" itemprop="text">
 											<p class="p1">Absolutely! While we have deep expertise in these core industries, our creative process and strategic approach are adaptable to any sector. We've successfully worked with clients in:</p>
 <ul>
-<li class="p1">– Manufacturing & Industrial</li>
-<li class="p1">– Education & Training</li>
-<li class="p1">– Legal & Professional Services</li>
-<li class="p1">– Food & Beverage</li>
-<li class="p1">– Environmental & Sustainability</li>
-<li class="p1">– Fashion & Retail</li>
+<li class="p1"> Manufacturing & Industrial</li>
+<li class="p1"> Education & Training</li>
+<li class="p1"> Legal & Professional Services</li>
+<li class="p1"> Food & Beverage</li>
+<li class="p1"> Environmental & Sustainability</li>
+<li class="p1"> Fashion & Retail</li>
 </ul>
 <p class="p1">Our discovery process allows us to quickly understand new industries, their challenges, opportunities, and audience needs. This flexibility, combined with our design expertise, enables us to deliver exceptional results regardless of industry.</p>
 										</div>
@@ -903,141 +1968,6 @@
 				</div>
 			</div>
 	
-<div class="section section__contrast">
-	<div class="wrapper">
-					<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>aenfinite.com® Clients</h2>
-					</div>
-				</div>
-				<div class="clients js-aos fadein">
-											<div class="client">
-							<img src="../wp-content/uploads/2025/05/fifa_logo.png" alt="FIFA World Cup 2026™ NYNJ Web Design by aenfinite.com®" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2025/05/matchgroup_logo.png" alt="Match Group (Tinder, Hinge, OkCuper, Match.com) Web Design by aenfinite.com®" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/havas-group_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/nyc-fc-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/patricia-vash_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/sjp-properties-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/clutch_.svg" alt="aenfinite.com® Clutch Global & Champion" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/dro5a_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/enthuse_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/Forbes_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/givaudan_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/Loreal_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/apple_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/the-north-face_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/vts_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/vans_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/compass_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/chelsea-film-festival_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/dupont-tyvek_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/ms-foundation_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/scholastic_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/global-new-yorker.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/walmart_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/airatae_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/groupon_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/karnak_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/lowes_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/bkcm_1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/gett_1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/innovative-sleep-technologies_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/road-star-beds_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/symphony-sleep_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/ultramed_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/willow-wood_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/ba_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/modern-dose-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/avia-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/plumbuddy-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/10/sgs-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/11/ivywise.svg" alt="aenfinite.com® IvyWise" />
-						</div>
-											<div class="client">
-							<img src="../wp-content/uploads/2024/12/juniper-square.svg" alt="" />
-						</div>
-									</div>
-			</div>
-			</div>
 </div>	<div class="section">
 		<div class="wrapper">
 			<div class="inner-wrapper">
@@ -1091,9 +2021,9 @@ from our clients</div>
 					<div>
 						<div class="footer-caption">
 							<div class="title title__default">
-								<span>Starting a new project or want to collaborate with us?</span>
+								<span>Have a Project in Mind? Let’s Build Something Great Together.</span>
 								<a href="../contact/" class="redlink">
-									<span>Let’s talk</span>
+									<span>Lets talk</span>
 								</a>
 							</div>
 							<div class="footer-email">
@@ -1108,9 +2038,8 @@ from our clients</div>
 <li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../agency/">Agency</a></li>
 <li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../services/">Services</a></li>
 <li id="menu-item-3776" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-3496 current_page_item menu-item-3776"><a href="" aria-current="page">Industries</a></li>
-<li id="menu-item-4803" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../dd-nyc-client-testimonials/">Client Testimonials</a></li>
+
 <li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../contact/">Contact</a></li>
-</ul>									<span class="website-accessibility" data-acsb-custom-trigger="true">Website Accessibility</span>
 								</div>
 							</div>
 							<div class="footer-col">
@@ -1121,15 +2050,13 @@ from our clients</div>
 <li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="../services/branding/">Branding</a></li>
 <li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="../services/packaging-design/">Packaging Design</a></li>
 <li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2259"><a href="../services/graphic-design/">Graphic Design</a></li>
-<li id="menu-item-2344" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2344"><a href="../services/web-design-and-branding-for-real-estate/">Real Estate Design</a></li>
-<li id="menu-item-6911" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6911"><a href="../services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+
 </ul>														</div>
 							</div>
-							<div class="footer-col footer-col__connect">
+							<div class="footer-col ">
 								<div class="footer-col_caption">Connect</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-connect" class="menuss"><li id="menu-item-4965" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4965"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.behance.net/aenfinite">Behance</a></li>
-<li id="menu-item-4967" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4967"><a class="js-dropdown-layer-marker" target="_blank" href="https://dribbble.com/aenfinite">Dribbble</a></li>
+
 <li id="menu-item-4966" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4966"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.instagram.com/aenfinite/">Instagram</a></li>
 <li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4952"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/">Partner with us</a></li>
 <li id="menu-item-4952-1" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../agency/partner-with-us/white-label-services/">White Label Services</a></li>
@@ -1139,24 +2066,26 @@ from our clients</div>
 <li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5977"><a class="js-dropdown-layer-marker" href="../contact/">Contact</a></li>
 </ul>								</div>
 							</div>
-							<div class="footer-col footer-col__address">
-								<div class="footer-col_caption">Address</div>
-								<div class="footer-col_list">
-									<ul>
-										<li>
-											85 Broad Street<br class="desktop" />
-17th Floor - Suite 17.005<br class="desktop" />
-New York, NY<br class="desktop" />
-10004										</li>
-										<li>
-											<a style="white-space:nowrap;" href="tel:+12123801761">+1 212.380.1761</a>
-										</li>
-										<li>
-											<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
-										</li>
-									</ul>
-								</div>
-							</div>
+							<div class="footer-col " style="padding-top: 15px !important; padding-left: 40px;">
+									<div class="footer-col_caption">Address</div>
+									<div class="footer-col_list">
+										<ul>
+											<li>
+		1500 Grant Street<br class="desktop" />
+		4th Ave<br class="desktop" />
+		Denver, CO 80203<br class="desktop" />
+		United States
+	</li>
+
+											<li>
+												<a style="white-space:nowrap;" href="tel:+14692677487">+1 (469) 267-7487</a>
+											</li>
+											<li>
+												<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+											</li>
+										</ul>
+									</div>
+								</div>							</div>
 						</div>
 						
 						<div class="bottom-line">
@@ -1164,12 +2093,8 @@ New York, NY<br class="desktop" />
 								<p>Copyright &copy; 2025 Aenfinite LLC</p>
 								<p>Headquartered in New York & Beyond </p>
 							</div>
-							<div class="logotype-bottom"><span><img src="../wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="" /></span><span><img src=".." alt="aenfinite.com® Creative Design Agency Custom 3D Design" /></span><span><img src=".." alt="" /></span></div>							<div class="line-last">All rights reserved									
-								<div class="heart">
-									<svg class="icon">
-										<use xlink:href="#i-heart"></use>
-									</svg>
-								</div>
+							<div class="logotype-bottom"><span><img src="../wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="" /></span><span><img src=".." alt="aenfinite.com Creative Design Agency Custom 3D Design" /></span><span></span></div>							<div class="line-last">All rights reserved									
+								
 							</div>
 						</div>
 
@@ -1184,7 +2109,7 @@ New York, NY<br class="desktop" />
 							<div class="topbar">
 								<div class="topbar-logo">
 									<a href="../">
-										<img src="../wp-content/themes/aenfinite.com/static/img/logo-white.svg" alt="aenfinite.com®" />
+										<img src="../wp-content/themes/aenfinite.com/static/img/logo-white.svg" alt="aenfinite.com" />
 									</a>
 								</div>
 								<div class="menu-close js-menu-toggle"><i></i></div>
@@ -1195,7 +2120,7 @@ New York, NY<br class="desktop" />
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../agency/">Agency</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../services/">Services</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-3496 current_page_item menu-item-3776"><a href="" aria-current="page">Industries</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../dd-nyc-client-testimonials/">Client Testimonials</a></li>
+
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../contact/">Contact</a></li>
 </ul>						</div>
 						<div class="menu-footer">
@@ -1208,7 +2133,238 @@ New York, NY<br class="desktop" />
 		
 		</div>
 
-		<a href="../contact/" class="to-contact">New Project?</a>
+				<a href="contact/" class="to-contact">New Project?</a><a href="#" class="to-meeter" onclick="openCalendlyPopup(event)">Schedule A Meeting</a>
+
+<div id="calendly-modal" class="calendly-modal" style="display: none;">
+	<div class="calendly-modal-content">
+		<div class="calendly-modal-header">
+			<span class="calendly-close" onclick="closeCalendlyPopup()">&times;</span>
+			<h3>Schedule Your Business Meeting</h3>
+		</div>
+		<div class="calendly-modal-body">
+			<div class="calendly-inline-widget" data-url="https://calendly.com/aenfinite/business-meeting" style="min-width:320px;height:630px;"></div>
+		</div>
+	</div>
+</div>
+
+<!-- 3. CSS STYLES (Place this in your <head> section or CSS file) -->
+<style>
+/* ===== BUTTON STYLES ===== */
+
+/* ===== MODAL STYLES ===== */
+.calendly-modal {
+	position: fixed;
+	z-index: 10000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.8);
+	animation: fadeIn 0.3s ease;
+}
+
+.calendly-modal-content {
+	background-color: #fefefe;
+	margin: 2% auto;
+	border: none;
+	border-radius: 15px;
+	width: 90%;
+	max-width: 900px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease;
+}
+
+.calendly-modal-header {
+	background: linear-gradient(135deg, #227bf3, #1e6fd9);
+	color: white;
+	padding: 20px 30px;
+	border-radius: 15px 15px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.calendly-modal-header h3 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.calendly-close {
+	color: white;
+	font-size: 32px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 1;
+	transition: color 0.3s ease;
+}
+
+.calendly-close:hover {
+	color: #f1f1f1;
+	transform: scale(1.1);
+}
+
+.calendly-modal-body {
+	padding: 0;
+	border-radius: 0 0 15px 15px;
+	overflow: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideIn {
+	from { 
+		opacity: 0;
+		transform: translateY(-30px) scale(0.9);
+	}
+	to { 
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 200px !important;
+		padding: 10px 16px !important;
+		font-size: 13px !important;
+	}
+	
+	
+
+	.calendly-modal-content {
+		width: 95%;
+		margin: 5% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 15px 20px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 20px;
+	}
+	
+	.calendly-inline-widget {
+		height: 500px !important;
+		min-width: 280px !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 180px !important;
+		padding: 8px 14px !important;
+		font-size: 12px !important;
+	}
+
+	.calendly-modal-content {
+		width: 98%;
+		margin: 3% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 12px 15px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 18px;
+	}
+	
+	.calendly-inline-widget {
+		height: 450px !important;
+		min-width: 260px !important;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.to-meeting {
+		max-width: 160px !important;
+		padding: 8px 12px !important;
+		font-size: 11px !important;
+	}
+}
+</style>
+
+<script>
+/* ===== CALENDLY POPUP FUNCTIONS ===== */
+function openCalendlyPopup(event) {
+	event.preventDefault();
+	document.getElementById('calendly-modal').style.display = 'block';
+	document.body.style.overflow = 'hidden'; // Prevent background scrolling
+	
+	// Load Calendly widget if not already loaded
+	if (!window.Calendly) {
+		loadCalendlyScript();
+	} else {
+		// Initialize widget if Calendly is already loaded
+		initializeCalendlyWidget();
+	}
+}
+
+function closeCalendlyPopup() {
+	document.getElementById('calendly-modal').style.display = 'none';
+	document.body.style.overflow = 'auto'; // Re-enable background scrolling
+}
+
+function loadCalendlyScript() {
+	// Load Calendly CSS
+	if (!document.querySelector('link[href*="calendly.com"]')) {
+		const calendlyCss = document.createElement('link');
+		calendlyCss.href = 'https://assets.calendly.com/assets/external/widget.css';
+		calendlyCss.rel = 'stylesheet';
+		document.head.appendChild(calendlyCss);
+	}
+	
+	// Load Calendly JS
+	if (!document.querySelector('script[src*="calendly.com"]')) {
+		const calendlyScript = document.createElement('script');
+		calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
+		calendlyScript.onload = function() {
+			initializeCalendlyWidget();
+		};
+		document.head.appendChild(calendlyScript);
+	}
+}
+
+function initializeCalendlyWidget() {
+	if (window.Calendly) {
+		Calendly.initInlineWidget({
+			url: 'https://calendly.com/aenfinite/business-meeting',
+			parentElement: document.querySelector('.calendly-inline-widget'),
+			prefill: {},
+			utm: {}
+		});
+	}
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+	const modal = document.getElementById('calendly-modal');
+	if (event.target == modal) {
+		closeCalendlyPopup();
+	}
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+	if (event.key === 'Escape') {
+		const modal = document.getElementById('calendly-modal');
+		if (modal.style.display === 'block') {
+			closeCalendlyPopup();
+		}
+	}
+});
+</script>
 		
 		<div class="cookie-banner" style="">
 			<div class="cookie-banner__inner">
@@ -1379,7 +2535,9 @@ var wpcf7_recaptcha = {
 /* ]]> */
 </script>
 <script  src="../wp-content/plugins/contact-form-7/modules/recaptcha/indexfc7a.js?ver=6.0.6" id="wpcf7-recaptcha-js"></script>
-	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f985df9b4121e6',t:'MTc1NTI2OTYyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f985df9b4121e6',t:'MTc1NTI2OTYyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>	<!-- Universal Button and Checkbox Highlighting Script -->	<script src="js/button-highlights.js"></script>
+		</body>
 
 <!-- Mirrored from aenfinite.com/industries/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:00:56 GMT -->
 </html>
+

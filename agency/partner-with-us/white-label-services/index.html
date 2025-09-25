@@ -1,48 +1,282 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	
-<!-- Mirrored from Aenfinite/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 14:53:27 GMT -->
+<!-- Mirrored from aenfinite.com/agency/partner-with-us/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:01:53 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
-<head>
+<head><!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
 			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 	
-<!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->
-<title>Digital Innovation Agency in Denver | Aenfinite</title>
-<meta name="description" content="Aenfinite is a Digital Innovation Agency providing end-to-end solutions including web development, mobile apps, UI/UX design, and digital marketing in Denver, Colorado."/>
+<!-- Search EnJoin our referral program and earn commissions by connecting clients with our premium design services.</p>ptimization by Rank Math PRO - https	</div>
+
+	<!-- Get in Touch with Aenfinite Section-->
+<title>White Label Partnerships | Professional Agency Partnership | Aenfinite</title>
+<meta name="description" content="Expert White Label Partnerships for agencies and resellers. Professional branding, web design, and digital solutions delivered under your brand name. Post-paid payment terms available."/>
+<meta name="keywords" content="White Label Partnerships, white label agency, design outsourcing, branding services, web design partnership, agency collaboration, post-paid design services"/>
 <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
-<link rel="canonical" href="" />
+<link rel="canonical" href="https://aenfinite.com/agency/partner-with-us/white-label-services/" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Award-Winning digital innovation agency in Denver | Aenfinite" />
-<meta property="og:description" content="Aenfinite is a Digital Innovation Agency providing end-to-end solutions including web development, mobile apps, UI/UX design, and digital marketing." />
-<meta property="og:url" content="https://aenfinite.com/" />
-<meta property="og:site_name" content="Aenfinite" />
-<meta property="og:updated_time" content="2025-08-15T22:47:25-04:00" />
-<meta property="og:image" content="https://aenfinite.com/wp-content/uploads/2025/02/AenfiniteSocial-Media-Image-768x403.webp" />
-<meta property="og:image:secure_url" content="https://aenfinite.com/wp-content/uploads/2025/02/AenfiniteSocial-Media-Image-768x403.webp" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="White Label Partnerships | Professional Agency Partnership | Aenfinite" />
+<meta property="og:description" content="Expert White Label Partnerships for agencies and resellers. Professional branding, web design, and digital solutions delivered under your brand name." />
+<meta property="og:url" content="https://aenfinite.com/agency/partner-with-us/white-label-services/" />
+<meta property="og:site_name" content="aenfinite.com" />
+<meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
+<meta property="og:updated_time" content="2025-08-21T12:00:00-04:00" />
+<meta property="og:image" content="https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta property="og:image:secure_url" content="https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta property="og:image:width" content="768" />
-<meta property="og:image:height" content="403" />
-<meta property="og:image:alt" content="Aenfinite Brand Logo - Digital Innovation Agency in Denver" />
-<meta property="og:image:type" content="image/webp" />
-<meta property="article:published_time" content="2018-01-01T14:03:50-04:00" />
-<meta property="article:modified_time" content="2025-08-15T22:47:25-04:00" />
+<meta property="og:image:height" content="432" />
+<meta property="og:image:alt" content="White Label Partnerships - Professional Agency Partnership" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="article:published_time" content="2024-08-26T12:38:01-04:00" />
+<meta property="article:modified_time" content="2025-08-21T12:00:00-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Digital Innovation Agency in Denver | Aenfinite" />
-<meta name="twitter:description" content="Aenfinite is a Digital Innovation Agency providing end-to-end solutions including web development, mobile apps, UI/UX design, and digital marketing." />
+<meta name="twitter:title" content="White Label Partnerships | Professional Agency Partnership" />
+<meta name="twitter:description" content="Expert White Label Partnerships for agencies and resellers. Professional branding, web design, and digital solutions delivered under your brand name." />
 <meta name="twitter:site" content="@aenfinite" />
 <meta name="twitter:creator" content="@aenfinite" />
-<meta name="twitter:image" content="https://aenfinite.com/wp-content/uploads/2025/02/AenfiniteSocial-Media-Image-768x403.webp" />
-<meta name="twitter:label1" content="Written by" />
-<meta name="twitter:data1" content="Hasan Ahmed" />
-<meta name="twitter:label2" content="Time to read" />
-<meta name="twitter:data2" content="Less than a minute" />
-<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"Aenfinite","address":{"@type":"PostalAddress","streetAddress":"1500 N Grant St, Ste R","addressLocality":"Denver","addressRegion":"CO","postalCode":"80203","addressCountry":"US"},"telephone":"+1 (303) 875-8095","email":"info@aenfinite.com","sameAs":["https://www.facebook.com/people/Aenfinite/61579205930175","https://www.linkedin.com/company/aenfinite","https://www.instagram.com/aenfinite/"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"Aenfinite","alternateName":"Aenfinite - Digital Innovation Agency","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US","potentialAction":{"@type":"SearchAction","target":"https://aenfinite.com/?s={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2025/02/AenfiniteSocial-Media-Image.webp","url":"https://aenfinite.com/wp-content/uploads/2025/02/AenfiniteSocial-Media-Image.webp","width":"4800","height":"2520","caption":"Aenfinite Brand Logo - Digital Innovation Agency in Denver","inLanguage":"en-US"},{"@type":"WebPage","@id":"https://aenfinite.com/#webpage","url":"https://aenfinite.com/","name":"Digital Innovation Agency in Denver | Aenfinite","datePublished":"2018-01-01T14:03:50-04:00","dateModified":"2025-08-15T22:47:25-04:00","about":{"@id":"https://aenfinite.com/#organization"},"isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2025/02/AenfiniteSocial-Media-Image.webp"},"inLanguage":"en-US"},{"@type":"Person","@id":"https://aenfinite.com/#author","name":"Hasan Ahmed","description":"Founder & CEO of Aenfinite","worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Digital Innovation Agency in Denver | Aenfinite","keywords":"Digital Innovation, Web Development, Mobile Apps, UI/UX Design, Digital Marketing","datePublished":"2018-01-01T14:03:50-04:00","dateModified":"2025-08-15T22:47:25-04:00","author":{"@id":"https://aenfinite.com/#author","name":"Hasan Ahmed"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Aenfinite is a Digital Innovation Agency providing end-to-end solutions including web development, mobile apps, UI/UX design, and digital marketing in Denver, Colorado.","name":"Digital Innovation Agency in Denver | Aenfinite","@id":"https://aenfinite.com/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2025/02/AenfiniteSocial-Media-Image.webp"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/#webpage"}}]}</script>
-<meta name="google-site-verification" content="w5x4RIV--Je9QfyBMKTz_kRMtBGYQ_0e80K3uAykqoc" />
+<meta name="twitter:image" content="https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta name="twitter:label1" content="Time to read" />
+<meta name="twitter:data1" content="Less than a minute" />
+<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"aenfinite.com\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"aenfinite.com\u00ae","alternateName":"aenfinite.com\u00ae - Branding &amp; Web Design Division of Aenfinite.com","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","url":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","width":"5714","height":"3216","caption":"aenfinite.com\u00ae Brand Logo - Best Branding &amp; Web Design Agency in Denver","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/agency/partner-with-us/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/agency/","name":"Agency"}},{"@type":"ListItem","position":"3","item":{"@id":"https://aenfinite.com/agency/partner-with-us/","name":"Partner with us"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/agency/partner-with-us/#webpage","url":"https://aenfinite.com/agency/partner-with-us/","name":"Partner with us | Aenfinite","datePublished":"2024-08-26T12:38:01-04:00","dateModified":"2025-05-31T22:46:16-04:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/agency/partner-with-us/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/agency/partner-with-us/#author","name":"Anjelika Aenfinite","description":"Archives from for Aenfinite(Aenfinite.com)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","caption":"Anjelika Aenfinite","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Partner with us | Aenfinite","keywords":"Partner with us","datePublished":"2024-08-26T12:38:01-04:00","dateModified":"2025-05-31T22:46:16-04:00","author":{"@id":"https://aenfinite.com/agency/partner-with-us/#author","name":"Anjelika Aenfinite"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Partner with us at Aenfinite- Join our team of creative professionals in Denver. Explore partnership opportunities with our M/WBE certified design agency.","name":"Partner with us | Aenfinite","@id":"https://aenfinite.com/agency/partner-with-us/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/agency/partner-with-us/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/agency/partner-with-us/#webpage"}}]}</script>
 <!-- /Rank Math WordPress SEO plugin -->
 
-<link rel="https://api.w.org/" href="wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="wp-json/wp/v2/pages/2.json" /><link rel='shortlink' href='' />
-<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="wp-json/oembed/1.0/embedcb50.json?url=https%3A%2F%2FAenfinite%2F" />
-<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="wp-json/oembed/1.0/embed326e?url=https%3A%2F%2FAenfinite%2F&amp;format=xml" />
+<link rel="https://api.w.org/" href="../../../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../../../wp-json/wp/v2/pages/4945.json" /><link rel='shortlink' href='../../../indexab3e.html?p=4945' />
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="../../../wp-json/oembed/1.0/embeda02f.json?url=https%3A%2F%2Faenfinite.com%2Fagency%2Fcareers%2F" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="../../../wp-json/oembed/1.0/embed1a90?url=https%3A%2F%2Faenfinite.com%2Fagency%2Fcareers%2F&amp;format=xml" />
     <style type="text/css">
 		#wp-admin-bar-wp-logo > .ab-item .ab-icon:before {
 			content: url('../../../wp-content/uploads/2024/05/logo.svg') !important;
@@ -81,468 +315,39 @@
 		.acf-flexible-content .layout .acf-fc-layout-controls .acf-icon.-plus, .acf-flexible-content .layout .acf-fc-layout-controls .acf-icon.-minus, .acf-flexible-content .layout .acf-fc-layout-controls .acf-icon.-duplicate {
 			visibility: visible!important;
 		}		
-		@media (min-width:1024px) {
-			#post-body.columns-2 #postbox-container-1 {
-				float: right;
-				margin-right: 20px;
-				width: 280px;
-				height: 100%;
-				position: fixed;
-				right: 0;
-			}
-			#poststuff #post-body.columns-2 #side-sortables {
-				overflow-y: scroll;
-				max-height: 80vh;
-				padding-bottom: 30px;
-			}	
-		}		
-    
-    /* Aenfinite Logo Rich Animations */
-    .ae-text {
-        font-family: 'Arial', sans-serif;
-        font-size: 120px;
-        font-weight: 700;
-        color: #227bf3;
-        text-align: center;
-        animation: smoothRotate 4s infinite linear, pulse 2s infinite ease-in-out, glow 3s infinite ease-in-out;
-        transform-origin: center center;
-        transition: all 0.3s ease;
-        text-shadow: 0 0 20px rgba(34, 123, 243, 0.3);
-        letter-spacing: -5px;
-    }
-    
-    .rotating-logo {
-        display: none;
-    }
-    
-    .aenfinite-logo {
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100vw;
-        height: 100vh;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-        opacity: 0;
-        z-index: 10001;
-        transition: opacity 0.5s ease-in-out;
-        animation: delayedFadeIn 0.5s ease-in-out 3s forwards;
-    }
-    
-    .aenfinite-full {
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100vw;
-        height: 100vh;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-        opacity: 1;
-        z-index: 10000;
-        transition: opacity 0.5s ease-in-out;
-    }
-    
-    .aenfinite-full img {
-        animation: slideInFromLeft 1.2s ease-out;
-        width: 70vw !important;
-        max-width: 500px !important;
-        height: auto !important;
-        min-width: 280px !important;
-        filter: brightness(0) saturate(100%);
-    }
-    
-    .preloader-logo {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100%;
-        padding: 60px;
-        box-sizing: border-box;
-        max-width: 100vw;
-        overflow: hidden;
-    }
-    
-    /* Keyframe Animations */
-    @keyframes smoothRotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-    
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
-    
-    @keyframes glow {
-        0%, 100% { 
-            text-shadow: 0 0 20px rgba(34, 123, 243, 0.3),
-                        0 0 40px rgba(34, 123, 243, 0.1),
-                        0 0 60px rgba(34, 123, 243, 0.05);
-        }
-        50% { 
-            text-shadow: 0 0 30px rgba(34, 123, 243, 0.6),
-                        0 0 60px rgba(34, 123, 243, 0.2),
-                        0 0 90px rgba(34, 123, 243, 0.1);
-        }
-    }
-    
-    @keyframes fadeInScale {
-        0% {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-    
-    @keyframes delayedFadeInScale {
-        0% {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-    
-    @keyframes fadeOutAfterDelay {
-        0% {
-            opacity: 1;
-            transform: scale(1);
-        }
-        100% {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-    }
-    
-    @keyframes slideInFromLeft {
-        0% {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes delayedFadeIn {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-    
-    /* Navigation Logo Styling */
-    .nav-logo {
-        height: 28px !important;
-        width: auto !important;
-        max-width: 140px !important;
-        transition: all 0.3s ease;
-        filter: none;
-        object-fit: contain;
-        object-position: left center;
-    }
-    
-    /* Ensure consistent sizing for both logo variants */
-    .nav-logo-default,
-    .nav-logo-active {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 28px !important;
-        width: auto !important;
-        max-width: 140px !important;
-        object-fit: contain;
-        object-position: left center;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        transform-origin: left center;
-    }
-    
-    /* Container for logos to maintain position */
-    .topbar-logo a {
-        position: relative;
-        display: inline-block;
-        height: 28px;
-        min-width: 140px;
-    }
-    
-    /* Default state - show white logo, hide active logo */
-    .nav-logo-default {
-        display: block;
-        opacity: 1;
-        transform: scale(1);
-        z-index: 2;
-    }
-    
-    .nav-logo-active {
-        display: block;
-        opacity: 0;
-        transform: scale(0.95);
-        z-index: 1;
-    }
-    
-    /* When navbar becomes active/dark - hide white logo, show blue logo */
-    .mainnav.active .nav-logo-default,
-    .mainnav.always-active .nav-logo-default,
-    .mainnav:hover .nav-logo-default {
-        opacity: 0;
-        transform: scale(0.95);
-        z-index: 1;
-    }
-    
-    .mainnav.active .nav-logo-active,
-    .mainnav.always-active .nav-logo-active,
-    .mainnav:hover .nav-logo-active {
-        opacity: 1;
-        transform: scale(1.05);
-        z-index: 2;
-    }
-    
-    /* Hover Effects for Extra Richness */
-    .rotating-logo:hover {
-        animation-duration: 1s;
-        filter: drop-shadow(0 0 30px rgba(34, 123, 243, 0.8));
-        transform: scale(1.1);
-    }
-    
-    /* Mobile Responsive Design */
-    @media (max-width: 768px) {
-        .aenfinite-full img {
-            width: 85vw !important;
-            max-width: 350px !important;
-        }
-        .rotating-logo {
-            width: 40vw !important;
-            max-width: 120px !important;
-        }
-        .preloader-logo {
-            padding: 30px 15px !important;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .aenfinite-full img {
-            width: 90vw !important;
-            max-width: 280px !important;
-        }
-        .rotating-logo {
-            width: 50vw !important;
-            max-width: 100px !important;
-        }
-    }
-    
-    /* Animation Phase Control */
-    .loading-phase-1 .aenfinite-full {
-        opacity: 1;
-    }
-    
-    .loading-phase-1 .aenfinite-logo {
-        opacity: 0;
-    }
-    
-    .loading-phase-2 .aenfinite-full {
-        opacity: 1;
-    }
-    
-    .loading-phase-2 .aenfinite-logo {
-        opacity: 0;
-    }
-    
-    .loading-phase-3 .aenfinite-full {
-        opacity: 0;
-    }
-    
-    .loading-phase-3 .aenfinite-logo {
-        opacity: 1;
-    }
-    
-    .loading-phase-4 .aenfinite-full {
-        opacity: 0;
-    }
-    
-    .loading-phase-4 .aenfinite-logo {
-        opacity: 1;
-    }
-    
-    .loading-phase-5 .aenfinite-logo {
-        opacity: 1;
-    }
-    
-    .loading-phase-5 .aenfinite-full {
-        opacity: 0;
-    }
-
-    /* Floating Heart Element */
-    .floating-heart {
-        position: fixed;
-        bottom: 8%;
-        left: 3%;
-        width: 60px;
-        height: 60px;
-        cursor: pointer;
-        z-index: 9999;
-        opacity: 0.8;
-        transition: all 0.3s ease;
-        animation: heartFloat 3s ease-in-out infinite;
-        user-select: none;
-    }
-
-    .floating-heart:hover {
-        opacity: 1;
-        transform: scale(1.1);
-        animation-play-state: paused;
-    }
-
-    .floating-heart img {
-        width: 100%;
-        height: 100%;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-    }
-
-    .floating-heart .heart-tooltip {
-        position: absolute;
-        bottom: -45px;
-        left: 0;
-        background: rgba(34, 123, 243, 0.9);
-        color: white;
-        padding: 8px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-        white-space: nowrap;
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        pointer-events: none;
-    }
-
-    .floating-heart:hover .heart-tooltip {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .floating-heart .heart-tooltip:after {
-        content: '';
-        position: absolute;
-        bottom: 100%;
-        left: 15px;
-        width: 0;
-        height: 0;
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-bottom: 5px solid rgba(34, 123, 243, 0.9);
-    }
-
-    @keyframes heartFloat {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        25% { transform: translateY(-10px) rotate(1deg); }
-        50% { transform: translateY(-5px) rotate(-1deg); }
-        75% { transform: translateY(-8px) rotate(1deg); }
-    }
-
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-        .floating-heart {
-            width: 45px;
-            height: 45px;
-            left: 5%;
-            bottom: 6%;
-        }
-        
-        .floating-heart .heart-tooltip {
-            font-size: 11px;
-            padding: 6px 10px;
-        }
-    }
-
-    /* Header Heart Animation */
-    .header-heart .heart {
-        animation: heartBeat 2s ease-in-out infinite;
-        transform-origin: center;
-    }
-
-    .header-heart .heart img {
-        transition: all 0.3s ease;
-        filter: drop-shadow(0 2px 4px rgba(247, 84, 34, 0.3));
-    }
-
-    .header-heart .heart:hover img {
-        transform: scale(1.2);
-        filter: drop-shadow(0 4px 8px rgba(247, 84, 34, 0.5));
-    }
-
-    @keyframes heartBeat {
-        0%, 100% { 
-            transform: scale(1) rotate(0deg); 
-        }
-        15% { 
-            transform: scale(1.1) rotate(2deg); 
-        }
-        30% { 
-            transform: scale(1.05) rotate(-1deg); 
-        }
-        45% { 
-            transform: scale(1.15) rotate(1deg); 
-        }
-        60% { 
-            transform: scale(1.02) rotate(-0.5deg); 
-        }
-        75% { 
-            transform: scale(1.08) rotate(0.5deg); 
-        }
-    }
     </style>
-    <link rel="icon" href="../../../wp-content/uploads/2024/11/cropped-png-new-logo-aenfinite-1-32x32.png" sizes="32x32" />
-<link rel="icon" href="../../../wp-content/uploads/2024/11/cropped-png-new-logo-aenfinite-1-192x192.png" sizes="192x192" />
-<link rel="apple-touch-icon" href="../../../wp-content/uploads/2024/11/cropped-png-new-logo-aenfinite-1-180x180.png" />
-<meta name="msapplication-TileImage" content="https://aenfinite.com/wp-content/uploads/2024/11/cropped-png-new-logo-aenfinite-1-270x270.png" />
+    <link rel="icon" href="../../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-32x32.png" sizes="32x32" />
+<link rel="icon" href="../../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="../../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-180x180.png" />
+<meta name="msapplication-TileImage" content="https://aenfinite.com/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-270x270.png" />
 		<meta name="p:domain_verify" content="a289659500b9ab2eea935a542138f755"/>
 		<meta name="google-site-verification" content="w5x4RIV--Je9QfyBMKTz_kRMtBGYQ_0e80K3uAykqoc" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<!-- Powered by Aenfinite https://aenfinite.com/ -->
+		<!-- Powered by aenfinite.comhttps://aenfinite.com/ -->
 		<!--              
-				,AAA                 AAA        
-			  AA    AA            AA     AA     
-		   ,A          AA       AA         .A.  
-		 AA              AA  .A               AA
-		   A,               A               AA  
-			 AA                           A*    
-				A,                     AA       
-				  AA                 A*         
-					 A,           AA            
-					   AA       A*              
-						  A, AA                 
+				,DDD                 DDD        
+			  DD    DD            DD     DD     
+		   ,D          DD       DD         .D.  
+		 DD              DD  .D               DD
+		   D,               D               DD  
+			 DD                           D*    
+				D,                     DD       
+				  DD                 D*         
+					 D,           DD            
+					   DD       D*              
+						  D, DD                 
 							*
 		-->
 		<script src="../../../wp-content/themes/aenfinite.com/static/js/jquery.min.js"></script>
 		<script src="../../../wp-content/themes/aenfinite.com/static/js/slick.min.js"></script>
 		<link href="../../../wp-content/themes/aenfinite.com/static/css/mainf1a7.css?v=20250731-2020" rel="stylesheet" type="text/css" />
 		<link href="../../../wp-content/themes/aenfinite.com/stylef1a7.css?v=20250731-2020" rel="stylesheet" type="text/css" />
-		
+
 		<script src="../../../wp-content/themes/aenfinite.com/static/js/smartScroll.min.js"></script>
 		<script src="../../../wp-content/themes/aenfinite.com/static/js/gsap.min.js"></script>
 		<script src="../../../wp-content/themes/aenfinite.com/static/js/ScrollMagic.js"></script>
-		<script src="../../../wp-content/themes/aenfinite.com/static/js/animation.gsap.js"></script>
-		
-		<!-- Google tag (gtag.js) -->
+		<script src="../../../wp-content/themes/aenfinite.com/static/js/animation.gsap.js"></script>		<!-- Google tag (gtag.js) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-K9VRBCFE61"></script>
 		<script>
 		 window.dataLayer = window.dataLayer || [];
@@ -555,17 +360,540 @@
 		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'../www.googletagmanager.com/gtm5445.html?id='+i+dl;f.parentNode.insertBefore(j,f);
+		'../../../www.googletagmanager.com/gtm5445.html?id='+i+dl;f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer','GTM-53L4TW5R');</script>
 		<!-- End Google Tag Manager -->
 
 
-<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite® with ❤️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
+<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by aenfinite.comwith ️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
 		
-	<script src="../tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
+	<script src="../../../tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
 		
-	</head>
-	<body class="home page-template page-template-page-home-php page-id-2 document loading">
+	<!-- Checkbox Group Styling -->
+	<style>
+			.checkbox-group .list-item input[type="checkbox"]:checked + .list-item-label {
+			background: #227bf3 !important;
+			color: white !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) {
+			background: #227bf3 !important;
+			border-color: #227bf3 !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) .list-item-label {
+			color: white !important;
+		}
+		.form-control-wrap .checkbox-group {
+			display: flex !important;
+			flex-wrap: wrap !important;
+			gap: 10px !important;
+		}
+		
+		.checkbox-group .list-item {
+			display: flex !important;
+			align-items: center !important;
+			background: #f8f9fa !important;
+			border: 1px solid #e0e0e0 !important;
+			border-radius: 25px !important;
+			padding: 8px 16px !important;
+			transition: all 0.3s ease !important;
+			cursor: pointer !important;
+			min-width: fit-content !important;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+			margin: 0 !important;
+		}
+		
+		.checkbox-group .list-item:hover {
+			background: #e3f2fd !important;
+			border-color: #227bf3 !important;
+			box-shadow: 0 4px 8px rgba(34, 123, 243, 0.15) !important;
+			transform: translateY(-1px) !important;
+		}
+		
+		.checkbox-group .list-item input[type="checkbox"] {
+			margin: 0 8px 0 0 !important;
+			accent-color: #227bf3 !important;
+			transform: scale(1.1) !important;
+		}
+		
+		.checkbox-group .list-item-label {
+			font-size: 14px !important;
+			font-weight: 500 !important;
+			color: #555 !important;
+			cursor: pointer !important;
+			margin: 0 !important;
+			white-space: nowrap !important;
+		}
+		
+		.checkbox-group .list-item:hover .list-item-label {
+			color: #227bf3 !important;
+		}
+		
+		/* Force override any existing styles */
+		.checkbox-group span.list-item {
+			display: flex !important;
+			align-items: center !important;
+			background: #f8f9fa !important;
+			border: 1px solid #e0e0e0 !important;
+			border-radius: 25px !important;
+			padding: 8px 16px !important;
+			margin: 0 !important;
+		}
+		
+		/* Responsive design for contact form */
+		@media (max-width: 768px) {
+			.form-control-wrap .checkbox-group {
+				gap: 8px !important;
+			}
+			
+			.checkbox-group .list-item {
+				padding: 6px 12px !important;
+			}
+			
+			.checkbox-group .list-item-label {
+				font-size: 13px !important;
+			}
+		}
+		.checkbox-group {
+			display: flex !important;
+			flex-wrap: wrap !important;
+			gap: 15px !important;
+			margin-bottom: 20px !important;
+		}
+
+		.checkbox-item {
+			position: relative !important;
+			cursor: pointer !important;
+			display: inline-block !important;
+			margin: 0 !important;
+		}
+
+		.checkbox-item input[type="checkbox"] {
+			opacity: 0 !important;
+			position: absolute !important;
+			z-index: -1 !important;
+		}
+
+		.checkbox-item .checkmark {
+			display: inline-block !important;
+			padding: 10px 20px !important;
+			border: 2px solid #ddd !important;
+			border-radius: 25px !important;
+			background-color: #fff !important;
+			color: #333 !important;
+			font-size: 14px !important;
+			font-weight: 500 !important;
+			transition: all 0.3s ease !important;
+			cursor: pointer !important;
+			user-select: none !important;
+		}
+
+		.checkbox-item input[type="checkbox"]:checked + .checkmark {
+			background-color: #007cba !important;
+			color: white !important;
+			border-color: #007cba !important;
+			transform: scale(1.05) !important;
+		}
+
+		.checkbox-item:hover .checkmark {
+			border-color: #007cba !important;
+			transform: translateY(-2px) !important;
+			box-shadow: 0 4px 8px rgba(0, 124, 186, 0.2) !important;
+		}
+
+		@media (max-width: 768px) {
+			.checkbox-group {
+				gap: 10px !important;
+			}
+			
+			.checkbox-item .checkmark {
+				padding: 8px 16px !important;
+				font-size: 13px !important;
+			}
+		}
+
+		/* Navigation Logo Styling */
+		.nav-logo {
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			transition: all 0.3s ease;
+			filter: none;
+			object-fit: contain;
+			object-position: left center;
+		}
+		
+		/* Ensure consistent sizing for both logo variants */
+		.nav-logo-default,
+		.nav-logo-active {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			object-fit: contain;
+			object-position: left center;
+			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			transform-origin: left center;
+		}
+		
+		/* Container for logos to maintain position */
+		.topbar-logo a {
+			position: relative;
+			display: inline-block;
+			height: 28px;
+			min-width: 140px;
+		}
+		
+		/* Default state - show white logo, hide active logo */
+		.nav-logo-default {
+			display: block;
+			opacity: 1;
+			transform: scale(1);
+			z-index: 2;
+		}
+		
+		.nav-logo-active {
+			display: block;
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+		
+		/* When navbar becomes active/dark - hide white logo, show blue logo */
+		.mainnav.active .nav-logo-default,
+		.mainnav.always-active .nav-logo-default,
+		.mainnav:hover .nav-logo-default {
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+		
+		.mainnav.active .nav-logo-active,
+		.mainnav.always-active .nav-logo-active,
+		.mainnav:hover .nav-logo-active {
+			opacity: 1;
+			transform: scale(1.05);
+			z-index: 2;
+		}
+
+		/* Dotted Grid Background for Main Content Area */
+		
+		/* Remove hover box shadows from navbar elements */
+		.topnav a:hover,
+		.topbar-nav a:hover,
+		.topnav-item a:hover,
+		.topbar-contact_button:hover,
+		.topbar-social a:hover,
+		.mainnav a:hover,
+		.topbar a:hover {
+			box-shadow: none !important;
+			-webkit-box-shadow: none !important;
+			-moz-box-shadow: none !important;
+		}
+
+		/* Ensure no hover effects on navbar links */
+		.topnav-item a {
+			transition: color 0.3s ease !important;
+		}
+
+		.topnav-item a:hover {
+			box-shadow: none !important;
+			background: none !important;
+			border: none !important;
+			outline: none !important;
+		}
+
+		/* Contact button specific hover override */
+		.topbar-contact_button:hover {
+			box-shadow: none !important;
+			transform: none !important;
+		}
+
+		/* General navbar hover reset */
+		.mainnav *:hover {
+			box-shadow: none !important;
+		}
+
+		/* Remove ALL box shadows from ALL links on hover */
+		a:hover,
+		a:focus,
+		a:active {
+			box-shadow: none !important;
+			-webkit-box-shadow: none !important;
+			-moz-box-shadow: none !important;
+		}
+
+   		
+
+		/* Prevent horizontal scroll */
+		html, body {
+			overflow-x: hidden !important;
+			max-width: 100% !important;
+		}
+		
+		* {
+			box-sizing: border-box !important;
+		}
+
+		/* Responsive Grid System for Infobox */
+		.infobox-grid {
+			display: grid !important;
+			gap: 30px !important;
+			width: 100% !important;
+			max-width: 1200px !important;
+			margin: 0 auto !important;
+		}
+
+		/* Responsive 3-column grid that adapts to available space */
+		.infobox-grid.infobox-grid__3 {
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+		}
+
+		/* Responsive 2-column grid that adapts to available space */
+		.infobox-grid.infobox-grid__2 {
+			grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+		}
+
+		/* Remove any existing row/cell structure since we're using CSS Grid */
+		.infobox-row {
+			display: contents !important;
+		}
+
+		.infobox-cell {
+			display: contents !important;
+		}
+
+		/* Enhanced responsive breakpoints */
+		@media (max-width: 1024px) {
+			.infobox-grid.infobox-grid__3 {
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+				gap: 25px !important;
+			}
+			
+			.infobox-grid.infobox-grid__2 {
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+				gap: 25px !important;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.infobox-grid.infobox-grid__3,
+			.infobox-grid.infobox-grid__2 {
+				grid-template-columns: 1fr !important;
+				gap: 20px !important;
+			}
+		}
+
+		@media (max-width: 640px) {
+			.infobox-grid {
+				gap: 15px !important;
+				padding: 0 15px !important;
+			}
+		}
+
+		/* Ensure infobox cards work well with new grid */
+		.infobox {
+			width: 100% !important;
+			height: auto !important;
+			min-height: 250px !important;
+			display: flex !important;
+			flex-direction: column !important;
+		}
+
+		/* Enhanced Textbox Content Styling with Bottom Padding */
+		
+
+		/* Responsive textbox styling with bottom padding */
+		
+
+		/* Sticky Navbar Functionality - Maximum Specificity */
+		.mainnav,
+		div.mainnav,
+		.mainnav.js-mainnav {
+			position: fixed !important;
+			top: 0 !important;
+			left: 0 !important;
+			right: 0 !important;
+			width: 100% !important;
+			z-index: 9999 !important;
+			transition: all 0.3s ease !important;
+		}
+
+		/* Ensure navbar stays fixed even with external CSS */
+		body .mainnav,
+		html .mainnav {
+			position: fixed !important;
+			top: 0 !important;
+		}
+
+		/* Background and shadow when navbar becomes active on scroll */
+		.mainnav.active {
+			backdrop-filter: blur(10px) !important;
+			box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+		}
+
+		
+	</style>
+
+
+	<!-- Animated Cursor Implementation -->
+	<style>
+		* {
+			cursor: none !important;
+		}
+		
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
+		
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+	</style>
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.1, 1 - index * 0.05) + ")";
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+		</head>
+	<body class="page-template page-template-page-about-php page-id-4945 page-child parent-pageid-6 document loading body_hide document">
 		
 		<!-- Google Tag Manager (noscript) -->
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53L4TW5R"
@@ -585,46 +913,203 @@
 			</symbol>
 		</svg>
 		<div style="display:none!important;">
-						<div class="ip">3.212.124.91</div>
-			<div class="url">Homepage</div>
-			<div class="urlback"></div>
+						<div class="ip">196.25.124.178</div>
+			<div class="url">Partner with us</div>
+			<div class="urlback">https://aenfinite.com/services/web-design/</div>
 			<div class="datas">08.15.2025</div>
-			<div class="times">10-31 am</div>
+			<div class="times">9-55 am</div>
 		</div>	
 		<div class="mainnav js-mainnav ">
 			<div class="wrapper">
 				<div class="topbar">
 					<div class="topbar-nav js-topnav-follow">
 						<div class="topbar-logo js-topnav-follow-item active">
-							<a href="">
+							<a href="/">
 								<img src="../../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
 								<img src="../../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
 							</a>
 						</div>
 						<ul class="topnav desktop">
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="featured-work/">Work</a>
+								<a href="/featured-work/">Work</a>
 							</li>
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="agency/">Agency</a>
+								<a href="/agency/">Agency</a>
 							</li>
-							<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-								<a href="services/">Services</a>
-								<ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list"><li id="menu-item-2275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2275"><a href="services/web-design/">Web Design</a></li>
-<li id="menu-item-2276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2276"><a href="services/branding/">Branding</a></li>
-<li id="menu-item-6909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6909"><a href="services/trade-show-booth-design/">Trade Shows</a></li>
-<li id="menu-item-2277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2277"><a href="services/packaging-design/">Packaging Design</a></li>
-<li id="menu-item-ecommerce" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-ecommerce"><a href="services/e-commerce-websites/">E-Commerce Solutions</a></li>
-</ul>	
-							</li>
-						</ul>
+							                            <li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
+                                <a href="/services/">Services</a>
+                                <ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Development Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/wordpress-websites/">WordPress Websites</a></li>
+<li><a href="/services/e-commerce-websites/">E-Commerce Websites</a></li>
+											<li><a href="/services/custom-web-development">Custom Web Development</a></li>
+											<li><a href="/services/software-&-platform-development/">Software & Platform Development</a></li>
+											<li><a href="/services/app-development/">App Development</a></li>
+											<li><a href="/services/web-design/">Website Design & Development</a></li>
+											<li><a href="/services/web-design-and-branding-for-real-estate/">Real Estate Web Solutions</a></li>                                      </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Design & Creative Services ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ui-ux-design/">UI/UX Design</a></li>
+
+                                            <li><a href="/services/branding/">Brand Identity & Strategy</a></li>
+                                            <li><a href="/services/graphic-design/">Graphic Design</a></li>
+                                            <li><a href="/services/motion-graphics/">Motion Graphics</a></li>
+                                            <li><a href="/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+                                            <li><a href="/services/conference-branding/">Conference Branding</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Marketing & Digital Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/digital-marketing/">Digital Marketing Strategy</a></li>
+                                            <li><a href="/services/search-engine-optimization/">Search Engine Optimization (SEO)</a></li>
+                                            <li><a href="/services/pay-per-click">Pay-Per-Click (PPC) Advertising</a></li>
+                                            <li><a href="/services/social-media-marketing/">Social Media Marketing</a></li>
+                                            <li><a href="/services/paid-ads/">Paid Advertising</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">AI & Technology Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ai-chatbots-&-virtual-assistants/">AI Chatbots & Virtual Assistants</a></li>
+                                            <li><a href="/services/workflow-&-business-automation/">Workflow & Business Automation</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li><style>/* Multi-Level Dropdown Navigation Styles - Partner With Us Style */
+.menu-item-has-children {
+    position: relative;
+}
+
+		/* Dotted Grid Background for Main Content Area */
+		
+/* Main dropdown from Services menu - adaptive styling */
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Sub-menus - adaptive styling based on navbar state */
+.sub-menu {
+    position: absolute;
+    top: -5px;
+    left: 100%;
+    margin-left: 1px;
+    min-width: 250px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    z-index: 1001;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Default dropdown styling - no background, dark text (for top of page) */
+.dropdown-list a,
+.sub-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.dropdown-list a:hover,
+.sub-menu a:hover {
+    color: #007cba;
+    padding-left: 15px;
+}
+
+/* When navbar is active/scrolled - black background, white text */
+.mainnav.active .dropdown-list,
+.mainnav.active .sub-menu {
+    margin-top: 10px;
+    background: #000;
+}
+
+.mainnav.active .dropdown-list a,
+.mainnav.active .sub-menu a {
+    color: #fff;
+}
+
+.mainnav.active .dropdown-list a:hover,
+.mainnav.active .sub-menu a:hover {
+    color: #007cba;
+}
+
+/* When hovering over menu item with children, expand main dropdown to match sub-menu */
+.menu-item-has-children:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Expand main dropdown when sub-menu is hovered */
+.menu-item-has-children:hover {
+    min-width: 250px;
+}
+.header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+.dropdown-list:has(.menu-item-has-children:hover) {
+    min-width: 250px;
+    width: 250px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sub-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 3px solid #007cba;
+        margin-left: 15px;
+        background: #f9f9f9;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .menu-item-has-children.active > .sub-menu {
+        max-height: 500px;
+    }
+}</style>						</ul>
 						<div class="topnav-follower desktop js-topnav-follow-bar"></div>
 					</div>
 					<div class="topbar-social desktop">
-						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="agency/partner-with-us/">Partner with us</a></li>
+						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="../../../agency/partner-with-us/">Partner with us</a></li>
 </ul>					</div>
 					<div class="topbar-contact desktop">
-						<a href="contact/index57fd.html?linkcontact=top-contact-button" class="topbar-contact_button">Contact</a>
+						<a href="../../../contact/index57fd.html?linkcontact=top-contact-button" class="topbar-contact_button">Contact</a>
 					</div>
 					<div class="menu-button mobile js-menu-toggle"><i></i></div>
 				</div>
@@ -633,14 +1118,13 @@
 				<div class="mainnav-dropdown-layer-container js-dropdown-layer-text">
 					<div class="wrapper">
 						<div class="mainnav-dropdown-layer-text">
-							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@aenfinite.com.com">hello@aenfinite.com</a>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 		
-				<div class="container">
+		<div class="container">
 		
 			<div class="header js-active-header">
 	<div class="wrapper">
@@ -657,118 +1141,26 @@
 					<line x1="100%" y1="0" x2="0" y2="100%" vector-effect="non-scaling-stroke"></line>
 				</g>
 			</svg>
-			<span class="header-cross_text">Innovating in your industry</span>
+			<span class="header-cross_text">Redefine Infinite Possibilities</span>
 		</div>
 		<div class="header-wrapper">
 			<div class="header-caption">
 				<div class="title title__main js-header-title">
 					<h1>
-						<span>Referral Program</span>
+						<span>White Label <span style="background: #227bf3; color: white; text-align: center;">Services</span></span>
 													<span></span>	
 											</h1>
 									</div>
 			</div>
-			<div class="header-reviews">
-				<script src="../../../widget.clutch.co/static/js/widget.js"></script>
-				<div class="clutch-widget" data-nofollow="true" data-url="https://widget.clutch.co" data-widget-type="2" data-height="45" data-clutchcompany-id="599131"></div>
-				<div class="reviews" hidden>
-					<div class="reviews-col">
-						<div class="reviews-pretitle">Reviewed on</div>
-						<div class="reviews-logo">
-							<img src="../../../wp-content/themes/aenfinite.com/static/img/clutch.svg" alt="" />
-						</div>
-					</div>
-					<div class="reviews-col">
-						<div class="reviews-stars"></div>
-						<div class="reviews-num">54 reviews</div>
-					</div>
-				</div>
-			</div>
+			
 
 		</div>
 
 		                <div class="preloader">
-                    <div class="preloader-inner">
-                        <div class="preloader-logo">
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 143.2 147" style="enable-background:new 0 0 143.2 147;" xml:space="preserve">
-                                    <path d="M140.2,34.8c-2-6.3-4.7-11.5-8.1-15.7c-3.4-4.2-7.2-7.6-11.4-10.1c-4.2-2.5-8.6-4.4-13.1-5.8c-4.5-1.3-8.9-2.2-13.2-2.6
-	S86.1,0,82.7,0H0v114.6h25.1v0.1h57.7c3.4,0,7.3-0.2,11.6-0.6s8.7-1.2,13.2-2.6c4.5-1.3,8.9-3.3,13.1-5.8c4.2-2.5,8-5.9,11.4-10.1
-	c3.4-4.2,6.1-9.5,8.1-15.7c2-6.3,3-13.8,3-22.5v-0.1C143.2,48.6,142.2,41.1,140.2,34.8z M113.5,64.2c-1.2,10.8-9.8,21.8-21.8,21.8
-	h-63V28.7h63c12,0,20.6,11,21.8,21.8c0.3,2.3,0.5,4.4,0.5,6.9C113.9,59.8,113.8,61.9,113.5,64.2z" />
-                                </svg>
-                            </div>
-                            <div class="logo-cut">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 607.6 147" style="enable-background:new 0 0 607.6 147;" xml:space="preserve">
+                   <div class="preloader-inner">
+						<iframe src="/intro/demo/data.html" style="width: 100vw; height: 100vh;" ></iframe>
+                      
 
-                                    <path d="M49.8,114.6V0h-3.6H21.1v114.5h25.1v0.1H49.8z" />
-                                    <path d="M249.5,114.6V0h-3.6h-25.1v114.5h25.1v0.1H249.5z" />
-                                    <path d="M438.8,0L493,114.6h-32l-11-24.9h-57.2l-11,24.9h-32L404.1,0H438.8z M437.9,62.6l-16.4-37.4l-16.6,37.4H437.9z" />
-                                    <path d="M332.1,0h-3.6h-25.1h-43v3.6v25.1h43v85.9h25.1v0.1h3.6v-86H375V3.6h0.1V0H332.1z" />
-                                    <path d="M521.6,86V0H518h-25v86v3.6v25v0.1h25h3.6h85.9V89.6h0.1V86H521.6z" />
-                                    <path d="M123.1,54.8v20.1h52.1c-0.7,3.5-2.6,6.5-5.6,9c-3,2.4-6.9,3.6-11.6,3.6h-46.1c-12,0-20.6-12.5-21.8-23.3
-	c-0.3-2.3-0.5-4.4-0.5-6.9c0-2.4,0.2-4.6,0.5-6.9c1.2-10.8,9.8-21.8,21.8-21.8h42.3c10.8,0,19.8,7.9,21.5,18.2h30
-	c-0.9-7.2-2.5-13.3-4.9-18.4c-2.4-5.1-5.3-9.4-8.7-12.8c-3.4-3.5-7.1-6.2-11.1-8.3c-4-2-8.1-3.6-12.3-4.7c-4.2-1.1-8.2-1.8-12.2-2.2
-	c-4-0.3-7.5-0.5-10.7-0.5h-25c-3.4,0-7.3,0.2-11.6,0.6C104.9,1,100.5,1.8,96,3.2c-4.5,1.3-8.9,3.3-13.1,5.8
-	c-4.2,2.5-8,5.9-11.4,10.1c-3.4,4.2-6.1,9.5-8.1,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5c2,6.3,4.7,11.5,8.1,15.7
-	c3.4,4.2,7.2,7.6,11.4,10.1c4.2,2.5,8.6,4.4,13.1,5.8c4.5,1.3,8.9,2.2,13.2,2.6c4.3,0.4,8.2,0.6,11.6,0.6h25.5
-	c2.4,0,5.1-0.1,7.9-0.3c2.8-0.2,5.8-0.6,8.9-1.1c3.1-0.6,6.2-1.3,9.3-2.3c3.1-1,6.2-2.4,9.1-4.1l3.5,7.9h20.7V54.8H123.1L123.1,54.8
-	z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 143.2 147" style="enable-background:new 0 0 143.2 147;" xml:space="preserve">
-                                    <path d="M140.2,34.8c-2-6.3-4.7-11.5-8.1-15.7c-3.4-4.2-7.2-7.6-11.4-10.1c-4.2-2.5-8.6-4.4-13.1-5.8c-4.5-1.3-8.9-2.2-13.2-2.6
-	S86.1,0,82.7,0H0v114.6h25.1v0.1h57.7c3.4,0,7.3-0.2,11.6-0.6s8.7-1.2,13.2-2.6c4.5-1.3,8.9-3.3,13.1-5.8c4.2-2.5,8-5.9,11.4-10.1
-	c3.4-4.2,6.1-9.5,8.1-15.7c2-6.3,3-13.8,3-22.5v-0.1C143.2,48.6,142.2,41.1,140.2,34.8z M113.5,64.2c-1.2,10.8-9.8,21.8-21.8,21.8
-	h-63V28.7h63c12,0,20.6,11,21.8,21.8c0.3,2.3,0.5,4.4,0.5,6.9C113.9,59.8,113.8,61.9,113.5,64.2z" />
-                                </svg>
-                            </div>
-                            <div class="logo-cut">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 607.6 147" style="enable-background:new 0 0 607.6 147;" xml:space="preserve">
-                                    <path d="M164.2,35.4c0,2.4,1.4,4.1,4.1,5.1c2.8,1.1,6.4,1.8,10.9,2.2c4.5,0.4,9.6,0.7,15.3,0.8c5.7,0.1,11.6,0.4,17.7,0.9
-	c6,0.5,12,1.3,17.7,2.5c5.7,1.2,10.9,3.1,15.3,5.7c4.5,2.6,8.1,6.1,10.9,10.4c2.7,4.3,4.1,9.8,4.1,16.5c0,2.1-0.2,4.5-0.6,7.1
-	c-0.4,2.6-1.2,5.2-2.4,7.8c-1.2,2.6-3,5.2-5.4,7.6c-2.3,2.5-5.5,4.6-9.4,6.5c-3.9,1.9-8.7,3.4-14.5,4.5c-5.7,1.1-12.6,1.7-20.5,1.7
-	h-20c-7.9,0-14.8-0.7-20.5-2.1c-5.7-1.4-10.6-3.2-14.5-5.4c-3.9-2.2-7-4.7-9.4-7.6c-2.3-2.9-4.2-5.8-5.4-8.8
-	c-1.2-2.9-2.1-5.8-2.4-8.7c-0.4-2.8-0.5-5.3-0.5-7.5h29.6c0,0.9,0.2,1.9,0.6,3.2s1.1,2.5,2.1,3.7c1,1.2,2.6,2.2,4.6,3.1
-	c2,0.9,4.7,1.3,7.9,1.3h40.7c4.2,0,7-0.6,8.4-1.9c1.4-1.3,2.1-2.8,2.1-4.5c0-2.6-1.4-4.4-4.1-5.6c-2.8-1.2-6.4-2-10.9-2.4
-	c-4.5-0.4-9.6-0.7-15.4-0.7c-5.8-0.1-11.7-0.3-17.7-0.8c-6-0.5-11.9-1.3-17.7-2.4c-5.8-1.1-10.9-2.9-15.4-5.5
-	c-4.5-2.5-8.1-5.9-10.9-10.2c-2.7-4.3-4.1-9.8-4.1-16.5c0-3.3,0.5-7,1.5-11.1c1-4.1,3.3-7.9,6.9-11.5c3.6-3.6,8.9-6.6,16-9.1
-	c7-2.5,16.6-3.7,28.6-3.7h19.9c8,0,14.9,0.7,20.7,2.1c5.7,1.4,10.6,3.2,14.5,5.5c3.9,2.2,7,4.8,9.4,7.6c2.3,2.8,4.2,5.8,5.4,8.8
-	c1.2,3,2.1,5.9,2.4,8.7c0.4,2.8,0.5,5.3,0.5,7.5h-29.8c0-0.9-0.2-1.9-0.5-3.2c-0.3-1.3-1-2.5-2.1-3.7c-1.1-1.2-2.6-2.2-4.6-3.1
-	c-2-0.9-4.6-1.3-8-1.3h-40.7c-4.3,0-7.1,0.6-8.4,1.8C164.9,32,164.2,33.5,164.2,35.4L164.2,35.4z" />
-                                    <path d="M579.7,28.7v28.6V86L509.9,0.1h-13.9h-14H468v28.6v28.6V86v28.6h27.9V86V57.3V28.7l69.8,85.9h13.9h14h13.9V86V57.3V28.7V0.1
-	h-27.9V28.7z" />
-                                    <path d="M119.8,68.4V49.1h0.1v-2.8h-92V28.7h91.9V3.6h0.1V0h-92h-3.5H0v3.6v25.1V86v3.6v25v0.1h119.8v-25h0.1V86h-92V68.4H119.8z" />
-                                    <path d="M300.9,114.7V0.1h-3.5H273v114.5h24.4v0.1H300.9z" />
-                                    <path d="M374.7,54.8v20.1h50.8c-0.7,3.5-2.5,6.5-5.4,9c-2.9,2.4-6.7,3.6-11.3,3.6h-44.9c-11.7,0-20.1-12.5-21.3-23.3
-	c-0.3-2.3-0.4-4.4-0.4-6.9c0-2.4,0.2-4.6,0.4-6.9c1.2-10.8,9.5-21.8,21.3-21.8h41.2c10.6,0,19.3,7.9,21,18.2h29.3
-	c-0.8-7.2-2.4-13.3-4.8-18.4c-2.3-5.1-5.2-9.4-8.5-12.8c-3.3-3.5-6.9-6.2-10.8-8.3c-3.9-2-7.9-3.6-12-4.7c-4.1-1.1-8-1.8-11.9-2.2
-	c-3.9-0.3-7.4-0.5-10.5-0.5h-24.4c-3.3,0-7.1,0.2-11.3,0.6c-4.2,0.4-8.5,1.2-12.9,2.6c-4.4,1.3-8.6,3.3-12.7,5.8
-	c-4.1,2.5-7.8,5.9-11.1,10.1c-3.3,4.2-5.9,9.5-7.9,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5c2,6.3,4.6,11.5,7.9,15.7
-	c3.3,4.2,7,7.6,11.1,10.1c4.1,2.5,8.4,4.4,12.7,5.8c4.4,1.3,8.7,2.2,12.9,2.6c4.2,0.4,8,0.6,11.3,0.6h24.8c2.4,0,4.9-0.1,7.7-0.3
-	c2.8-0.2,5.7-0.6,8.7-1.1c3-0.6,6-1.3,9.1-2.3c3.1-1,6-2.4,8.9-4.1l3.4,7.9h20.2V54.8H374.7L374.7,54.8z" />
-                                </svg>
-
-                            </div>
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 508.3 147" style="enable-background:new 0 0 508.3 147;" xml:space="preserve">
-
-                                    <path d="M205.4,28.7v28.6V86L133.8,0.1h-14.3h-14.3H90.8v28.6v28.6V86v28.6h28.6V86V57.3V28.7l71.6,85.9h14.3h14.3H234V86V57.3V28.7
-	V0.1h-28.6V28.7z" />
-                                    <path d="M377.2,0.1h-35.8l-35.8,43l-35.8-43H234l57.3,68.7V86v28.6H320V86V68.8L377.2,0.1z" />
-                                    <path d="M456.7,86.1h-42.3c-12,0-20.6-11-21.8-21.8c-0.3-2.3-0.5-4.4-0.5-6.9c0-2.4,0.2-4.6,0.5-6.9c1.2-10.8,9.8-21.8,21.8-21.8
-	h42.3c10.8,0,19.8,7.9,21.5,18.2h30c-0.9-7.2-2.5-13.3-4.9-18.4c-2.4-5.1-5.3-9.4-8.7-12.8c-3.4-3.5-7.1-6.2-11.1-8.3
-	c-4-2-8.1-3.6-12.3-4.7c-4.2-1.1-8.2-1.8-12.2-2.2s-7.5-0.5-10.7-0.5h-25c-3.4,0-7.3,0.2-11.6,0.6c-4.3,0.4-8.7,1.2-13.2,2.6
-	c-4.5,1.3-8.9,3.3-13.1,5.8c-4.2,2.5-8,5.9-11.4,10.1c-3.4,4.2-6.1,9.5-8.1,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5
-	c2,6.3,4.7,11.5,8.1,15.7c3.4,4.2,7.2,7.6,11.4,10.1c4.2,2.5,8.6,4.4,13.1,5.8c4.5,1.3,8.9,2.2,13.2,2.6c4.3,0.4,8.2,0.6,11.6,0.6
-	h25c3.2,0,6.8-0.2,10.7-0.5c4-0.3,8-1,12.2-2.2c4.2-1.1,8.2-2.7,12.3-4.7c4-2,7.7-4.8,11.1-8.3c3.4-3.5,6.3-7.8,8.7-12.8
-	s4-11.2,4.9-18.4h-30C476.5,78.2,467.5,86.1,456.7,86.1L456.7,86.1z" />
-                                    <path fill="#227bf3" d="M20.2,126.5l20.3,20.2l20.3-20.2L81,106.2L60.8,86l-20.3,20.3L20.2,86L0,106.2L20.2,126.5z" />
-                                </svg>
-                            </div>
-                        </div>
                     </div>
                 </div>
 	</div>
@@ -796,68 +1188,92 @@
 			<div class="header-marquee runner js-runner">
 				<div class="js-runner-content">
 											<div class="marquee-line">
-															<span class="marquee-line_text">Best Agency of 2024</span>
-															<span class="marquee-line_text">Webby Nominee 2023 & 2024</span>
-													</div>
+    <span class="marquee-line_text">Innovative Design & Development Agency</span>
+    <span class="marquee-line_text">Custom Websites, Apps & Brand Experiences</span>
+    <span class="marquee-line_text">Serving Clients Across the US, Canada & Beyond</span>
+    <span class="marquee-line_text">Experts in UI/UX, SEO & Growth Marketing</span>
+    <span class="marquee-line_text">Trusted by Startups & Global Enterprises</span>
+    <span class="marquee-line_text">Skilled Team – React, WordPress, Firebase, Figma</span>
+    <span class="marquee-line_text">Agile & Data-Driven Development Process</span>
+    <span class="marquee-line_text">Global Agency with Southeast Asian Roots</span>
+    <span class="marquee-line_text">Empowering Businesses with Scalable Solutions</span>
+    <span class="marquee-line_text">Tailor-Made Strategies for Every Industry</span>
+    <span class="marquee-line_text">Web, Mobile, and SaaS Development Experts</span>
+    <span class="marquee-line_text">Results-Driven Digital Marketing Solutions</span>
+</div>
 									</div>
 			</div>
 		</div>
 		
-			<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-									<div class="section-caption js-aos">
-						<div class="section-caption_text">
-							<h2>About aenfinite.com®</h2>
-						</div>
-					</div>
-								<div class="textbox appear js-aos">
-					<div class="textbox-content">
-						Founded in 2015, aenfinite.com® has grown into a leading creative design agency, specializing in innovative branding, product packaging, and web design/development across a wide range of industries. As the #1 Women-Owned Creative Design Agency globally and an M/WBE Certified company in Denver, New York, and Nationally, we are proud to set the standard for design excellence.					</div>
-				</div>
-				<div class="logotype"><span><img src="../../../wp-content/uploads/2024/07/Frame-2.png" alt="" /></span><span><img src="../../../wp-content/uploads/2024/07/New-York-State-Certified-Woman-owned-business-1.png" alt="aenfinite.com® New-York-State-Certified-Woman-owned-business" /></span><span><img src="../../../wp-content/uploads/2024/07/Frame-1.png" alt="" /></span><span><img src="../../../wp-content/uploads/2024/03/220224_AnthemAwards_079-1.webp" alt="aenfinite.com® Anthem Awards Winner" /></span></div>			</div>
-		</div>
-	</div>
+		<div class="section"> 		
+  <div class="wrapper"> 			
+    <div class="inner-wrapper"> 									
+      <div class="section-caption js-aos"> 						
+        <div class="section-caption_text"> 							
+          <h1> Aenfinite® - Offer White Label Partnerships</h1> 						
+        </div> 					
+      </div> 								
+      <div class="textbox appear js-aos"> 					
+        <div class="textbox-content"> 						
+          Partner with Aenfinite for comprehensive <strong>White Label Partnerships</strong> that scale your agency's capabilities without the overhead. 
+          Aenfinite® delivers <strong>branding</strong>, <strong>web design</strong>, <strong>UI/UX, development</strong>, <strong>digital marketing</strong>, <strong>app development</strong>, <strong>software solutions</strong>, <strong>AI automation</strong> and more. All executed under your agency's brand to help you scale and succeed.
+          <br /><br />
+          <strong>Over 8+ years of white label experience</strong> serving agencies worldwide, we've completed <strong>300+ white label projects</strong> with a 
+          <strong>98% client retention rate</strong>. Our dedicated white label division ensures consistent quality, quick turnaround time, and seamless client communication. 
+          <br /><br />
+          From concept to completion, we work as an invisible extension of your team, maintaining your brand standards while delivering 
+          exceptional results that impress your clients and grow your business.					
+        </div> 				
+      </div> 				
+      <div class="logotype" style="padding: 30px;">
+        <span><img src="https://assets.crowdspring.com/marketing/landing-page/dba/colorado-state-seal.png" alt="Aenfinite Certification of colorado" style="padding: 35px;" /></span>
+        <span><img src="https://i0.wp.com/storyteller.co.za/wp-content/uploads/2018/06/How-To-Get-More-Google-Reviews-.png?fit=1030%2C514&ssl=1" style="padding: 35px;"/></span>
+        <span><img src="https://www.pikpng.com/pngl/b/328-3285377_how-to-apply-trustpilot-5-star-logo-clipart.png" style="padding: 35px;" alt="Aenfinite Recognized Agency" /></span>
+      </div>			
+    </div> 		
+  </div> 	
+</div>
+
 	<div class="section">
 		<div class="wrapper">
 			<div class="inner-wrapper">
 									<div class="section-caption js-aos">
 						<div class="section-caption_text">
-							<h2>aenfinite.com® Key Statistics</h2>
+							<h2>White Label Service Excellence</h2>
 						</div>
 					</div>
 								<div class="keynumbers">
 											<div class="keynumber js-aos">
 							<div class="keynumber-caption">
-								<span>Clients</span>
+								<span>White Label Projects</span>
 							</div>
 							<div class="keynumber-value">
 								<span>300+</span>
 							</div>
 							<div class="keynumber-description">
-								<p>We love creating long-lasting relationships with our clients. Our services extend beyond the delivery of the product into brand support, maintenance, and ongoing iterations of many of our digital and physical designs. </p>
+								<p>Successfully completed over 300 white label projects for agencies worldwide, maintaining the highest quality standards while delivering under partner agency branding.</p>
 							</div>
 						</div>
 											<div class="keynumber js-aos">
 							<div class="keynumber-caption">
-								<span>Departments</span>
+								<span>Partner Agencies</span>
 							</div>
 							<div class="keynumber-value">
-								<span>05</span>
+								<span>100+</span>
 							</div>
 							<div class="keynumber-description">
-								<p>Our agencys various departments specialize in unique individual offerings. Larger projects often require us to engage multiple teams to work closely together to create breathtaking products. The final products speak for themselves.</p>
+								<p>Trusted white label partner for over 100+ agencies globally, providing seamless design and development services that enhance their client offerings and business growth.</p>
 							</div>
 						</div>
 											<div class="keynumber js-aos">
 							<div class="keynumber-caption">
-								<span>Talents</span>
+								<span>Client Retention</span>
 							</div>
 							<div class="keynumber-value">
-								<span>50+</span>
+								<span>98%</span>
 							</div>
 							<div class="keynumber-description">
-								<p>Our multi-disciplinary team of creative technologists, experienced with both startup and enterprise projects, will be uniquely suited to solve your business challenges and achieve your business goals through thoughtful design. </p>
+								<p>Industry-leading 98% client retention rate in white label services, achieved through consistent quality delivery, transparent communication, and flexible post-paid payment terms.</p>
 							</div>
 						</div>
 									</div>
@@ -867,37 +1283,50 @@
 <div class="section">
 	<div class="wrapper">
 		<div class="textbox-content normaltext">
-			<h2><strong>Why work with aenfinite.com®?</strong></h2>
-<p>&nbsp;</p>
-<p>At aenfinite.com®, we don&#8217;t just design and develop€”we craft experiences that resonate. As a dynamic and forward-thinking agency, we&#8217;re at the forefront of innovation, blending creativity with cutting-edge technology to deliver exceptional results for our clients. By joining our team, you&#8217;ll collaborate with a passionate group of professionals who are committed to pushing boundaries and setting new industry standards. Here, your ideas are valued, your growth is nurtured, and your impact is tangible. At aenfinite.com®, your work doesn&#8217;t just meet expectations€”it redefines them. Join us, and be a part of something extraordinary.</p>
-<p>&nbsp;</p>
-<p>Interested candidates can email <a href="mailto:hr@aenfinite.com" target="_blank" rel="noopener">hr@aenfinite.com</a> with their CVs and/or Portfolios.</p>
+			<h2><strong>Why Choose Our White Label Services?</strong></h2>
+			<p>&nbsp;</p>
+			<p>At <strong>Aenfinite®</strong>, we believe in growing together with our partners. That’s why we offer a white-label partnership program, allowing agencies to leverage our <strong>web design, app development, branding, digital marketing, e-commerce, UI/UX design, and full-spectrum digital solutions</strong> under their own brand. Deliver world-class services to your clients while we handle the execution seamlessly behind the scenes.</p>
+			<p>&nbsp;</p>
+			<p>By joining our white label partnership, you’re not just recommending an agency—you’re helping brands experience innovation and quality that scale your business offerings and deliver premium digital experiences. Every successful white label project helps you, while giving your network access to a <strong>trusted digital innovation agency</strong> that delivers measurable results.</p>
+			<p>&nbsp;</p>
+			<p><strong>Here’s why you’ll love partnering with us:</strong></p>
+			<ul>
+				<li><strong>Complete Brand Transparency:</strong> We operate entirely under your agency's branding with zero visibility to your clients</li>
+				<li><strong>Post-Paid Payment Terms:</strong> Flexible payment arrangements with net-30 terms for established agency partners</li>
+				<li><strong>Dedicated Account Management:</strong> Your own project manager ensuring consistent quality and communication</li>
+				<li><strong>Scalable Capacity:</strong> Handle overflow work or expand into new service areas without hiring overhead</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>Ready to explore white label partnership opportunities? Email us at 
+				<a href="mailto:whitelabel@aenfinite.com" target="_blank" rel="noopener">whitelabel@aenfinite.com</a> 
+				to discuss how we can help scale your agency today.</p>
 		</div>
 	</div>
 </div>
+
 	<div class="section">
 		<div class="wrapper">
 			<div class="inner-wrapper">
 				<div class="section-caption js-aos">
 					<div class="section-caption_text">
-						<h2>White Label Services</h2>
+						<h2>Our White Label Services</h2>
 					</div>
 				</div>
-				<div class="textbox appear js-aos">
+				<div class="textbox appear js-aos" style="margin-bottom: 80px;">
 					<div class="textbox-content">
-						Scale your agency with Aenfinite's premium white label design services. Professional branding, web design, and digital marketing solutions delivered under your brand.
+						Complete white label solutions for every digital experience your agency need. From web design and app development to branding, digital marketing, e-commerce, UI/UX design, and beyond - we deliver premium services across all digital touchpoints under your agency's brand.
 					</div>
 				</div>
-				<div class="infobox-grid infobox-grid__3">
+				<div class="infobox-grid infobox-grid__2">
 					<div class="infobox-row">
 						<div class="infobox-cell">
 							<div class="infobox appear js-aos">
-								<div class="infobox-title">Complete Brand Invisibility</div>
+								<div class="infobox-title">Web Design & Development</div>
 								<div class="infobox-description">
-									<p>All deliverables, communications, and project materials carry your agency's branding exclusively. Your clients never know we exist.</p>
+									<p>Complete website design and development services, from WordPress to custom applications. All delivered under your branding with post-paid terms.</p>
 								</div>
 								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Brand Invisibility" class="redlink">
+									<a href="../../../services/web-design/" class="redlink">
 										<span>Learn More</span>
 									</a>
 								</div>
@@ -905,26 +1334,104 @@
 						</div>
 						<div class="infobox-cell">
 							<div class="infobox appear js-aos">
-								<div class="infobox-title">Zero Overhead Investment</div>
+								<div class="infobox-title">Branding & Identity</div>
 								<div class="infobox-description">
-									<p>Access our 50+ expert team including senior designers, developers, strategists, and project managers without hiring costs.</p>
+									<p>Complete brand identity systems including logos, brand guidelines, and marketing collateral. Professional branding solutions for your agency clients.</p>
 								</div>
 								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Team Access" class="redlink">
-										<span>View Team</span>
+									<a href="../../../services/branding/" class="redlink">
+										<span>Learn More</span>
 									</a>
 								</div>
 							</div>
 						</div>
 						<div class="infobox-cell">
 							<div class="infobox appear js-aos">
-								<div class="infobox-title">Premium Profit Margins</div>
+								<div class="infobox-title">Digital Marketing</div>
 								<div class="infobox-description">
-									<p>Competitive wholesale pricing structure allows 40-65% profit margins on all projects. Volume discounts available.</p>
+									<p>SEO optimization, social media management, and digital advertising campaigns. Complete digital marketing solutions delivered as white label services.</p>
 								</div>
 								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Pricing Structure" class="redlink">
-										<span>Get Pricing</span>
+									<a href="../../../services/digital-marketing/" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">Mobile App Development</div>
+								<div class="infobox-description">
+									<p>Native and cross-platform mobile applications for iOS and Android. Complete app development lifecycle from concept to app store deployment.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="../../../services/app-development/" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">E-commerce Solutions</div>
+								<div class="infobox-description">
+									<p>Complete e-commerce platforms including Shopify, WooCommerce, and custom solutions. Online store design, development, and optimization services.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="../../../services/e-commerce-websites/" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">UI/UX Design</div>
+								<div class="infobox-description">
+									<p>User interface and experience design for web and mobile applications. Comprehensive design research, prototyping, and user testing services.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="../../../services/ui-ux-design/" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">Graphic Design & Print</div>
+								<div class="infobox-description">
+									<p>Complete graphic design services including marketing materials, packaging, print collateral, and promotional graphics for all media channels.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="../../../services/graphic-design/" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">Custom Software Development</div>
+								<div class="infobox-description">
+									<p>Bespoke software solutions including SaaS platforms, business applications, and integration services tailored to your clients' specific needs.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="../../../services/software-&-platform-development/" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">& More Digital Services</div>
+								<div class="infobox-description">
+									<p>Every digital experience your agency needs - from video production and animation to AR/VR solutions and emerging technologies. Complete digital ecosystem coverage.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="../../../services/" class="redlink">
+										<span>Learn More</span>
 									</a>
 								</div>
 							</div>
@@ -934,416 +1441,96 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="section">
 		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Our White Label Service Portfolio</h2>
-					</div>
-				</div>
-				<div class="infobox-grid infobox-grid__3">
-					<div class="infobox-row">
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Brand Design & Identity</div>
-								<div class="infobox-description">
-									<p>Complete brand systems including logo design, brand guidelines, color palettes, typography systems, and visual identity standards for all industries.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Brand Design Services" class="redlink">
-										<span>Brand Portfolio</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Web Development Solutions</div>
-								<div class="infobox-description">
-									<p>Custom websites, e-commerce platforms, web applications, and technical services including performance optimization and security implementation.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Web Development" class="redlink">
-										<span>Development Portfolio</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Digital Marketing Services</div>
-								<div class="infobox-description">
-									<p>SEO, content marketing, paid advertising, social media management, and marketing automation with comprehensive ROI tracking and reporting.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Marketing Services" class="redlink">
-										<span>Marketing Solutions</span>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="textbox-content normaltext">
+				<h2><strong>Complete Digital Experience Coverage</strong></h2>
+				<p>&nbsp;</p>
+				<p>Unlike agencies that specialize in just a few services, <strong>Aenfinite's white label program covers every digital touchpoint</strong> your clients need. From initial brand strategy and web design to app development, e-commerce platforms, digital marketing campaigns, and emerging technologies - we ensure your agency can confidently take on any digital project.</p>
+				<p>&nbsp;</p>
+				<p>Our comprehensive service portfolio includes: <strong>web design & development, mobile applications, e-commerce solutions, branding & identity, UI/UX design, digital marketing, graphic design, custom software development, and any emerging digital technology</strong> your clients require.</p>
+				<p>&nbsp;</p>
+				<p><strong>One partnership. Every digital solution. Complete brand consistency.</strong></p>
 			</div>
 		</div>
 	</div>
-	<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Specialized Industry Solutions</h2>
-					</div>
-				</div>
-				<div class="infobox-grid infobox-grid__2">
-					<div class="infobox-row">
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Healthcare & Medical</div>
-								<div class="infobox-description">
-									<p>HIPAA-compliant websites, medical practice branding, patient portal development, and healthcare marketing solutions. Specialized experience with medical device companies and pharmaceutical brands.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=Healthcare White Label Services" class="redlink">
-										<span>Healthcare Portfolio</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Real Estate & Property</div>
-								<div class="infobox-description">
-									<p>IDX integration, property showcase websites, agent branding packages, virtual tour integration, and lead capture systems designed for real estate professionals.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=Real Estate White Label Services" class="redlink">
-										<span>Real Estate Solutions</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">E-commerce & Retail</div>
-								<div class="infobox-description">
-									<p>Complete e-commerce solutions including Shopify, WooCommerce, product photography, catalog design, shopping cart optimization, and payment processing setup.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=E-commerce White Label Services" class="redlink">
-										<span>E-commerce Portfolio</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Professional Services</div>
-								<div class="infobox-description">
-									<p>Specialized solutions for law firms, accounting practices, consulting agencies, and B2B service providers. Includes compliance-ready designs and lead generation systems.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=Professional Services White Label" class="redlink">
-										<span>Professional Portfolio</span>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>How Our White Label Partnership Works</h2>
-					</div>
-				</div>
-				<div class="infobox-grid infobox-grid__2">
-					<div class="infobox-row">
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Step 1: Partnership Onboarding</div>
-								<div class="infobox-description">
-									<p>Initial consultation to understand your agency's needs and client base. We set up your dedicated account portal, establish communication protocols, and create custom pricing structure (24-48 hours).</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Partnership Onboarding" class="redlink">
-										<span>Start Onboarding</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Step 2: Brand Integration</div>
-								<div class="infobox-description">
-									<p>We integrate your agency's branding into all project templates, create custom presentation formats, and establish white-labeled communication channels. Your brand identity throughout.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Brand Integration" class="redlink">
-										<span>Integration Details</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Step 3: Project Execution</div>
-								<div class="infobox-description">
-									<p>Submit projects through our secure partner portal with detailed briefs. Regular progress updates, milestone reviews, and revision cycles managed through your branded project dashboard.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Project Process" class="redlink">
-										<span>View Portal Demo</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Step 4: Delivery & Support</div>
-								<div class="infobox-description">
-									<p>Comprehensive quality checks, final approvals, and delivery of all project assets. Complete handoff documentation and ongoing support included with every project.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Support Services" class="redlink">
-										<span>Support Details</span>
-									</a>
-								</div>
-							</div>
-						</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>White Label Partnership Tiers</h2>
-					</div>
-				</div>
-				<div class="infobox-grid infobox-grid__3">
-					<div class="infobox-row">
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Starter Partnership</div>
-								<div class="infobox-description">
-									<p>Perfect for agencies testing white label services. Logo design, 5-page website, basic SEO, your agency branding throughout. 50% profit margins, 2-week turnaround.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=Starter White Label Package" class="redlink">
-										<span>Starting at $2,500</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Professional Partnership</div>
-								<div class="infobox-description">
-									<p>Comprehensive services for established agencies. Complete brand identity, custom website, e-commerce integration, advanced SEO, dedicated account manager. 60% profit margins.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=Professional White Label Package" class="redlink">
-										<span>Starting at $7,500</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Enterprise Partnership</div>
-								<div class="infobox-description">
-									<p>Premium partnership with dedicated resources. Comprehensive strategy, custom applications, ongoing campaigns, dedicated creative team, priority delivery. 65% profit margins.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=Enterprise White Label Package" class="redlink">
-										<span>Starting at $15,000</span>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Additional Partnership Opportunities</h2>
-					</div>
-				</div>
-				<div class="infobox-grid infobox-grid__3">
-					<div class="infobox-row">
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Referral Program</div>
-								<div class="infobox-description">
-									<p>Earn 15% commission on all referred projects. Perfect for agencies who want to monetize overflow work or clients outside their service area. No ongoing commitment required.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="../referral-program/" class="redlink">
-										<span>Join Referral Program</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">GoHighLevel Services</div>
-								<div class="infobox-description">
-									<p>Specialized white label services for GoHighLevel agencies including funnel design, automation setup, custom integrations, and client onboarding systems.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=GoHighLevel White Label Services" class="redlink">
-										<span>GHL Services</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Packaging & Print Design</div>
-								<div class="infobox-description">
-									<p>Award-winning packaging design, print collateral, trade show materials, and branded merchandise design services for agencies serving retail and product-based clients.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=Packaging Design White Label" class="redlink">
-										<span>View Portfolio</span>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Partner Success Stories</h2>
-					</div>
-				</div>
-				<div class="infobox-grid infobox-grid__2">
-					<div class="infobox-row">
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">"Increased Revenue by 300%"</div>
-								<div class="infobox-description">
-									<p><em>"Partnering with aenfinite.com® transformed our agency. We went from offering basic web services to providing comprehensive brand and digital solutions. Our revenue increased by 300% in the first year."</em></p>
-									<p><strong>- Sarah M., Digital Marketing Agency Owner</strong></p>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">"Seamless Client Experience"</div>
-								<div class="infobox-description">
-									<p><em>"The white label process is so seamless that our clients have no idea we're working with a partner. The quality is consistently exceptional, and the turnaround times allow us to take on more projects than ever."</em></p>
-									<p><strong>- Michael R., Creative Agency Director</strong></p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Frequently Asked Questions</h2>
-					</div>
-				</div>
-				<div class="textbox appear js-aos">
-					<div class="textbox-content">
-						<h4><strong>How does the white label process work?</strong></h4>
-						<p>Once you become a partner, you receive access to our secure project portal where you can submit briefs, track progress, and download completed work. All deliverables are branded with your agency's identity, and we never communicate directly with your clients.</p>
-						
-						<h4><strong>What are the minimum project requirements?</strong></h4>
-						<p>There are no minimum project requirements for our Starter Partnership tier. Professional and Enterprise tiers have monthly minimums that unlock better pricing and dedicated resources.</p>
-						
-						<h4><strong>How do you ensure quality consistency?</strong></h4>
-						<p>Every project goes through our multi-stage quality assurance process including creative review, technical testing, and final approval. We maintain detailed brand guidelines for each partner agency to ensure consistency.</p>
-						
-						<h4><strong>Can I see examples of your work?</strong></h4>
-						<p>Yes! We provide a comprehensive portfolio of white label work (with client permission) during the partnership consultation. We can also arrange calls with existing partners for references.</p>
-						
-						<h4><strong>What happens if my client needs revisions?</strong></h4>
-						<p>All packages include a specified number of revision rounds. Additional revisions are available at pre-agreed rates. We work directly with you to implement changes while maintaining the white label relationship.</p>
-						
-						<h4><strong>How quickly can we get started?</strong></h4>
-						<p>Partnership onboarding typically takes 24-48 hours after initial consultation. We can begin working on your first project immediately after setup is complete.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Ready to Transform Your Agency?</h2>
-					</div>
-				</div>
-				<div class="textbox appear js-aos">
-					<div class="textbox-content">
-						<p><strong>Join 300+ Agencies Worldwide Who Trust Our White Label Services</strong></p>
-						<p>Transform your agency's capabilities overnight. Deliver world-class creative solutions, increase profit margins by up to 65%, and scale without the overhead. Our white label partnership program is designed to help agencies like yours thrive in today's competitive market.</p>
-						<p>📞 Call us: <a href="tel:+12123801761">+1 (212) 380-1761</a> | 📧 Email: <a href="mailto:partnerships@aenfinite.com">partnerships@aenfinite.com</a></p>
-						<p>⏰ Response within 4 hours | 🏆 Award-winning team | 🔒 NDA protection included | 💼 No long-term contracts | 🚀 Start within 48 hours</p>
-					</div>
-				</div>
-				<div class="infobox-grid infobox-grid__2">
-					<div class="infobox-row">
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Schedule Free Consultation</div>
-								<div class="infobox-description">
-									<p>Get a personalized consultation to discuss your agency's needs, see our portfolio, and learn about custom pricing options tailored to your business.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Partnership Consultation" class="redlink">
-										<span>Book Consultation</span>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="infobox-cell">
-							<div class="infobox appear js-aos">
-								<div class="infobox-title">Request Partnership Portfolio</div>
-								<div class="infobox-description">
-									<p>See examples of our white label work, case studies, and success stories from agencies we've partnered with across different industries and project types.</p>
-								</div>
-								<div class="infobox-action">
-									<a href="mailto:partnerships@aenfinite.com?subject=White Label Portfolio Request" class="redlink">
-										<span>Get Portfolio</span>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	</div>
+
+<div class="section">
+    <div class="wrapper">
+        <div class="inner-wrapper">
+            <div class="section-caption js-aos">
+                <div class="section-caption_text">
+                    <h2>White-Label Partnership</h2>
+                </div>
+            </div>
+            <div class="infobox-grid infobox-grid__4">
+
+                <div class="infobox-row">
+                    <div class="infobox-cell">
+                        <div class="infobox appear js-aos">
+                            <div class="infobox-index"></div>
+                            <div class="infobox-title">Step 1 <span class="chevron"></span> Partnership Setup</div>
+                            <div class="infobox-description">
+                                <p>Contact us to discuss your white-label needs. We’ll finalize partnership terms, set up post-paid payment arrangements, agree on branding guidelines, and establish project workflows that keep collaboration seamless.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="infobox-row">
+                    <div class="infobox-cell">
+                        <div class="infobox appear js-aos">
+                            <div class="infobox-index"></div>
+                            <div class="infobox-title">Step 2 <span class="chevron"></span> Project Brief</div>
+                            <div class="infobox-description">
+                                <p>Submit your project requirements using our Google Questionnaire Form. Your Key Account manager will handle communication, project tracking, and ensure everything stays on-brand for your agency.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="infobox-row">
+                    <div class="infobox-cell">
+                        <div class="infobox appear js-aos">
+                            <div class="infobox-index"></div>
+                            <div class="infobox-title">Step 3 <span class="chevron"></span> Seamless Delivery</div>
+                            <div class="infobox-description">
+                                <p>We deliver completed work under your agency’s branding, ready for client review or launch. Post-paid billing helps maintain healthy cash flow while ensuring consistent quality.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="infobox-row">
+                    <div class="infobox-cell">
+                        <div class="infobox appear js-aos">
+                            <div class="infobox-index"></div>
+                            <div class="infobox-title">Step 4 <span class="chevron"></span> Ongoing Support</div>
+                            <div class="infobox-description">
+                                <p>We stay with you beyond project delivery — offering revisions, updates, and continuous support to keep your clients happy and your agency running smoothly.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="infobox-row">
+                    <div class="infobox-cell">
+                        <div class="infobox appear js-aos">
+                            <div class="infobox-index"></div>
+                            <div class="infobox-title">Premium <span class="chevron"></span> Partnership Benefits</div>
+                            <div class="infobox-description">
+                                <p>High-volume partners receive dedicated support, priority scheduling, and extended payment terms. Scale your agency with confidence and enjoy a partnership built for long-term growth.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 				</div>
 			</div>
 		</div>
@@ -1353,28 +1540,59 @@
 			<div class="citebox js-karaoke">
 				<div class="citebox-content js-karaoke-content">
 					<span>
-						"We believe in empowering agencies through seamless white label partnerships and transparent collaboration"					</span>
+						At <b>Aenfinite</b>, we empower agencies to deliver exceptional results through seamless white label partnerships and flexible post-paid terms
+					</span>
 				</div>
 				<div class="citebox-mask js-karaoke-mask"></div>
 			</div>
 		</div>
 	</div>
+	
 	<div class="section">
 		<div class="wrapper">
 			<div class="inner-wrapper">
-									<div class="section-caption js-aos">
-						<div class="section-caption_text">
-							<h2>aenfinite.com® Awards</h2>
+				<div class="section-caption js-aos">
+					<div class="section-caption_text">
+						<h2>Flexible Payment Terms</h2>
+					</div>
+				</div>
+				<div class="textbox appear js-aos" style="margin-bottom: 40px;">
+					<div class="textbox-content">
+						We understand agency cash flow challenges. Our white label services include flexible post-paid payment terms designed to support your business growth and client relationships.
+					</div>
+				</div>
+				<div class="infobox-grid infobox-grid__2">
+					<div class="infobox-row">
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">Net-30 Payment Terms</div>
+								<div class="infobox-description">
+									<p>Established agency partners enjoy net-30 payment terms, allowing you to collect from your clients before paying for white label work. Maintain positive cash flow while scaling your services.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="mailto:whitelabel@aenfinite.com?subject=White Label - Net-30 Payment Terms" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="infobox-cell">
+							<div class="infobox appear js-aos">
+								<div class="infobox-title">Milestone-Based Billing</div>
+								<div class="infobox-description">
+									<p>For larger projects, we offer milestone-based billing to align payments with project deliverables. Pay as work is completed and approved by your clients.</p>
+								</div>
+								<div class="infobox-action">
+									<a href="mailto:whitelabel@aenfinite.com?subject=White Label - Milestone Billing" class="redlink">
+										<span>Learn More</span>
+									</a>
+								</div>
+							</div>
 						</div>
 					</div>
-								<div class="textbox appear js-aos">
-					<div class="textbox-content">
-											</div>
 				</div>
-				<div class="logotype"><span><img src="../../../wp-content/uploads/2023/03/cssda-wotd_aenfinite.com_awards.jpg" alt="" /></span><span><img src="../../../wp-content/uploads/2023/04/webby_statuette-1-1.webp" alt="" /></span><span><img src="../../../wp-content/uploads/2024/05/UpCity-Excellence-Award.png" alt="" /></span><span><img src="../../../wp-content/uploads/2024/03/220224_AnthemAwards_079-1.webp" alt="aenfinite.com® Anthem Awards Winner" /></span><span><img src="../../../wp-content/uploads/2023/01/trophies-group.jpg" alt="" /></span></div>			</div>
+			</div>
 		</div>
-	</div>
-
 	</div>
 
 			<div class="footer">
@@ -1382,13 +1600,13 @@
 					<div>
 						<div class="footer-caption">
 							<div class="title title__default">
-								<span>Starting a new project or want to collaborate with us?</span>
-								<a href="../../../contact/" class="redlink">
+								<span>Have a Project in Mind? Let’s Build Something Great Together.</span>
+								<a href="../../contact/" class="redlink">
 									<span>Lets talk</span>
 								</a>
 							</div>
 							<div class="footer-email">
-								<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+								<a href="mailto:hello@aenfinite.com.com">hello@aenfinite.com</a>
 							</div>
 						</div>
 						<div class="footer-grid">
@@ -1398,10 +1616,9 @@
 									<ul id="menu-footer-company-menu" class="menuss"><li id="menu-item-959" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../../featured-work/">Work</a></li>
 <li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor menu-item-275"><a href="../">Agency</a></li>
 <li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../../services/">Services</a></li>
-<li id="menu-item-3776" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3776"><a href="../../industries/">Industries</a></li>
-<li id="menu-item-4803" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../../dd-nyc-client-testimonials/">Client Testimonials</a></li>
+
+
 <li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
-</ul>									<span class="website-accessibility" data-acsb-custom-trigger="true">Website Accessibility</span>
 								</div>
 							</div>
 							<div class="footer-col">
@@ -1412,52 +1629,47 @@
 <li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="../../services/branding/">Branding</a></li>
 <li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="../../services/packaging-design/">Packaging Design</a></li>
 <li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2259"><a href="../../services/graphic-design/">Graphic Design</a></li>
-<li id="menu-item-2344" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2344"><a href="../../services/web-design-and-branding-for-real-estate/">Real Estate Design</a></li>
-<li id="menu-item-6911" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6911"><a href="../../services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+
 </ul>														</div>
 							</div>
-							<div class="footer-col footer-col__connect">
+							<div class="footer-col ">
 								<div class="footer-col_caption">Connect</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-connect" class="menuss"><li id="menu-item-4965" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4965"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.behance.net/aenfinite">Behance</a></li>
-<li id="menu-item-4967" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4967"><a class="js-dropdown-layer-marker" target="_blank" href="https://dribbble.com/aenfinite">Dribbble</a></li>
+
 <li id="menu-item-4966" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4966"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.instagram.com/aenfinite/">Instagram</a></li>
 <li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-4945 current_page_item menu-item-4952"><a class="js-dropdown-layer-marker" href="" aria-current="page">Partner with us</a></li>
-<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@aenfinite.com?subject=Project%20Inquiry">Email</a></li>
+<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@aenfinite.com.com?subject=Project%20Inquiry">Email</a></li>
 <li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5977"><a class="js-dropdown-layer-marker" href="../../contact/">Contact</a></li>
 </ul>								</div>
 							</div>
-							<div class="footer-col footer-col__address">
-								<div class="footer-col_caption">Address</div>
-								<div class="footer-col_list">
-									<ul>
-										<li>
-											85 Broad Street<br class="desktop" />
-17th Floor - Suite 17.005<br class="desktop" />
-New York, NY<br class="desktop" />
-10004										</li>
-										<li>
-											<a style="white-space:nowrap;" href="tel:+12123801761">+1 212.380.1761</a>
-										</li>
-										<li>
-											<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
-										</li>
-									</ul>
-								</div>
-							</div>
+							<div class="footer-col " style="padding-top: 15px !important; padding-left: 40px;">
+									<div class="footer-col_caption">Address</div>
+									<div class="footer-col_list">
+										<ul>
+											<li>
+		1500 Grant Street<br class="desktop" />
+		4th Ave<br class="desktop" />
+		Denver, CO 80203<br class="desktop" />
+		United States
+	</li>
+
+											<li>
+												<a style="white-space:nowrap;" href="tel:+14692677487">+1 (469) 267-7487</a>
+											</li>
+											<li>
+												<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+											</li>
+										</ul>
+									</div>
+								</div>							</div>
 						</div>
 						
 						<div class="bottom-line">
 							<div class="line-1-2">
 								<p>Copyright &copy; 2025 Aenfinite LLC</p>
-								<p>Headquartered in New York & Beyond </p>
+								<p>Headquartered in Denver & CO </p>
 							</div>
-							<div class="logotype-bottom"><span><img src="../../../wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="" /></span><span><img src="../../.." alt="aenfinite.com® Creative Design Agency Custom 3D Design" /></span><span><img src="../../.." alt="" /></span></div>							<div class="line-last">All rights reserved									
-								<div class="heart">
-									<svg class="icon">
-										<use xlink:href="#i-heart"></use>
-									</svg>
-								</div>
+								
 							</div>
 						</div>
 
@@ -1472,7 +1684,7 @@ New York, NY<br class="desktop" />
 							<div class="topbar">
 								<div class="topbar-logo">
 									<a href="../../">
-										<img src="../../../wp-content/themes/aenfinite.com/static/img/logo-white.svg" alt="aenfinite.com®" />
+										<img src="../../../wp-content/themes/aenfinite.com/static/img/logo-white.svg" alt="aenfinite.com" />
 									</a>
 								</div>
 								<div class="menu-close js-menu-toggle"><i></i></div>
@@ -1482,13 +1694,12 @@ New York, NY<br class="desktop" />
 							<ul id="menu-footer-company-menu-1" class="menuss"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../../featured-work/">Work</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor menu-item-275"><a href="../">Agency</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="../../services/">Services</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3776"><a href="../../industries/">Industries</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../../dd-nyc-client-testimonials/">Client Testimonials</a></li>
+
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
 </ul>						</div>
 						<div class="menu-footer">
 							<a class="menu-contact" href="../../contact/">Contact</a>
-							<a class="menu-email" href="mailto:hello@aenfinite.com">Email us</a>
+							<a class="menu-email" href="mailto:hello@aenfinite.com.com">Email us</a>
 						</div>
 					</div>
 				</div>
@@ -1496,9 +1707,332 @@ New York, NY<br class="desktop" />
 		
 		</div>
 
-		<a href="../contact/" class="to-contact">New Project?</a>
+				<a href="contact/" class="to-contact">New Project?</a><a href="#" class="to-meeter" onclick="openCalendlyPopup(event)">Schedule A Meeting</a>
+
+<div id="calendly-modal" class="calendly-modal" style="display: none;">
+	<div class="calendly-modal-content">
+		<div class="calendly-modal-header">
+			<span class="calendly-close" onclick="closeCalendlyPopup()">&times;</span>
+			<h3>Schedule Your Business Meeting</h3>
+		</div>
+		<div class="calendly-modal-body">
+			<div class="calendly-inline-widget" data-url="https://calendly.com/aenfinite/business-meeting" style="min-width:320px;height:630px;"></div>
+		</div>
+	</div>
+</div>
+
+<!-- 3. CSS STYLES (Place this in your <head> section or CSS file) -->
+<style>
+/* ===== BUTTON STYLES ===== */
+
+/* ===== INFOBOX ALIGNMENT FIXES ===== */
+.infobox-grid {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: stretch;
+}
+
+.infobox-grid__2 .infobox-row {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: stretch;
+	gap: 20px;
+	width: 100%;
+}
+
+.infobox-grid__2 .infobox-cell {
+	flex: 1 1 calc(50% - 10px);
+	min-width: 300px;
+	max-width: 500px;
+	display: flex;
+}
+
+.infobox {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	padding: 30px 20px;
+}
+
+.infobox-title {
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+.infobox-description {
+	text-align: center;
+	flex-grow: 1;
+	margin-bottom: 20px;
+}
+
+.infobox-action {
+	text-align: center;
+	margin-top: auto;
+}
+
+/* Ensure all infobox sections have center alignment */
+.infobox-description p {
+	text-align: center !important;
+	margin: 0 auto;
+	line-height: 1.6;
+}
+
+.infobox-title {
+	text-align: center !important;
+	margin-bottom: 15px;
+}
+
+/* Specific fixes for payment terms and all infobox grids */
+.infobox-grid .infobox {
+	text-align: center;
+}
+
+.infobox-grid .infobox-description {
+	text-align: center !important;
+}
+
+.infobox-grid .infobox-title {
+	text-align: center !important;
+}
+
+.infobox-grid .infobox-action {
+	text-align: center !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+	.infobox-grid__2 .infobox-cell {
+		flex: 1 1 100%;
+		min-width: unset;
+	}
+	
+	.infobox-grid__2 .infobox-row {
+		flex-direction: column;
+		align-items: center;
+	}
+}
+
+/* ===== MODAL STYLES ===== */
+.calendly-modal {
+	position: fixed;
+	z-index: 10000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.8);
+	animation: fadeIn 0.3s ease;
+}
+
+.calendly-modal-content {
+	background-color: #fefefe;
+	margin: 2% auto;
+	border: none;
+	border-radius: 15px;
+	width: 90%;
+	max-width: 900px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease;
+}
+
+.calendly-modal-header {
+	background: linear-gradient(135deg, #227bf3, #1e6fd9);
+	color: white;
+	padding: 20px 30px;
+	border-radius: 15px 15px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.calendly-modal-header h3 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.calendly-close {
+	color: white;
+	font-size: 32px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 1;
+	transition: color 0.3s ease;
+}
+
+.calendly-close:hover {
+	color: #f1f1f1;
+	transform: scale(1.1);
+}
+
+.calendly-modal-body {
+	padding: 0;
+	border-radius: 0 0 15px 15px;
+	overflow: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideIn {
+	from { 
+		opacity: 0;
+		transform: translateY(-30px) scale(0.9);
+	}
+	to { 
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 200px !important;
+		padding: 10px 16px !important;
+		font-size: 13px !important;
+	}
+	
+	
+
+	.calendly-modal-content {
+		width: 95%;
+		margin: 5% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 15px 20px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 20px;
+	}
+	
+	.calendly-inline-widget {
+		height: 500px !important;
+		min-width: 280px !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 180px !important;
+		padding: 8px 14px !important;
+		font-size: 12px !important;
+	}
+
+	.calendly-modal-content {
+		width: 98%;
+		margin: 3% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 12px 15px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 18px;
+	}
+	
+	.calendly-inline-widget {
+		height: 450px !important;
+		min-width: 260px !important;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.to-meeting {
+		max-width: 160px !important;
+		padding: 8px 12px !important;
+		font-size: 11px !important;
+	}
+}
+</style>
+
+<script>
+/* ===== CALENDLY POPUP FUNCTIONS ===== */
+function openCalendlyPopup(event) {
+	event.preventDefault();
+	document.getElementById('calendly-modal').style.display = 'block';
+	document.body.style.overflow = 'hidden'; // Prevent background scrolling
+	
+	// Load Calendly widget if not already loaded
+	if (!window.Calendly) {
+		loadCalendlyScript();
+	} else {
+		// Initialize widget if Calendly is already loaded
+		initializeCalendlyWidget();
+	}
+}
+
+function closeCalendlyPopup() {
+	document.getElementById('calendly-modal').style.display = 'none';
+	document.body.style.overflow = 'auto'; // Re-enable background scrolling
+}
+
+function loadCalendlyScript() {
+	// Load Calendly CSS
+	if (!document.querySelector('link[href*="calendly.com"]')) {
+		const calendlyCss = document.createElement('link');
+		calendlyCss.href = 'https://assets.calendly.com/assets/external/widget.css';
+		calendlyCss.rel = 'stylesheet';
+		document.head.appendChild(calendlyCss);
+	}
+	
+	// Load Calendly JS
+	if (!document.querySelector('script[src*="calendly.com"]')) {
+		const calendlyScript = document.createElement('script');
+		calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
+		calendlyScript.onload = function() {
+			initializeCalendlyWidget();
+		};
+		document.head.appendChild(calendlyScript);
+	}
+}
+
+function initializeCalendlyWidget() {
+	if (window.Calendly) {
+		Calendly.initInlineWidget({
+			url: 'https://calendly.com/aenfinite/business-meeting',
+			parentElement: document.querySelector('.calendly-inline-widget'),
+			prefill: {},
+			utm: {}
+		});
+	}
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+	const modal = document.getElementById('calendly-modal');
+	if (event.target == modal) {
+		closeCalendlyPopup();
+	}
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+	if (event.key === 'Escape') {
+		const modal = document.getElementById('calendly-modal');
+		if (modal.style.display === 'block') {
+			closeCalendlyPopup();
+		}
+	}
+});
+</script>
 		
-		<div class="cookie-banner">
+		<div class="cookie-banner" style="">
 			<div class="cookie-banner__inner">
 				<div class="cookie-banner__text">
 					<span class="cookie-banner__icon">
@@ -1540,6 +2074,11 @@ New York, NY<br class="desktop" />
 				AOS.init();
 				
 								
+					setTimeout(function(){
+						document.body.classList.add('body_visible');
+					}, 200);
+					
+								
 								
 			});
 		</script>
@@ -1555,7 +2094,7 @@ New York, NY<br class="desktop" />
 				  "address": {
 					"@type": "PostalAddress",
 					"streetAddress": "501 Madison Avenue, Suite 802",
-					"addressLocality": "Denver",
+					"addressLocality": "New York",
 					"addressRegion": "NY",
 					"postalCode": "10022",
 					"addressCountry": "US"
@@ -1601,6 +2140,7 @@ New York, NY<br class="desktop" />
 			});
 		</script>
 
+		
 		<!-- LinkedIn Insight Tag -->
     <script >
         _linkedin_partner_id = "6313658";
@@ -1619,17 +2159,17 @@ New York, NY<br class="desktop" />
             var b = document.createElement("script");
             b.type = "text/javascript";
             b.async = true;
-            b.src = "../snap.licdn.com/li.lms-analytics/insight.min.js";
+            b.src = "../../../snap.licdn.com/li.lms-analytics/insight.min.js";
             s.parentNode.insertBefore(b, s);
         })(window.lintrk);
     </script>
     <noscript>
         <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=6313658&amp;fmt=gif" />
     </noscript>
-    <!-- End LinkedIn Insight Tag --><link rel='stylesheet' id='classic-theme-styles-css' href='wp-includes/css/classic-themes.mind1c0.css?ver=6.7.2'  media='all' />
-<link rel='stylesheet' id='contact-form-7-css' href='wp-content/plugins/contact-form-7/includes/css/stylesfc7a.css?ver=6.0.6'  media='all' />
-<script  src="wp-includes/js/dist/hooks.min4fdd.js?ver=4d63a3d491d11ffd8ac6" id="wp-hooks-js"></script>
-<script  src="wp-includes/js/dist/i18n.minc33c.js?ver=5e580eb46a90c2b997e6" id="wp-i18n-js"></script>
+    <!-- End LinkedIn Insight Tag --><link rel='stylesheet' id='classic-theme-styles-css' href='../../../wp-includes/css/classic-themes.mind1c0.css?ver=6.7.2'  media='all' />
+<link rel='stylesheet' id='contact-form-7-css' href='../../../wp-content/plugins/contact-form-7/includes/css/stylesfc7a.css?ver=6.0.6'  media='all' />
+<script  src="../../../wp-includes/js/dist/hooks.min4fdd.js?ver=4d63a3d491d11ffd8ac6" id="wp-hooks-js"></script>
+<script  src="../../../wp-includes/js/dist/i18n.minc33c.js?ver=5e580eb46a90c2b997e6" id="wp-i18n-js"></script>
 <script  id="wp-i18n-js-after">
 /* <![CDATA[ */
 wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
@@ -1640,7 +2180,7 @@ wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
 /* <![CDATA[ */
 var wpcf7 = {
     "api": {
-        "root": "https:\/\/Aenfinite\/wp-json\/",
+        "root": "https:\/\/aenfinite.com\/wp-json\/",
         "namespace": "contact-form-7\/v1"
     },
     "cached": 1
@@ -1648,8 +2188,8 @@ var wpcf7 = {
 /* ]]> */
 </script>
 <script  src="../../../wp-content/plugins/contact-form-7/includes/js/indexfc7a.js?ver=6.0.6" id="contact-form-7-js"></script>
-<script  src="../www.google.com/recaptcha/api234c.js?render=6LecDXgUAAAAAEvI5y3riqTuwsANQmQo9Y7B55Jf&amp;ver=3.0" id="google-recaptcha-js"></script>
-<script  src="wp-includes/js/dist/vendor/wp-polyfill.min2c7c.js?ver=3.15.0" id="wp-polyfill-js"></script>
+<script  src="https://www.google.com/recaptcha/api.js?render=6LecDXgUAAAAAEvI5y3riqTuwsANQmQo9Y7B55Jf&amp;ver=3.0" id="google-recaptcha-js"></script>
+<script  src="../../../wp-includes/js/dist/vendor/wp-polyfill.min2c7c.js?ver=3.15.0" id="wp-polyfill-js"></script>
 <script  id="wpcf7-recaptcha-js-before">
 /* <![CDATA[ */
 var wpcf7_recaptcha = {
@@ -1662,7 +2202,10 @@ var wpcf7_recaptcha = {
 /* ]]> */
 </script>
 <script  src="../../../wp-content/plugins/contact-form-7/modules/recaptcha/indexfc7a.js?ver=6.0.6" id="wpcf7-recaptcha-js"></script>
-	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f9858968a321e6',t:'MTc1NTI2OTYwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f985fedadc21e4',t:'MTc1NTI2OTYyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>	<!-- Universal Button and Checkbox Highlighting Script -->	<script src="../../../js/button-highlights.js"></script>
+		</body>
 
-<!-- Mirrored from Aenfinite/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 14:54:35 GMT -->
+<!-- Mirrored from aenfinite.com/agency/partner-with-us/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:01:57 GMT -->
 </html>
+
+

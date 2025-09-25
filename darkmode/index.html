@@ -1,22 +1,259 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	
 <!-- Mirrored from aenfinite.com/darkmode/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:02:02 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
-<head>
+<head><!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			} .header {
+			background-image: radial-gradient(black 1px, transparent 0);
+			background-size: 20px 20px;
+			background-position: -9px -9px;
+		}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
 			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 	
 <!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->
-<title>Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com®</title>
-<meta name="description" content="Darkmode Page of Award-Winning Digital Agency aenfinite.com (M/WBE-certified) focuses on UI/UX, Web Design, Branding, and Product Packaging Design."/>
+<title>Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com</title>
+<meta name="description" content="Darkmode Page of Award-Winning Digital Agency aenfinite.com (Globally Trusted Digital Agency) focuses on UI/UX, Web Design, Branding, and Product Packaging Design."/>
 <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
 <link rel="canonical" href="" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com®" />
-<meta property="og:description" content="Darkmode Page of Award-Winning Digital Agency aenfinite.com (M/WBE-certified) focuses on UI/UX, Web Design, Branding, and Product Packaging Design." />
+<meta property="og:title" content="Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com" />
+<meta property="og:description" content="Darkmode Page of Award-Winning Digital Agency aenfinite.com (Globally Trusted Digital Agency) focuses on UI/UX, Web Design, Branding, and Product Packaging Design." />
 <meta property="og:url" content="https://aenfinite.com/darkmode/" />
-<meta property="og:site_name" content="aenfinite.com®" />
+<meta property="og:site_name" content="aenfinite.com" />
 <meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
 <meta property="og:updated_time" content="2024-10-29T12:16:43-04:00" />
 <meta property="og:image" content="https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image-768x480.jpg" />
@@ -28,14 +265,14 @@
 <meta property="article:published_time" content="2022-09-27T09:16:05-04:00" />
 <meta property="article:modified_time" content="2024-10-29T12:16:43-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com®" />
-<meta name="twitter:description" content="Darkmode Page of Award-Winning Digital Agency aenfinite.com (M/WBE-certified) focuses on UI/UX, Web Design, Branding, and Product Packaging Design." />
+<meta name="twitter:title" content="Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com" />
+<meta name="twitter:description" content="Darkmode Page of Award-Winning Digital Agency aenfinite.com (Globally Trusted Digital Agency) focuses on UI/UX, Web Design, Branding, and Product Packaging Design." />
 <meta name="twitter:site" content="@aenfinite" />
 <meta name="twitter:creator" content="@aenfinite" />
 <meta name="twitter:image" content="https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image-768x480.jpg" />
 <meta name="twitter:label1" content="Time to read" />
 <meta name="twitter:data1" content="Less than a minute" />
-<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"aenfinite.com\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"aenfinite.com\u00ae","alternateName":"aenfinite.com\u00ae - Branding &amp; Web Design Division of DigitalDesign.NYC","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","url":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","width":"8000","height":"5000","caption":"Darkmode","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/darkmode/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/darkmode/","name":"Darkmode"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/darkmode/#webpage","url":"https://aenfinite.com/darkmode/","name":"Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com\u00ae","datePublished":"2022-09-27T09:16:05-04:00","dateModified":"2024-10-29T12:16:43-04:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/darkmode/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/darkmode/#author","name":"Hasan Ahmed\u00ae","description":"Archives from for aenfinite.com\u00ae (DigitalDesign.NYC)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","caption":"Hasan Ahmed\u00ae","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com\u00ae","keywords":"Darkmode","datePublished":"2022-09-27T09:16:05-04:00","dateModified":"2024-10-29T12:16:43-04:00","author":{"@id":"https://aenfinite.com/darkmode/#author","name":"Hasan Ahmed\u00ae"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Darkmode Page of Award-Winning Digital Agency aenfinite.com (M/WBE-certified) focuses on UI/UX, Web Design, Branding, and Product Packaging Design.","name":"Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com\u00ae","@id":"https://aenfinite.com/darkmode/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/darkmode/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/darkmode/#webpage"}}]}</script>
+<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"aenfinite.com\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://aenfinite.com","name":"aenfinite.com\u00ae","alternateName":"aenfinite.com\u00ae - Branding &amp; Web Design Division of Aenfinite.com","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","url":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg","width":"8000","height":"5000","caption":"Darkmode","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/darkmode/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://aenfinite.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/darkmode/","name":"Darkmode"}}]},{"@type":"WebPage","@id":"https://aenfinite.com/darkmode/#webpage","url":"https://aenfinite.com/darkmode/","name":"Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com\u00ae","datePublished":"2022-09-27T09:16:05-04:00","dateModified":"2024-10-29T12:16:43-04:00","isPartOf":{"@id":"https://aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/darkmode/#breadcrumb"}},{"@type":"Person","@id":"https://aenfinite.com/darkmode/#author","name":"Hasan Ahmed\u00ae","description":"Archives from for aenfinite.com\u00ae (Aenfinite.com)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/4881a4d4cb75b99285a7b27b5f876ecb?s=96&amp;d=mm&amp;r=g","caption":"Hasan Ahmed\u00ae","inLanguage":"en-US"},"worksFor":{"@id":"https://aenfinite.com/#organization"}},{"@type":"Article","headline":"Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com\u00ae","keywords":"Darkmode","datePublished":"2022-09-27T09:16:05-04:00","dateModified":"2024-10-29T12:16:43-04:00","author":{"@id":"https://aenfinite.com/darkmode/#author","name":"Hasan Ahmed\u00ae"},"publisher":{"@id":"https://aenfinite.com/#organization"},"description":"Darkmode Page of Award-Winning Digital Agency aenfinite.com (Globally Trusted Digital Agency) focuses on UI/UX, Web Design, Branding, and Product Packaging Design.","name":"Darkmode of Award-Winning Digital Agency in Denver | aenfinite.com\u00ae","@id":"https://aenfinite.com/darkmode/#richSnippet","isPartOf":{"@id":"https://aenfinite.com/darkmode/#webpage"},"image":{"@id":"https://aenfinite.com/wp-content/uploads/2022/10/DD-Darkmode-Featured-Image.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://aenfinite.com/darkmode/#webpage"}}]}</script>
 <!-- /Rank Math WordPress SEO plugin -->
 
 <link rel="https://api.w.org/" href="../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../wp-json/wp/v2/pages/1411.json" /><link rel='shortlink' href='../index0b5c.html?p=1411' />
@@ -95,6 +332,74 @@
 			}	
 		}		
     </style>
+    
+    <style type="text/css">
+		/* Navigation Logo Styling */
+		.nav-logo {
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			transition: all 0.3s ease;
+			filter: none;
+			object-fit: contain;
+			object-position: left center;
+		}
+		
+		/* Logo switching CSS to match homepage behavior */
+		.nav-logo-default,
+		.nav-logo-active {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			object-fit: contain;
+			object-position: left center;
+			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			transform-origin: left center;
+		}
+
+		/* Container for logos to maintain position */
+		.topbar-logo a {
+			position: relative;
+			display: inline-block;
+			height: 28px;
+			min-width: 140px;
+		}
+
+		/* Default state - show white logo, hide active logo */
+		.nav-logo-default {
+			display: block;
+			opacity: 1;
+			transform: scale(1);
+			z-index: 2;
+		}
+
+		.nav-logo-active {
+			display: block;
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+
+		/* When navbar becomes active/dark - hide white logo, show blue logo */
+		.mainnav.active .nav-logo-default,
+		.mainnav.always-active .nav-logo-default,
+		.mainnav:hover .nav-logo-default {
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+
+		.mainnav.active .nav-logo-active,
+		.mainnav.always-active .nav-logo-active,
+		.mainnav:hover .nav-logo-active {
+			opacity: 1;
+			transform: scale(1.05);
+			z-index: 2;
+		}
+    </style>
     <link rel="icon" href="../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-32x32.png" sizes="32x32" />
 <link rel="icon" href="../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-192x192.png" sizes="192x192" />
 <link rel="apple-touch-icon" href="../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-180x180.png" />
@@ -123,7 +428,161 @@
 		  gtag('js', new Date());
 		  gtag('config', 'G-K9VRBCFE61');
 		</script>	
-	</head>
+
+	<!-- Animated Cursor Implementation -->
+	<style>
+		* {
+			cursor: none !important;
+		}
+		
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
+		
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+	</style>
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.1, 1 - index * 0.05) + ")";
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+		</head>
 	<body class="page-template page-template-page-black-php page-id-1411 document loading">
 	
 		<div style="display:none!important;">
@@ -145,7 +604,7 @@
 			<div class="header">
 				<div class="video">
 					<video autoplay loop muted playsinline>
-																			<source src="../wp-content/uploads/2022/09/heart.mp4" type="video/mp4"> 
+																			<source src="../wp-content/themes/aenfinite.com/images/intro.mp4" type="video/mp4"> 
 																	</video>
 				</div>
 				<div class="wrapper">
@@ -163,14 +622,14 @@
 						<div class="topbar">
 							<div class="topbar-logo">
 								<a href="../">
-									<img src="../wp-content/themes/aenfinite.com/black-static/img/logo-white.svg" alt="aenfinite.com®" />
+									<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo">
 								</a>
 							</div>
 							<div class="desktop">
 								<ul id="menu-footer-company-menu" class="topnav"><li id="menu-item-959" class="menu-item menu-item-type-post_type topnav-item menu-item-959"><a href="../featured-work/">Work</a></li>
 <li id="menu-item-275" class="menu-item menu-item-type-post_type topnav-item menu-item-275"><a href="../agency/">Agency</a></li>
 <li id="menu-item-482" class="menu-item menu-item-type-post_type topnav-item menu-item-482"><a href="../services/">Services</a></li>
-<li id="menu-item-4803" class="menu-item menu-item-type-post_type topnav-item menu-item-4803"><a href="../dd-nyc-client-testimonials/">Client Testimonials</a></li>
+
 <li id="menu-item-4127" class="menu-item menu-item-type-post_type topnav-item menu-item-4127"><a href="../contact/">Contact</a></li>
 </ul>							</div>
 							<div class="menu-button mobile js-menu-toggle"></div>
@@ -178,8 +637,8 @@
 						<div class="header-caption">
 							<div class="inner-wrapper">
 								<div class="title title__default">
-									<h1>Сreative technologists, <br />
-located in the heart&nbsp;of&nbsp;NYC.</h1>
+									<h1>Shaping Digital Futures<br />
+from &nbsp;the&nbsp;Mile-High City</h1>
 								</div>
 							</div>
 						</div>
@@ -246,7 +705,9 @@ located in the heart&nbsp;of&nbsp;NYC.</h1>
 															</div>
 														</div>
 														<div class="service-text">
-															<p>We create world-class websites using modern design practices. Mobile-first websites and web experiences are essential to the success of your web project. While maintaining bespoke originality, our team will focus on responsive design and optimize your website for any device and interface. Your new website will attract desirable target audiences, boost engagement, drive sales, and increase the brand value of your business.</p>
+															<p>we design and develop world-class websites that combine modern design practices with powerful functionality. 
+        Our mobile-first, SEO-friendly websites are built to perform—optimized for speed, responsive across all devices, and crafted to deliver an exceptional user experience. 
+        From strategy to launch, our team focuses on creating a unique online presence that attracts your target audience, boosts engagement, drives conversions, and strengthens your brand’s authority.</p>
 														</div>
 																													<div class="service-action">
 																<a href="../service/web-design/" class="redlink">
@@ -284,7 +745,7 @@ located in the heart&nbsp;of&nbsp;NYC.</h1>
 															</div>
 														</div>
 														<div class="service-text">
-															<p>Our branding team will excel at presenting your business in its best light. Whether you’re looking to attract a new set of eyes, rekindle an old client base, or simply refine your business’s identity - our creatives will formulate the optimal corporate identity, collateral designs, and brand guidelines unique to your company’s needs. Armed with your new bespoke brand - you will now be able to captivate engaged new audiences and capitalize on your company’s full potential. </p>
+															<p>Our branding team will excel at presenting your business in its best light. Whether youre looking to attract a new set of eyes, rekindle an old client base, or simply refine your businesss identity - our creatives will formulate the optimal corporate identity, collateral designs, and brand guidelines unique to your companys needs. Armed with your new bespoke brand - you will now be able to captivate engaged new audiences and capitalize on your companys full potential. </p>
 														</div>
 																													<div class="service-action">
 																<a href="../service/branding/" class="redlink">
@@ -351,7 +812,7 @@ located in the heart&nbsp;of&nbsp;NYC.</h1>
 															</div>
 														</div>
 														<div class="service-text">
-															<p>Experienced with top-grade packaging design for a wide range of products from consumer goods to startup ideas. Your packaging design will exceed all expectations with fresh yet pragmatic design ideas realistic to produce by the creatives at aenfinite.com®. Packaging design is what makes us fall in love with some of our favorite products. Make yours a favorite.</p>
+															<p>Experienced with top-grade packaging design for a wide range of products from consumer goods to startup ideas. Your packaging design will exceed all expectations with fresh yet pragmatic design ideas realistic to produce by the creatives at aenfinite.com. Packaging design is what makes us fall in love with some of our favorite products. Make yours a favorite.</p>
 														</div>
 																													<div class="service-action">
 																<a href="../services/packaging-design/" class="redlink">
@@ -362,32 +823,70 @@ located in the heart&nbsp;of&nbsp;NYC.</h1>
 												</div>
 																							<div class="service">
 													<div class="service-title">
-														<span class="service-name">Video Production</span>
+														<span class="service-name">App Development</span>
 													</div>
 													<div class="service-content">
 														<div class="service-tags">
 															<div class="chips">
 																																	<div class="chip">
-																		<a href="../services/best-video-production-services/">Corporate Video Production</a>
+																		<a href="../services/app-development/">iOS Development</a>
 																	</div>
 																																	<div class="chip">
-																		<a href="../services/best-video-production-services/">Event Video Production</a>
+																		<a href="../services/app-development/">Android Development</a>
 																	</div>
 																																	<div class="chip">
-																		<a href="../services/best-video-production-services/">Promotional Videos</a>
+																		<a href="../services/app-development/">Cross-Platform Apps</a>
 																	</div>
 																																	<div class="chip">
-																		<a href="../services/best-video-production-services/">Post-Production & Editing</a>
+																		<a href="../services/ui-ux-design/">UI/UX Design</a>
+																	</div>
+																																	<div class="chip">
+																		<a href="../services/app-development/">App Prototyping</a>
 																	</div>
 																				
 															</div>
 														</div>
 														<div class="service-text">
-															<p>aenfinite.com® specializes in video production since 2015 in Denver, our talented team leverages over 30 years of combined experience working with advertising agencies and brands to create exceptional visual narratives. We are dedicated to video excellence, crafting impactful content that authentically engages audiences and elevates brands.</p>
+															<p>More technical than most design agencies, our expertise with web/app design & development, component libraries, and design systems helps us create a smooth process in the development of mobile and web applications. We create user-centered designs for your business applications with best-rated UI/UX design services.</p>
 														</div>
 																													<div class="service-action">
-																<a href="../services/best-video-production-services/" class="redlink">
-																	<span>Learn More</span>
+																<a href="../services/app-development/" class="redlink">
+																	<span>Learn more</span>
+																</a>
+															</div>	
+																											</div>
+												</div>
+																							<div class="service">
+													<div class="service-title">
+														<span class="service-name">Digital Marketing</span>
+													</div>
+													<div class="service-content">
+														<div class="service-tags">
+															<div class="chips">
+																																	<div class="chip">
+																		<a href="../services/digital-marketing/">SEO Optimization</a>
+																	</div>
+																																	<div class="chip">
+																		<a href="../services/digital-marketing/">Social Media Marketing</a>
+																	</div>
+																																	<div class="chip">
+																		<a href="../services/digital-marketing/">Content Strategy</a>
+																	</div>
+																																	<div class="chip">
+																		<a href="../services/digital-marketing/">PPC Advertising</a>
+																	</div>
+																																	<div class="chip">
+																		<a href="../services/digital-marketing/">Brand Awareness</a>
+																	</div>
+																				
+															</div>
+														</div>
+														<div class="service-text">
+															<p>Our digital marketing team specializes in creating comprehensive marketing strategies that drive results. From SEO optimization and social media marketing to content strategy and PPC advertising, we help businesses enhance their online presence and reach their target audiences effectively.</p>
+														</div>
+																													<div class="service-action">
+																<a href="../services/digital-marketing/" class="redlink">
+																	<span>Learn more</span>
 																</a>
 															</div>	
 																											</div>
@@ -399,7 +898,7 @@ located in the heart&nbsp;of&nbsp;NYC.</h1>
 											<div class="card">
 												<div class="card-bg">
 													<div class="card-media">
-														<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/08/aenfinite.com®-CyberYachts-3.webp" alt="" />
+														<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/08/aenfinite.com-CyberYachts-3.webp" alt="" />
 														<span>View project</span>
 													</div>
 												</div>
@@ -442,7 +941,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/08/aenfinite.com®-CyberYachts-3.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/08/aenfinite.com-CyberYachts-3.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -469,7 +968,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2023/07/aenfinite.com®-Ms.-Foundation-for-Women-1.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2023/07/aenfinite.com-Ms.-Foundation-for-Women-1.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -563,13 +1062,13 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2023/06/aenfinite.com®-Munoz-3.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2023/06/aenfinite.com-Munoz-3.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
 										<div class="card-bottom">
 											<div class="card-info">
-												<div class="card-name">Muñoz Group Austin &#8211; Real Estate Branding &#038; Website</div>
+												<div class="card-name">Muoz Group Austin &#8211; Real Estate Branding &#038; Website</div>
 												<div class="card-tags">
 													<ul>
 																													<li>Branding</li>
@@ -587,7 +1086,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/10/aenfinite.com®-globalnewyorker-3.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/10/aenfinite.com-globalnewyorker-3.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -618,7 +1117,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2023/12/vts_cover_7.gif" alt="aenfinite.com® Branding and Deck Design for VTS Accelerate Prop Tech Software" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2023/12/vts_cover_7.gif" alt="aenfinite.com Branding and Deck Design for VTS Accelerate Prop Tech Software" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -652,7 +1151,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/08/aenfinite.com®-Chef-Antoine-Lours-3.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/08/aenfinite.com-Chef-Antoine-Lours-3.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -677,7 +1176,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/07/aenfinite.com®-Jonathan-Alpeyrie-War-Photographer-3.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/07/aenfinite.com-Jonathan-Alpeyrie-War-Photographer-3.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -702,7 +1201,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/12/aenfinite.com®-Roommate-3.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/12/aenfinite.com-Roommate-3.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -728,7 +1227,7 @@ websites &amp;&nbsp;apps.</h2>
 																	<div class="card js-aos" data-effect="fade-up">
 										<div class="card-top">
 											<div class="card-media">
-												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/12/aenfinite.com®-Airatae-3.webp" alt="" />
+												<img class="lazyload" data-src="https://aenfinite.com/wp-content/uploads/2022/12/aenfinite.com-Airatae-3.webp" alt="" />
 												<span>View project</span>
 											</div>
 										</div>
@@ -843,7 +1342,7 @@ with clients																											</div>
 													<div class="marquee-line_text">Top Systems - Figma, Adobe, Geometry, Texture</div>
 													<div class="marquee-line_text">Motion & 3D</div>
 													<div class="marquee-line_text">Collaborative Process</div>
-													<div class="marquee-line_text">M/WBE-Certified</div>
+													<div class="marquee-line_text">Globally Trusted Digital Agency</div>
 											</div>
 				</div>
 				
@@ -851,7 +1350,7 @@ with clients																											</div>
 					<div class="wrapper">
 						<div class="inner-wrapper">
 							<div class="title title__default">
-								<h2>Already in red</h2>
+								<h2>Already in Blue</h2>
 							</div>
 							<div class="mclients">
 								<div class="mclient">
@@ -1007,7 +1506,8 @@ New York, NY<br />
 							<div class="topbar">
 								<div class="topbar-logo">
 									<a href="../">
-										<img src="../wp-content/themes/aenfinite.com/black-static/img/logo-white.svg" alt="aenfinite.com®" />
+										<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
+										<img src="../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
 									</a>
 								</div>
 								<div class="menu-close js-menu-toggle"></div>
@@ -1356,7 +1856,7 @@ var currentdate = new Date();
 				},false);
 
 				window.addEventListener('blur', function() {
-					document.title = 'aenfinite.com® misses you!';
+					document.title = 'aenfinite.com misses you!';
 				},false);
 				
 				$(function() {
@@ -1427,8 +1927,10 @@ var wpcf7_recaptcha = {
 /* ]]> */
 </script>
 <script  src="../wp-content/plugins/contact-form-7/modules/recaptcha/indexfc7a.js?ver=6.0.6" id="wpcf7-recaptcha-js"></script>
-	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f986037ccb21e4',t:'MTc1NTI2OTYyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f986037ccb21e4',t:'MTc1NTI2OTYyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>	<!-- Universal Button and Checkbox Highlighting Script -->	<script src="js/button-highlights.js"></script>
+		</body>
 
 <!-- Mirrored from aenfinite.com/darkmode/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:02:10 GMT -->
 </html>
+
 

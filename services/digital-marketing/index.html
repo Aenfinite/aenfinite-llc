@@ -4,142 +4,876 @@
 <!-- Mirrored from Aenfinite/services/graphic-design/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:09:30 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
+<!-- Aenfinite Services Section CSS -->
+<style>
+/* ===== AENFINITE SERVICES SECTION CSS ===== */
+/* Extracted from Cities/index.html for reuse across projects */
+
+/* ===== DESKTOP SERVICES STYLES ===== */
+.service-list {
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	grid-gap: 30px;
+	align-items: start;
+}
+
+.service {
+	margin-bottom: 0;
+	border-radius: 12px;
+	overflow: visible;
+	transition: all 0.3s ease;
+}
+
+.service:hover {
+	transform: translateY(-5px);}
+
+.service-caption {
+	font-size: 20px;
+	font-weight: 600;
+	padding: 20px 0;
+	margin: 0;
+	background: none;
+	border-radius: 0;
+	line-height: 1.4;
+	color: #1a1a1a;
+	cursor: pointer;
+	transition: none;
+}
+
+.service-caption:hover {
+	background: none;
+}
+
+.service-content {
+	padding: 30px 0;
+	margin: 0;
+	background: none;
+}
+
+.service-tags {
+	margin-bottom: 25px;
+}
+
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+}
+
+.chip {
+	margin: 0;
+	padding: 0;
+}
+
+.chip-label {
+	font-size: 13px;
+	font-weight: 500;
+	padding: 8px 14px;
+	border-radius: 20px;
+	background: #e3f2fd;
+	color: #1976d2;
+	text-decoration: none;
+	display: inline-block;
+	line-height: 1.2;
+	transition: all 0.3s ease;
+}
+
+.chip-label:hover {
+	background: #1976d2;
+	color: white;
+	transform: translateY(-1px);
+}
+
+.service-text {
+	margin: 20px 0;
+}
+
+.service-text p {
+	font-size: 16px;
+	line-height: 1.6;
+	color: #555;
+	margin: 0;
+	padding: 0;
+}
+
+.service-action {
+	margin-top: 25px;
+}
+
+.service-action a {
+	font-size: 16px;
+	font-weight: 500;
+	padding: 12px 24px;
+	border-radius: 8px;
+	background: #227bf3;
+	color: white;
+	text-decoration: none;
+	display: inline-block;
+	transition: all 0.3s ease;
+}
+
+.service-action a:hover {
+	background: #1e6bc7;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(34, 123, 243, 0.3);
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.service-nav {
+		padding: 0 15px !important;
+	}
+	
+	.service-list {
+		padding: 0 15px !important;
+		grid-template-columns: 1fr;
+		grid-gap: 25px;
+	}
+	
+	.service {
+		margin-bottom: 0 !important;
+		padding: 0 !important;
+		border-radius: 16px !important;
+	}
+	
+	.service:hover {
+		transform: translateY(-3px) !important;	}
+	
+	.service-caption {
+		font-size: 18px !important;
+		padding: 15px 20px !important;
+		margin: 0 !important;
+		background: #f8f9fa !important;
+		border-radius: 8px !important;
+		line-height: 1.4 !important;
+	}
+	
+	.service-content {
+		padding: 25px 20px !important;
+		margin: 0 !important;
+	}
+	
+	.service-tags {
+		margin-bottom: 20px !important;
+	}
+	
+	.chips {
+		display: flex !important;
+		flex-wrap: wrap !important;
+		gap: 8px !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	
+	.chip {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	
+	.chip-label {
+		font-size: 12px !important;
+		padding: 6px 12px !important;
+		border-radius: 20px !important;
+		background: #e3f2fd !important;
+		color: #1976d2 !important;
+		text-decoration: none !important;
+		display: inline-block !important;
+		line-height: 1.2 !important;
+	}
+	
+	.service-text {
+		margin: 20px 0 !important;
+	}
+	
+	.service-text p {
+		font-size: 16px !important;
+		line-height: 1.6 !important;
+		color: #555 !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	
+	.service-action {
+		margin-top: 20px !important;
+	}
+	
+	.service-action a {
+		font-size: 16px !important;
+		padding: 12px 24px !important;
+		border-radius: 8px !important;
+		background: #227bf3 !important;
+		color: white !important;
+		text-decoration: none !important;
+		display: inline-block !important;
+	}
+}
+
+/* ===== EXTRA SMALL PHONES ===== */
+@media (max-width: 480px) {
+	.service-list {
+		padding: 0 10px !important;
+		grid-gap: 20px;
+	}
+	
+	.service {
+		padding: 0 !important;
+		border-radius: 12px !important;
+	}
+	
+	.service-caption {
+		font-size: 16px !important;
+		padding: 12px 15px !important;
+	}
+	
+	.service-content {
+		padding: 20px 15px !important;
+	}
+}
+	
+/* ===== MOBILE ACCORDION STYLES ===== */
+@media (max-width: 768px) {
+	/* Mobile slide-in animation for service content */
+	.service-content {
+		max-height: 0 !important;
+		overflow: hidden !important;
+		opacity: 0 !important;
+		transform: translateY(30px) !important;
+		transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+		padding: 0 15px !important;
+	}
+	
+	.service.active .service-content {
+		max-height: 1000px !important;
+		opacity: 1 !important;
+		transform: translateY(0) !important;
+		padding: 20px 15px !important;
+	}
+}
+
+/* ===== DESKTOP SERVICES DISPLAY ===== */
+@media (min-width: 769px) {
+	.service-content {
+		max-height: none !important;
+		overflow: visible !important;
+		opacity: 1 !important;
+		transform: none !important;
+		padding: 30px 0 !important;
+	}
+	
+	.desktop-only {
+		display: block !important;
+	}
+}
+
+/* ===== MOBILE DESKTOP-ONLY CONTENT HIDE ===== */
+@media (max-width: 768px) {
+	.desktop-only {
+		display: none !important;
+	}
+	
+	.header-cross {
+		display: none !important;
+	}
+}
+
+/* ===== DESKTOP HEADER CROSS DISPLAY ===== */
+@media (min-width: 769px) {
+	.header-cross {
+		display: block !important;
+	}
+}
+	
+	/* Mobile hamburger menu logo sizing */
+	.menu-header .nav-logo,
+	.topbar-logo .nav-logo {
+		max-width: 120px !important;
+		max-height: 35px !important;
+	}
+
+/* ===== EXTRA SMALL MOBILE (480px and below) ===== */
+@media (max-width: 480px) {
+	.service-caption {
+		font-size: 16px !important;
+		padding: 12px 15px !important;
+	}
+	
+	.service-content {
+		padding: 20px 15px !important;
+	}
+	
+	.chip-label {
+		font-size: 11px !important;
+		padding: 5px 10px !important;
+	}
+	
+	.service-text p {
+		font-size: 15px !important;
+		line-height: 1.5 !important;
+	}
+	
+	.service-action a {
+		font-size: 15px !important;
+		padding: 10px 20px !important;
+	}
+}
+
+/* ===== UTILITY CLASSES ===== */
+.mobile-hide {
+	display: none;
+}
+
+.mobile-show {
+	display: block;
+}
+
+.mobile-center {
+	text-align: center;
+	margin: 0 auto;
+}
+
+.mobile-full-width {
+	width: 100%;
+	max-width: 100%;
+}
+
+/* Show mobile utilities only on mobile */
+@media (min-width: 769px) {
+	.mobile-hide {
+		display: block;
+	}
+	
+	.mobile-show {
+		display: none;
+	}
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fadein {
+	animation: fadeInUp 0.6s ease-out;
+}
+
+/* ===== ACCESSIBLE FOCUS STYLES ===== */
+.service-caption:focus,
+.chip-label:focus,
+.service-action a:focus {
+	outline: 2px solid #227bf3;
+	outline-offset: 2px;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+	.service {
+		break-inside: avoid;
+		box-shadow: none;
+		border: none;
+	}
+	
+	.service-caption {
+		background: none !important;
+		color: black !important;
+	}
+	
+	.chip-label {
+		background: #f0f0f0 !important;
+		color: black !important;
+		border: 1px solid #ccc;
+	}
+	
+	.service-action a {
+		background: transparent !important;
+		color: black !important;
+		border: 1px solid black;
+	}
+}
+			.checkbox-group .list-item input[type="checkbox"]:checked + .list-item-label {
+			background: #227bf3 !important;
+			color: white !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) {
+			background: #227bf3 !important;
+			border-color: #227bf3 !important;
+		}
+		
+		.checkbox-group .list-item:has(input[type="checkbox"]:checked) .list-item-label {
+			color: white !important;
+		}
+		.form-control-wrap .checkbox-group {
+			display: flex !important;
+			flex-wrap: wrap !important;
+			gap: 15px !important;
+			width: 100% !important;
+			max-width: 100% !important;
+		}
+		
+		.checkbox-group .list-item {
+			display: flex !important;
+			align-items: center !important;
+			background: #f8f9fa !important;
+			border: 1px solid #e0e0e0 !important;
+			border-radius: 25px !important;
+			padding: 8px 16px !important;
+			transition: all 0.3s ease !important;
+			cursor: pointer !important;
+			min-width: fit-content !important;
+			max-width: fit-content !important;
+			flex: 0 0 auto !important;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+			margin: 0 !important;
+		}
+		
+		.checkbox-group .list-item:hover {
+			background: #e3f2fd !important;
+			border-color: #227bf3 !important;
+			box-shadow: 0 4px 8px rgba(34, 123, 243, 0.15) !important;
+			transform: translateY(-1px) !important;
+		}
+		
+		.checkbox-group .list-item input[type="checkbox"] {
+			margin: 0 8px 0 0 !important;
+			accent-color: #227bf3 !important;
+			transform: scale(1.1) !important;
+		}
+		
+		.checkbox-group .list-item-label {
+			font-size: 14px !important;
+			font-weight: 500 !important;
+			color: #555 !important;
+			cursor: pointer !important;
+			margin: 0 !important;
+			white-space: nowrap !important;
+		}
+		
+		.checkbox-group .list-item:hover .list-item-label {
+			color: #227bf3 !important;
+		}
+		
+		/* Force override any existing styles */
+		.checkbox-group span.list-item {
+			display: flex !important;
+			flex: 0 0 auto !important;
+			width: auto !important;
+			max-width: fit-content !important;
+		}
+		
+		/* Extra specific targeting for desktop layout */
+		
+		/* Responsive design for contact form */
+		@media (max-width: 768px) {
+			.form-control-wrap .checkbox-group {
+				gap: 8px !important;
+			}
+			
+			.checkbox-group .list-item {
+				padding: 6px 12px !important;
+			}
+			
+			.checkbox-group .list-item-label {
+				font-size: 13px !important;
+			}
+			
+			/* Mobile responsive heading */
+			.section-caption_text h2 {
+				font-size: 14px !important;
+				line-height: 1.3 !important;
+				word-wrap: break-word !important;
+				hyphens: auto !important;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.section-caption_text h2 {
+				font-size: 14px !important;
+				line-height: 1.4 !important;
+			}
+		}
+		
+		/* Fix for highlighted text overlap */
+		.title h1 span span[style*="background:#227bf3"] {
+			white-space: nowrap !important;
+			overflow-wrap: normal !important;
+			font-size: inherit !important;
+		}
+		
+		.title h1 {
+			text-align: left !important;
+		}
+		
+		@media (max-width: 768px) {
+			.title h1 span span[style*="background:#227bf3"] {
+				display: block !important;
+				margin-bottom: 8px !important;
+				white-space: normal !important;
+				text-align: left !important;
+				font-size: inherit !important;
+			}
+			
+			.title h1 {
+				text-align: left !important;
+			}
+		}
+</style>
+
+<!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
 			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 		<style>
-		/* Dual logo styling with scroll behavior */
-		.nav-logo, .mobile-logo {
-			max-height: 35px;
-			width: auto;
-			display: block;
-			transition: opacity 0.3s ease;
-		}
-		
-		/* Desktop nav-logo positioning for dual system */
+			
 		.nav-logo {
-			position: absolute;
-			top: 0;
-			left: 0;
+			height: 28px;
+			width: 140px;
+			display: block;
 		}
-		
-		/* Mobile logo stays simple - no dual system, always white */
-		.mobile-logo {
-			position: static !important;
-			opacity: 1 !important;
-			visibility: visible !important;
-		}
-		
-		/* Force mobile menu to always show white logo with higher specificity */
-		.menu.mobile .topbar-logo .mobile-logo,
-		.menu.js-menu.mobile .topbar-logo .mobile-logo {
-			opacity: 1 !important;
-			visibility: visible !important;
-			display: block !important;
-		}
-		
-		/* Hide any potential dark logo variants in mobile */
-		.menu.mobile .nav-logo-active,
-		.menu.js-menu.mobile .nav-logo-active {
-			display: none !important;
-		}
-		
-		/* Specific styling for mobile white logo */
-		.mobile-white-logo {
-			opacity: 1 !important;
-			visibility: visible !important;
-			display: block !important;
-			filter: none !important;
-		}
-		
-		/* Force white logo in all mobile menu states */
-		.menu.mobile .mobile-white-logo,
-		.menu.js-menu.mobile .mobile-white-logo,
-		.menu.mobile.open .mobile-white-logo,
-		.menu.js-menu.mobile.open .mobile-white-logo,
-		.menu.mobile.active .mobile-white-logo,
-		.menu.js-menu.mobile.active .mobile-white-logo {
-			opacity: 1 !important;
-			visibility: visible !important;
-			display: block !important;
-			filter: none !important;
-		}
-		
-		/* Override any potential logo switching in mobile menu */
-		body.menu-open .mobile-white-logo,
-		html.menu-open .mobile-white-logo {
-			opacity: 1 !important;
-			visibility: visible !important;
-			display: block !important;
-			filter: none !important;
-		}
-		
-		/* Container for logo to maintain position */
+
 		.topbar-logo a {
 			position: relative;
-			display: inline-block;
+			display: block;
+		}
+
+		.nav-logo-default,
+		.nav-logo-active {
+			transition: opacity 0.3s ease;
 			height: 28px;
-			min-width: 140px;
+			width: 140px;
 		}
 
-		/* Center the logo within its container */
-		.topbar-logo {
-			display: flex;
-			align-items: center;
-			justify-content: flex-start;
-		}
-
-		/* Default state - show white logo, hide dark logo (desktop only) */
 		.nav-logo-default {
 			opacity: 1;
 		}
 
 		.nav-logo-active {
 			opacity: 0;
+			position: absolute;
+			top: 0;
+			left: 0;
 		}
 
-		/* When navbar becomes active/dark on scroll - hide white logo, show dark logo (desktop only) */
+		.topbar-logo:hover .nav-logo-default {
+			opacity: 0;
+		}
+
+		.topbar-logo:hover .nav-logo-active {
+			opacity: 1;
+		}
+		
+		/* Active navbar logo switching when scrolling */
 		.mainnav.active .nav-logo-default,
 		.mainnav.always-active .nav-logo-default,
 		.mainnav:hover .nav-logo-default {
 			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
 		}
-
+		
 		.mainnav.active .nav-logo-active,
 		.mainnav.always-active .nav-logo-active,
 		.mainnav:hover .nav-logo-active {
 			opacity: 1;
+			transform: scale(1.05);
+			z-index: 2;
+		}
+		
+		/* Fix preloader layout issues */
+		.preloader {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			overflow: hidden;
+		}
+		
+		.preloader-inner {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		
+		.preloader iframe {
+			border: none;
+			margin: 0;
+			padding: 0;
 		}
 		</style>
 	
 <!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->
-<title>Best Digital Marketing Agency in Denver | Aenfinite®</title>
-<meta name="description" content="Aenfinite® (M/WBE-certified) is the premier Digital Marketing Agency in Denver. We provide SEO, PPC, social media marketing, content marketing, email campaigns, and comprehensive digital marketing strategies."/>
+<title>Expert Digital Marketing Services | Social Media, Content & Email Marketing | Aenfinite</title>
+<meta name="description" content="Aenfinite is a leading digital marketing agency specializing in social media marketing, content strategy, email campaigns, and online brand management. We deliver comprehensive digital marketing solutions that drive engagement and grow your business."/>
 <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
 <link rel="canonical" href="" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Best Digital Marketing Agency in Denver | Aenfinite®" />
-<meta property="og:description" content="Aenfinite® (M/WBE-certified) is the premier Digital Marketing Agency in Denver. We provide SEO, PPC, social media marketing, content marketing, email campaigns, and comprehensive digital marketing strategies." />
-<meta property="og:url" content="https://Aenfinite/services/digital-marketing/" />
-<meta property="og:site_name" content="Aenfinite®" />
+<meta property="og:title" content="Expert Digital Marketing Services | Social Media, Content & Email Marketing | Aenfinite" />
+<meta property="og:description" content="Aenfinite is a leading digital marketing agency specializing in social media marketing, content strategy, email campaigns, and online brand management. We deliver comprehensive digital marketing solutions that drive engagement and grow your business." />
+<meta property="og:url" content="https://Aenfinite.com/services/search-engine-optimization/" />
+<meta property="og:site_name" content="Aenfinite" />
 <meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
-<meta property="og:updated_time" content="2025-08-17T11:13:56-04:00" />
-<meta property="og:image" content="https://Aenfinite/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
-<meta property="og:image:secure_url" content="https://Aenfinite/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta property="og:updated_time" content="2025-07-12T11:13:56-04:00" />
+<meta property="og:image" content="https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta property="og:image:secure_url" content="https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta property="og:image:width" content="768" />
 <meta property="og:image:height" content="432" />
-<meta property="og:image:alt" content="Aenfinite® Brand Logo - Best Branding &amp; Web Design Agency in Denver" />
+<meta property="og:image:alt" content="Aenfinite Brand Logo - Best SEO & Digital Marketing Agency in Denver" />
 <meta property="og:image:type" content="image/jpeg" />
-<meta property="article:published_time" content="2025-08-17T21:16:37-04:00" />
-<meta property="article:modified_time" content="2025-08-17T11:13:56-04:00" />
+<meta property="article:published_time" content="2022-10-16T21:16:37-04:00" />
+<meta property="article:modified_time" content="2025-07-12T11:13:56-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Best Digital Marketing Agency in Denver | Aenfinite®" />
-<meta name="twitter:description" content="Aenfinite® (M/WBE-certified) is the premier Digital Marketing Agency in Denver. We provide SEO, PPC, social media marketing, content marketing, email campaigns, and comprehensive digital marketing strategies." />
+<meta name="twitter:title" content="Expert Digital Marketing Services | Social Media, Content & Email Marketing | Aenfinite" />
+<meta name="twitter:description" content="Aenfinite delivers expert digital marketing services including social media management, content creation, email marketing, and brand strategy. Specializing in comprehensive digital marketing solutions that drive engagement and business growth." />
 <meta name="twitter:site" content="@aenfinite" />
 <meta name="twitter:creator" content="@aenfinite" />
-<meta name="twitter:image" content="https://Aenfinite/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
+<meta name="twitter:image" content="https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta name="twitter:label1" content="Time to read" />
 <meta name="twitter:data1" content="Less than a minute" />
-<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://Aenfinite/#organization","name":"Aenfinite\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/Aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://Aenfinite/#website","url":"https://Aenfinite","name":"Aenfinite\u00ae","alternateName":"Aenfinite\u00ae - Branding &amp; Web Design Division of DigitalDesign.NYC","publisher":{"@id":"https://Aenfinite/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://Aenfinite/wp-content/uploads/2024/11/share-image-dd.jpg","url":"https://Aenfinite/wp-content/uploads/2024/11/share-image-dd.jpg","width":"5714","height":"3216","caption":"Aenfinite\u00ae Brand Logo - Best Branding &amp; Web Design Agency in Denver","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://Aenfinite/services/graphic-design/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://Aenfinite","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://Aenfinite/services/","name":"Services"}},{"@type":"ListItem","position":"3","item":{"@id":"https://Aenfinite/services/graphic-design/","name":"*Graphic Design"}}]},{"@type":"WebPage","@id":"https://Aenfinite/services/graphic-design/#webpage","url":"https://Aenfinite/services/graphic-design/","name":"Best Graphic Design Agency in Denver City | Aenfinite\u00ae","datePublished":"2022-10-16T21:16:37-04:00","dateModified":"2025-07-12T11:13:56-04:00","isPartOf":{"@id":"https://Aenfinite/#website"},"primaryImageOfPage":{"@id":"https://Aenfinite/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://Aenfinite/services/graphic-design/#breadcrumb"}},{"@type":"Person","@id":"https://Aenfinite/services/graphic-design/#author","name":"Anjelika Aenfinite\u00ae","description":"Archives from for Aenfinite\u00ae (DigitalDesign.NYC)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","caption":"Anjelika Aenfinite\u00ae","inLanguage":"en-US"},"worksFor":{"@id":"https://Aenfinite/#organization"}},{"@type":"Article","headline":"Best Graphic Design Agency in Denver City | Aenfinite\u00ae","keywords":"Graphic Design","datePublished":"2022-10-16T21:16:37-04:00","dateModified":"2025-07-12T11:13:56-04:00","author":{"@id":"https://Aenfinite/services/graphic-design/#author","name":"Anjelika Aenfinite\u00ae"},"publisher":{"@id":"https://Aenfinite/#organization"},"description":"Aenfinite\u00ae (M/WBE-certified) is the best Graphic Design Agency in Denver. We design investor decks, marketing materials, brochures, logos, brand identity, and more.","name":"Best Graphic Design Agency in Denver City | Aenfinite\u00ae","@id":"https://Aenfinite/services/graphic-design/#richSnippet","isPartOf":{"@id":"https://Aenfinite/services/graphic-design/#webpage"},"image":{"@id":"https://Aenfinite/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://Aenfinite/services/graphic-design/#webpage"}}]}</script>
+<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://Aenfinite.com/#organization","name":"Aenfinite\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/digitaldesignny","https://www.instagram.com/Aenfinite/","https://dribbble.com/aenfinite","https://www.behance.net/aenfinite"]},{"@type":"WebSite","@id":"https://Aenfinite.com/#website","url":"https://Aenfinite","name":"Aenfinite\u00ae","alternateName":"Aenfinite\u00ae - SEO & Digital Marketing Agency","publisher":{"@id":"https://Aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","url":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg","width":"5714","height":"3216","caption":"Aenfinite\u00ae Brand Logo - Best SEO & Digital Marketing Agency","inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://Aenfinite.com/services/search-engine-optimization/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://Aenfinite","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://Aenfinite.com/services/","name":"Services"}},{"@type":"ListItem","position":"3","item":{"@id":"https://Aenfinite.com/services/search-engine-optimization/","name":"Search Engine Optimization"}}]},{"@type":"WebPage","@id":"https://Aenfinite.com/services/search-engine-optimization/#webpage","url":"https://Aenfinite.com/services/search-engine-optimization/","name":"Expert Search Engine Optimization (SEO) Services | Keyword Research & Rankings | Aenfinite\u00ae","datePublished":"2022-10-16T21:16:37-04:00","dateModified":"2025-09-16T11:13:56-04:00","isPartOf":{"@id":"https://Aenfinite.com/#website"},"primaryImageOfPage":{"@id":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","breadcrumb":{"@id":"https://Aenfinite.com/services/search-engine-optimization/#breadcrumb"}},{"@type":"Person","@id":"https://Aenfinite.com/services/search-engine-optimization/#author","name":"Anjelika Aenfinite\u00ae","description":"Archives from for Aenfinite\u00ae (Aenfinite.com)","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/8c8aedc0733a5c125a2e5bd464e0b587?s=96&amp;d=mm&amp;r=g","caption":"Anjelika Aenfinite\u00ae","inLanguage":"en-US"},"worksFor":{"@id":"https://Aenfinite.com/#organization"}},{"@type":"Article","headline":"Expert Search Engine Optimization (SEO) Services | Keyword Research & Rankings | Aenfinite\u00ae","keywords":"SEO Services, Search Engine Optimization, Keyword Research, On-Page SEO, Technical SEO, Link Building, Organic Rankings","datePublished":"2022-10-16T21:16:37-04:00","dateModified":"2025-09-16T11:13:56-04:00","author":{"@id":"https://Aenfinite.com/services/search-engine-optimization/#author","name":"Anjelika Aenfinite\u00ae"},"publisher":{"@id":"https://Aenfinite.com/#organization"},"description":"Aenfinite\u00ae delivers expert search engine optimization services including keyword research, on-page SEO, technical audits, and link building. Specializing in data-driven SEO strategies that improve organic rankings and drive sustainable traffic growth.","name":"Expert Search Engine Optimization (SEO) Services | Keyword Research & Rankings | Aenfinite\u00ae","@id":"https://Aenfinite.com/services/search-engine-optimization/#richSnippet","isPartOf":{"@id":"https://Aenfinite.com/services/search-engine-optimization/#webpage"},"image":{"@id":"https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd.jpg"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://Aenfinite.com/services/search-engine-optimization/#webpage"}}]}</script>
 <!-- /Rank Math WordPress SEO plugin -->
 
 <link rel="https://api.w.org/" href="../../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../../wp-json/wp/v2/pages/1708.json" /><link rel='shortlink' href='../../index13fe.html?p=1708' />
@@ -202,12 +936,12 @@
     <link rel="icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-32x32.png" sizes="32x32" />
 <link rel="icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-192x192.png" sizes="192x192" />
 <link rel="apple-touch-icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-180x180.png" />
-<meta name="msapplication-TileImage" content="https://Aenfinite/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-270x270.png" />
+<meta name="msapplication-TileImage" content="https://Aenfinite.com/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-270x270.png" />
 		<meta name="p:domain_verify" content="a289659500b9ab2eea935a542138f755"/>
 		<meta name="google-site-verification" content="w5x4RIV--Je9QfyBMKTz_kRMtBGYQ_0e80K3uAykqoc" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<!-- Powered by Aenfinite® https://Aenfinite/ -->
+		<!-- Powered by Aenfinite https://Aenfinite.com/ -->
 		<!--              
 				,DDD                 DDD        
 			  DD    DD            DD     DD     
@@ -250,11 +984,165 @@
 		<!-- End Google Tag Manager -->
 
 
-<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite® with ❤️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
+<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite with ??', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
 		
 	<script src="../../../tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
 		
-	</head>
+
+	<!-- Animated Cursor Implementation -->
+	<style>
+		* {
+			cursor: none !important;
+		}
+		
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
+		
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+	</style>
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.1, 1 - index * 0.05) + ")";
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+		</head>
 	<body class="page-template page-template-page-service-php page-id-1708 page-child parent-pageid-82 document loading body_hide document">
 		
 		<!-- Google Tag Manager (noscript) -->
@@ -276,8 +1164,8 @@
 		</svg>
 		<div style="display:none!important;">
 						<div class="ip">49.36.188.249</div>
-			<div class="url">*Digital Marketing</div>
-			<div class="urlback">https://Aenfinite/work/modern-dose-supplements-branding-packaging/</div>
+			<div class="url">Digital Marketing Services</div>
+			<div class="urlback">https://Aenfinite.com/services/search-engine-optimization/</div>
 			<div class="datas">08.15.2025</div>
 			<div class="times">9-38 am</div>
 		</div>	
@@ -286,39 +1174,189 @@
 				<div class="topbar">
 					<div class="topbar-nav js-topnav-follow">
 						<div class="topbar-logo js-topnav-follow-item active">
-							<a href="../../">
-								<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
-								<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
+							<a href="/">
+								<img src="/wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
+								<img src="/wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
 							</a>
 						</div>
 						<ul class="topnav desktop">
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="../../featured-work/">Work</a>
+								<a href="/featured-work/">Work</a>
 							</li>
 							<li class="topnav-item js-topnav-follow-item">
-								<a href="../../agency/">Agency</a>
+								<a href="/agency/">Agency</a>
 							</li>
-							<li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
-								<a href="../">Services</a>
-								<ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list"><li id="menu-item-2275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2275"><a href="../web-design/">Web Design</a></li>
-<li id="menu-item-2276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2276"><a href="../branding/">Branding</a></li>
-<li id="menu-item-ecommerce" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-ecommerce"><a href="../e-commerce-websites/">E-commerce Websites</a></li>
-<li id="menu-item-digital-marketing" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item current_page_item menu-item-digital-marketing"><a href="" aria-current="page">Digital Marketing</a></li>
-<li id="menu-item-6909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6909"><a href="../trade-show-booth-design/">Trade Shows</a></li>
-<li id="menu-item-2277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2277"><a href="../packaging-design/">Packaging Design</a></li>
-</ul>	
+							                            <li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
+                                <a href="/services/">Services</a>
+                               <ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
+									<li class="menu-item menu-item-has-children">
+										<a href="#">Development Solutions ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/e-commerce-websites/">E-Commerce Websites</a></li>
+											<li><a href="/services/custom-web-development">Custom Web Development</a></li>
+											<li><a href="/services/software-&-platform-development/">Software & Platform Development</a></li>
+											<li><a href="/services/app-development/">App Development</a></li>
+											<li><a href="/services/web-design/">Website Design & Development</a></li>
+											<li><a href="/services/web-design-and-branding-for-real-estate/">Real Estate Web Solutions</a></li>									</ul>
+									</li>
+									<li class="menu-item menu-item-has-children">
+										<a href="#">Design & Creative Services ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/ui-ux-design/">UI/UX Design</a></li>
+											<li><a href="/services/website-design/">Website Design</a></li>
+											<li><a href="/services/branding/">Brand Identity & Strategy</a></li>
+											<li><a href="/services/graphic-design/">Graphic Design</a></li>
+											<li><a href="/services/motion-graphics/">Motion Graphics</a></li>
+											<li><a href="/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+											<li><a href="/services/conference-branding/">Conference Branding</a></li>
+										</ul>
+									</li>
+									<li class="menu-item menu-item-has-children">
+										<a href="#">Marketing & Digital Solutions ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/digital-marketing/">Digital Marketing Strategy</a></li>
+											<li><a href="/services/search-engine-optimization/">Search Engine Optimization (SEO)</a></li>
+											<li><a href="/services/pay-per-click">Pay-Per-Click (PPC) Advertising</a></li>
+											<li><a href="/services/social-media-marketing/">Social Media Marketing</a></
+
+										</ul>
+									</li>
+									
+									
+									
+								</ul>
 							</li>
-							<li class="topnav-item js-topnav-follow-item">
-								<a href="../../client-testimonials/">Testimonials</a>
-							</li>
+							<li class="menu-item menu-item-has-children">
+										<a href="#">AI & Technology Solutions ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/ai-chatbots-&-virtual-assistants/">AI Chatbots & Virtual Assistants</a></li>
+											<li><a href="/services/workflow-&-business-automation/">Workflow & Business Automation</a></li>
+										</ul>
+									</li>
 						</ul>
+                            </li><style>/* Multi-Level Dropdown Navigation Styles - Partner With Us Style */
+.menu-item-has-children {
+    position: relative;
+}
+
+/* Main dropdown from Services menu - adaptive styling */
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Sub-menus - adaptive styling based on navbar state */
+.sub-menu {
+    position: absolute;
+    top: -5px;
+    left: 100%;
+    margin-left: 1px;
+    min-width: 250px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    z-index: 1001;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Default dropdown styling - no background, dark text (for top of page) */
+.dropdown-list a,
+.sub-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.dropdown-list a:hover,
+.sub-menu a:hover {
+    color: #007cba;
+    padding-left: 15px;
+}
+
+/* When navbar is active/scrolled - black background, white text */
+.mainnav.active .dropdown-list,
+.mainnav.active .sub-menu {
+    margin-top: 10px;
+    background: #000;
+}
+
+.mainnav.active .dropdown-list a,
+.mainnav.active .sub-menu a {
+    color: #fff;
+}
+
+.mainnav.active .dropdown-list a:hover,
+.mainnav.active .sub-menu a:hover {
+    color: #007cba;
+}
+
+/* When hovering over menu item with children, expand main dropdown to match sub-menu */
+.menu-item-has-children:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Expand main dropdown when sub-menu is hovered */
+.menu-item-has-children:hover {
+    min-width: 250px;
+}
+
+.dropdown-list:has(.menu-item-has-children:hover) {
+    min-width: 250px;
+    width: 250px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sub-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 3px solid #007cba;
+        margin-left: 15px;
+        background: #f9f9f9;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .menu-item-has-children.active > .sub-menu {
+        max-height: 500px;
+    }
+}</style>						</ul>
 						<div class="topnav-follower desktop js-topnav-follow-bar"></div>
 					</div>
 					<div class="topbar-social desktop">
-						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/">Partner with us</a></li>
+						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="/agency/partner-with-us/">Partner with us</a></li>
 </ul>					</div>
 					<div class="topbar-contact desktop">
-						<a href="../../contact/index57fd.html?linkcontact=top-contact-button" class="topbar-contact_button">Contact</a>
+						<a href="/contact/" class="topbar-contact_button">Contact</a>
 					</div>
 					<div class="menu-button mobile js-menu-toggle"><i></i></div>
 				</div>
@@ -327,12 +1365,11 @@
 				<div class="mainnav-dropdown-layer-container js-dropdown-layer-text">
 					<div class="wrapper">
 						<div class="mainnav-dropdown-layer-text">
-							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 		
 		<div class="container">
 		
@@ -351,122 +1388,30 @@
 					<line x1="100%" y1="0" x2="0" y2="100%" vector-effect="non-scaling-stroke"></line>
 				</g>
 			</svg>
-			<span class="header-cross_text">Innovating in your industry</span>
+			<span class="header-cross_text">Redefine Infinite Possibilities</span>
 		</div>
 		<div class="header-wrapper">
 			<div class="header-caption">
 				<div class="title title__main js-header-title">
 					<h1>
-						<span>Best digital marketing services</span>
-													<span>agency for your business.</span>	
+						<span>Digital <span style="background:#227bf3;color:white;padding:1px 0px;border-radius:2px;display:inline;line-height:1.2;margin-right:2px;vertical-align:baseline;">Marketing</span> that builds brand awareness, drives <span style="background:#227bf3;color:white;padding:1px 0px;border-radius:2px;display:inline;line-height:1.2;margin-right:2px;vertical-align:baseline;">engagement</span>, and grows your business reach.</span>
+													
 											</h1>
 									</div>
 			</div>
-			<div class="header-reviews">
-				<script src="../../../widget.clutch.co/static/js/widget.js"></script>
-				<div class="clutch-widget" data-nofollow="true" data-url="https://widget.clutch.co" data-widget-type="2" data-height="45" data-clutchcompany-id="599131"></div>
-				<div class="reviews" hidden>
-					<div class="reviews-col">
-						<div class="reviews-pretitle">Reviewed on</div>
-						<div class="reviews-logo">
-							<img src="../../wp-content/themes/aenfinite.com/static/img/clutch.svg" alt="" />
-						</div>
-					</div>
-					<div class="reviews-col">
-						<div class="reviews-stars"></div>
-						<div class="reviews-num">54 reviews</div>
-					</div>
-				</div>
-			</div>
+			
 
 		</div>
 
 		                <div class="preloader">
                     <div class="preloader-inner">
-                        <div class="preloader-logo">
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 143.2 147" style="enable-background:new 0 0 143.2 147;" xml:space="preserve">
-                                    <path d="M140.2,34.8c-2-6.3-4.7-11.5-8.1-15.7c-3.4-4.2-7.2-7.6-11.4-10.1c-4.2-2.5-8.6-4.4-13.1-5.8c-4.5-1.3-8.9-2.2-13.2-2.6
-	S86.1,0,82.7,0H0v114.6h25.1v0.1h57.7c3.4,0,7.3-0.2,11.6-0.6s8.7-1.2,13.2-2.6c4.5-1.3,8.9-3.3,13.1-5.8c4.2-2.5,8-5.9,11.4-10.1
-	c3.4-4.2,6.1-9.5,8.1-15.7c2-6.3,3-13.8,3-22.5v-0.1C143.2,48.6,142.2,41.1,140.2,34.8z M113.5,64.2c-1.2,10.8-9.8,21.8-21.8,21.8
-	h-63V28.7h63c12,0,20.6,11,21.8,21.8c0.3,2.3,0.5,4.4,0.5,6.9C113.9,59.8,113.8,61.9,113.5,64.2z" />
-                                </svg>
-                            </div>
-                            <div class="logo-cut">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 607.6 147" style="enable-background:new 0 0 607.6 147;" xml:space="preserve">
+						<iframe src="/intro/demo/data.html" style="width: 100%; height: 100vh;" ></iframe>
+                      
 
-                                    <path d="M49.8,114.6V0h-3.6H21.1v114.5h25.1v0.1H49.8z" />
-                                    <path d="M249.5,114.6V0h-3.6h-25.1v114.5h25.1v0.1H249.5z" />
-                                    <path d="M438.8,0L493,114.6h-32l-11-24.9h-57.2l-11,24.9h-32L404.1,0H438.8z M437.9,62.6l-16.4-37.4l-16.6,37.4H437.9z" />
-                                    <path d="M332.1,0h-3.6h-25.1h-43v3.6v25.1h43v85.9h25.1v0.1h3.6v-86H375V3.6h0.1V0H332.1z" />
-                                    <path d="M521.6,86V0H518h-25v86v3.6v25v0.1h25h3.6h85.9V89.6h0.1V86H521.6z" />
-                                    <path d="M123.1,54.8v20.1h52.1c-0.7,3.5-2.6,6.5-5.6,9c-3,2.4-6.9,3.6-11.6,3.6h-46.1c-12,0-20.6-12.5-21.8-23.3
-	c-0.3-2.3-0.5-4.4-0.5-6.9c0-2.4,0.2-4.6,0.5-6.9c1.2-10.8,9.8-21.8,21.8-21.8h42.3c10.8,0,19.8,7.9,21.5,18.2h30
-	c-0.9-7.2-2.5-13.3-4.9-18.4c-2.4-5.1-5.3-9.4-8.7-12.8c-3.4-3.5-7.1-6.2-11.1-8.3c-4-2-8.1-3.6-12.3-4.7c-4.2-1.1-8.2-1.8-12.2-2.2
-	c-4-0.3-7.5-0.5-10.7-0.5h-25c-3.4,0-7.3,0.2-11.6,0.6C104.9,1,100.5,1.8,96,3.2c-4.5,1.3-8.9,3.3-13.1,5.8
-	c-4.2,2.5-8,5.9-11.4,10.1c-3.4,4.2-6.1,9.5-8.1,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5c2,6.3,4.7,11.5,8.1,15.7
-	c3.4,4.2,7.2,7.6,11.4,10.1c4.2,2.5,8.6,4.4,13.1,5.8c4.5,1.3,8.9,2.2,13.2,2.6c4.3,0.4,8.2,0.6,11.6,0.6h25.5
-	c2.4,0,5.1-0.1,7.9-0.3c2.8-0.2,5.8-0.6,8.9-1.1c3.1-0.6,6.2-1.3,9.3-2.3c3.1-1,6.2-2.4,9.1-4.1l3.5,7.9h20.7V54.8H123.1L123.1,54.8
-	z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 143.2 147" style="enable-background:new 0 0 143.2 147;" xml:space="preserve">
-                                    <path d="M140.2,34.8c-2-6.3-4.7-11.5-8.1-15.7c-3.4-4.2-7.2-7.6-11.4-10.1c-4.2-2.5-8.6-4.4-13.1-5.8c-4.5-1.3-8.9-2.2-13.2-2.6
-	S86.1,0,82.7,0H0v114.6h25.1v0.1h57.7c3.4,0,7.3-0.2,11.6-0.6s8.7-1.2,13.2-2.6c4.5-1.3,8.9-3.3,13.1-5.8c4.2-2.5,8-5.9,11.4-10.1
-	c3.4-4.2,6.1-9.5,8.1-15.7c2-6.3,3-13.8,3-22.5v-0.1C143.2,48.6,142.2,41.1,140.2,34.8z M113.5,64.2c-1.2,10.8-9.8,21.8-21.8,21.8
-	h-63V28.7h63c12,0,20.6,11,21.8,21.8c0.3,2.3,0.5,4.4,0.5,6.9C113.9,59.8,113.8,61.9,113.5,64.2z" />
-                                </svg>
-                            </div>
-                            <div class="logo-cut">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 607.6 147" style="enable-background:new 0 0 607.6 147;" xml:space="preserve">
-                                    <path d="M164.2,35.4c0,2.4,1.4,4.1,4.1,5.1c2.8,1.1,6.4,1.8,10.9,2.2c4.5,0.4,9.6,0.7,15.3,0.8c5.7,0.1,11.6,0.4,17.7,0.9
-	c6,0.5,12,1.3,17.7,2.5c5.7,1.2,10.9,3.1,15.3,5.7c4.5,2.6,8.1,6.1,10.9,10.4c2.7,4.3,4.1,9.8,4.1,16.5c0,2.1-0.2,4.5-0.6,7.1
-	c-0.4,2.6-1.2,5.2-2.4,7.8c-1.2,2.6-3,5.2-5.4,7.6c-2.3,2.5-5.5,4.6-9.4,6.5c-3.9,1.9-8.7,3.4-14.5,4.5c-5.7,1.1-12.6,1.7-20.5,1.7
-	h-20c-7.9,0-14.8-0.7-20.5-2.1c-5.7-1.4-10.6-3.2-14.5-5.4c-3.9-2.2-7-4.7-9.4-7.6c-2.3-2.9-4.2-5.8-5.4-8.8
-	c-1.2-2.9-2.1-5.8-2.4-8.7c-0.4-2.8-0.5-5.3-0.5-7.5h29.6c0,0.9,0.2,1.9,0.6,3.2s1.1,2.5,2.1,3.7c1,1.2,2.6,2.2,4.6,3.1
-	c2,0.9,4.7,1.3,7.9,1.3h40.7c4.2,0,7-0.6,8.4-1.9c1.4-1.3,2.1-2.8,2.1-4.5c0-2.6-1.4-4.4-4.1-5.6c-2.8-1.2-6.4-2-10.9-2.4
-	c-4.5-0.4-9.6-0.7-15.4-0.7c-5.8-0.1-11.7-0.3-17.7-0.8c-6-0.5-11.9-1.3-17.7-2.4c-5.8-1.1-10.9-2.9-15.4-5.5
-	c-4.5-2.5-8.1-5.9-10.9-10.2c-2.7-4.3-4.1-9.8-4.1-16.5c0-3.3,0.5-7,1.5-11.1c1-4.1,3.3-7.9,6.9-11.5c3.6-3.6,8.9-6.6,16-9.1
-	c7-2.5,16.6-3.7,28.6-3.7h19.9c8,0,14.9,0.7,20.7,2.1c5.7,1.4,10.6,3.2,14.5,5.5c3.9,2.2,7,4.8,9.4,7.6c2.3,2.8,4.2,5.8,5.4,8.8
-	c1.2,3,2.1,5.9,2.4,8.7c0.4,2.8,0.5,5.3,0.5,7.5h-29.8c0-0.9-0.2-1.9-0.5-3.2c-0.3-1.3-1-2.5-2.1-3.7c-1.1-1.2-2.6-2.2-4.6-3.1
-	c-2-0.9-4.6-1.3-8-1.3h-40.7c-4.3,0-7.1,0.6-8.4,1.8C164.9,32,164.2,33.5,164.2,35.4L164.2,35.4z" />
-                                    <path d="M579.7,28.7v28.6V86L509.9,0.1h-13.9h-14H468v28.6v28.6V86v28.6h27.9V86V57.3V28.7l69.8,85.9h13.9h14h13.9V86V57.3V28.7V0.1
-	h-27.9V28.7z" />
-                                    <path d="M119.8,68.4V49.1h0.1v-2.8h-92V28.7h91.9V3.6h0.1V0h-92h-3.5H0v3.6v25.1V86v3.6v25v0.1h119.8v-25h0.1V86h-92V68.4H119.8z" />
-                                    <path d="M300.9,114.7V0.1h-3.5H273v114.5h24.4v0.1H300.9z" />
-                                    <path d="M374.7,54.8v20.1h50.8c-0.7,3.5-2.5,6.5-5.4,9c-2.9,2.4-6.7,3.6-11.3,3.6h-44.9c-11.7,0-20.1-12.5-21.3-23.3
-	c-0.3-2.3-0.4-4.4-0.4-6.9c0-2.4,0.2-4.6,0.4-6.9c1.2-10.8,9.5-21.8,21.3-21.8h41.2c10.6,0,19.3,7.9,21,18.2h29.3
-	c-0.8-7.2-2.4-13.3-4.8-18.4c-2.3-5.1-5.2-9.4-8.5-12.8c-3.3-3.5-6.9-6.2-10.8-8.3c-3.9-2-7.9-3.6-12-4.7c-4.1-1.1-8-1.8-11.9-2.2
-	c-3.9-0.3-7.4-0.5-10.5-0.5h-24.4c-3.3,0-7.1,0.2-11.3,0.6c-4.2,0.4-8.5,1.2-12.9,2.6c-4.4,1.3-8.6,3.3-12.7,5.8
-	c-4.1,2.5-7.8,5.9-11.1,10.1c-3.3,4.2-5.9,9.5-7.9,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5c2,6.3,4.6,11.5,7.9,15.7
-	c3.3,4.2,7,7.6,11.1,10.1c4.1,2.5,8.4,4.4,12.7,5.8c4.4,1.3,8.7,2.2,12.9,2.6c4.2,0.4,8,0.6,11.3,0.6h24.8c2.4,0,4.9-0.1,7.7-0.3
-	c2.8-0.2,5.7-0.6,8.7-1.1c3-0.6,6-1.3,9.1-2.3c3.1-1,6-2.4,8.9-4.1l3.4,7.9h20.2V54.8H374.7L374.7,54.8z" />
-                                </svg>
-
-                            </div>
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 508.3 147" style="enable-background:new 0 0 508.3 147;" xml:space="preserve">
-
-                                    <path d="M205.4,28.7v28.6V86L133.8,0.1h-14.3h-14.3H90.8v28.6v28.6V86v28.6h28.6V86V57.3V28.7l71.6,85.9h14.3h14.3H234V86V57.3V28.7
-	V0.1h-28.6V28.7z" />
-                                    <path d="M377.2,0.1h-35.8l-35.8,43l-35.8-43H234l57.3,68.7V86v28.6H320V86V68.8L377.2,0.1z" />
-                                    <path d="M456.7,86.1h-42.3c-12,0-20.6-11-21.8-21.8c-0.3-2.3-0.5-4.4-0.5-6.9c0-2.4,0.2-4.6,0.5-6.9c1.2-10.8,9.8-21.8,21.8-21.8
-	h42.3c10.8,0,19.8,7.9,21.5,18.2h30c-0.9-7.2-2.5-13.3-4.9-18.4c-2.4-5.1-5.3-9.4-8.7-12.8c-3.4-3.5-7.1-6.2-11.1-8.3
-	c-4-2-8.1-3.6-12.3-4.7c-4.2-1.1-8.2-1.8-12.2-2.2s-7.5-0.5-10.7-0.5h-25c-3.4,0-7.3,0.2-11.6,0.6c-4.3,0.4-8.7,1.2-13.2,2.6
-	c-4.5,1.3-8.9,3.3-13.1,5.8c-4.2,2.5-8,5.9-11.4,10.1c-3.4,4.2-6.1,9.5-8.1,15.7c-2,6.3-3,13.8-3,22.5v0.1c0,8.8,1,16.3,3,22.5
-	c2,6.3,4.7,11.5,8.1,15.7c3.4,4.2,7.2,7.6,11.4,10.1c4.2,2.5,8.6,4.4,13.1,5.8c4.5,1.3,8.9,2.2,13.2,2.6c4.3,0.4,8.2,0.6,11.6,0.6
-	h25c3.2,0,6.8-0.2,10.7-0.5c4-0.3,8-1,12.2-2.2c4.2-1.1,8.2-2.7,12.3-4.7c4-2,7.7-4.8,11.1-8.3c3.4-3.5,6.3-7.8,8.7-12.8
-	s4-11.2,4.9-18.4h-30C476.5,78.2,467.5,86.1,456.7,86.1L456.7,86.1z" />
-                                    <path fill="#227bf3" d="M20.2,126.5l20.3,20.2l20.3-20.2L81,106.2L60.8,86l-20.3,20.3L20.2,86L0,106.2L20.2,126.5z" />
-                                </svg>
-                            </div>
-                        </div>
                     </div>
-                </div>
-	</div>
-</div>		
+				</div>
+			</div>
+		</div>		
 			<a class="fab js-fab" href="#contact">
 				<div class="fab-button js-fab-button desktop">
 					<svg width="100%" height="100%" viewBox="0 0 232 199" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -493,33 +1438,38 @@
                 <div class="header-marquee runner js-runner">
                     <div class="js-runner-content">
 													<div class="marquee-line">
-																	<span class="marquee-line_text">Creative User-Centered Design</span>
-																	<span class="marquee-line_text">5-star Clutch Rating</span>
-																	<span class="marquee-line_text">Innovative Graphics</span>
-																	<span class="marquee-line_text">Best-Rated Digital Marketing Agency</span>
-																	<span class="marquee-line_text">Collaborative Process</span>
-																	<span class="marquee-line_text">M/WBE-Certified</span>
-																	<span class="marquee-line_text">Top UI/UX Practices</span>
-															</div>
+    <span class="marquee-line_text">Expert Digital Marketing Services</span>
+    <span class="marquee-line_text">Social Media Marketing, Content & Email Campaigns</span>
+    <span class="marquee-line_text">Serving Clients Across the US, Canada & Beyond</span>
+    <span class="marquee-line_text">Specialists in Organic Rankings & Search Visibility</span>
+    <span class="marquee-line_text">Trusted by Growing Businesses for Digital Results</span>
+    <span class="marquee-line_text">Data-Driven Digital Strategies & Analytics</span>
+    <span class="marquee-line_text">Multi-Platform Digital Marketing & Brand Management</span>
+    <span class="marquee-line_text">Professional Digital Marketing Agency with Proven Results</span>
+    <span class="marquee-line_text">Comprehensive Digital Marketing Campaigns & Social Media</span>
+    <span class="marquee-line_text">Custom Digital Marketing Solutions for Every Industry</span>
+    <span class="marquee-line_text">Content Optimization & Search Performance</span>
+    <span class="marquee-line_text">Sustainable Digital Growth & Long-term Brand Success</span>
+</div>
 						                    </div>
                 </div>
                 <div class="js-shiftbox-carousel shiftbox-carousel">
 											<div>
 							<div class="shiftbox">
 								<div class="shiftbox-image">
-									<a href="../../work/ivywise-education-consultancy/">
-										<img src="../../wp-content/uploads/2024/11/IW-800x423-1.webp" alt="IvyWise Education Consultancy Branding & Website Design by Aenfinite®" class="cover" />
-									    <a href="../../work/ivywise-education-consultancy/" class="shiftbox-link"> </a>
+									<a href="../../services/search-engine-optimization/">
+										<img src="../../wp-content/uploads/2024/11/seo-case-study-example.webp" alt="SEO Case Study - Organic Traffic Growth by Aenfinite" class="cover" />
+									    <a href="../../services/search-engine-optimization/" class="shiftbox-link"> </a>
 									</a>
 								</div>
 								<div class="shiftbox-content">
 									<div class="preview">
 										<div class="preview-content" data-index="01">
-											<div class="preview-name preview-name__caption"><a href="../../work/ivywise-education-consultancy/">IvyWise Education Consultancy</a></div>
-																																		<div class="preview-name">Branding</div>
-																							<div class="preview-name">Brand Collateral</div>
-																							<div class="preview-name">Web Design</div>
-																							<div class="preview-name">Video Production</div>
+											<div class="preview-name preview-name__caption"><a href="../../services/search-engine-optimization/">Local Business SEO Success</a></div>
+																																		<div class="preview-name">Social Media Marketing</div>
+																							<div class="preview-name">Content Marketing</div>
+																							<div class="preview-name">Email Marketing</div>
+																							<div class="preview-name">Online Brand Management</div>
 																					</div>
 									</div>
 								</div>
@@ -528,20 +1478,20 @@
 											<div>
 							<div class="shiftbox">
 								<div class="shiftbox-image">
-									<a href="../../work/munoz-group/">
-										<img src="../../wp-content/uploads/2023/06/Aenfinite%c2%ae-Munoz-2.webp" alt="" class="cover" />
-									    <a href="../../work/munoz-group/" class="shiftbox-link"> </a>
+									<a href="../../services/search-engine-optimization/">
+										<img src="../../wp-content/uploads/2023/06/seo-analytics-dashboard.webp" alt="SEO Analytics Dashboard showing organic growth results" class="cover" />
+									    <a href="../../services/search-engine-optimization/" class="shiftbox-link"> </a>
 									</a>
 								</div>
 								<div class="shiftbox-content">
 									<div class="preview">
 										<div class="preview-content" data-index="02">
-											<div class="preview-name preview-name__caption"><a href="../../work/munoz-group/">Muñoz Group Austin &#8211; Real Estate Branding &#038; Website</a></div>
-																																		<div class="preview-name">Branding</div>
-																							<div class="preview-name">Web Design</div>
-																							<div class="preview-name">UI/UX</div>
-																							<div class="preview-name">Digital Marketing</div>
-																							<div class="preview-name">Real Estate</div>
+											<div class="preview-name preview-name__caption"><a href="../../services/search-engine-optimization/">E-commerce SEO Campaign</a></div>
+																																		<div class="preview-name">Local SEO</div>
+																							<div class="preview-name">Technical Audits</div>
+																							<div class="preview-name">Content Optimization</div>
+																							<div class="preview-name">Ranking Improvements</div>
+																							<div class="preview-name">Organic Growth</div>
 																					</div>
 									</div>
 								</div>
@@ -550,19 +1500,19 @@
 											<div>
 							<div class="shiftbox">
 								<div class="shiftbox-image">
-									<a href="../../work/vale-real-estate-branding-website/">
-										<img src="../../wp-content/uploads/2025/02/vale-800-x-423.webp" alt="VALE Lake Wylie Charlotte North Carolina Real Estate Branding & Website by Aenfinite®️" class="cover" />
-									    <a href="../../work/vale-real-estate-branding-website/" class="shiftbox-link"> </a>
+									<a href="../../services/search-engine-optimization/">
+										<img src="../../wp-content/uploads/2025/02/seo-keyword-research.webp" alt="SEO Keyword Research Strategy and Implementation by Aenfinite" class="cover" />
+									    <a href="../../services/search-engine-optimization/" class="shiftbox-link"> </a>
 									</a>
 								</div>
 								<div class="shiftbox-content">
 									<div class="preview">
 										<div class="preview-content" data-index="03">
-											<div class="preview-name preview-name__caption"><a href="../../work/vale-real-estate-branding-website/">VALE Real Estate Branding &#038; Website</a></div>
-																																		<div class="preview-name">Real Estate</div>
-																							<div class="preview-name">Naming</div>
-																							<div class="preview-name">Branding</div>
-																							<div class="preview-name">Web Design</div>
+											<div class="preview-name preview-name__caption"><a href="../../services/search-engine-optimization/">SaaS Platform SEO Growth</a></div>
+																																		<div class="preview-name">Keyword Strategy</div>
+																							<div class="preview-name">Schema Markup</div>
+																							<div class="preview-name">Page Speed</div>
+																							<div class="preview-name">Mobile SEO</div>
 																					</div>
 									</div>
 								</div>
@@ -616,14 +1566,14 @@
 							<div class="shiftbox">
 								<div class="shiftbox-image">
 									<a href="../../work/innovative-sleep-technologies/">
-										<img src="../../wp-content/uploads/2023/12/IST-Case-2-1-896x587.jpg" alt="Innovative Sleep Technologies branding and website design by Aenfinite® best design agency." class="cover" />
+										<img src="../../wp-content/uploads/2023/12/IST-Case-2-1-896x587.jpg" alt="Innovative Sleep Technologies branding and website design by Aenfinite best design agency." class="cover" />
 									    <a href="../../work/innovative-sleep-technologies/" class="shiftbox-link"> </a>
 									</a>
 								</div>
 								<div class="shiftbox-content">
 									<div class="preview">
 										<div class="preview-content" data-index="06">
-											<div class="preview-name preview-name__caption"><a href="../../work/innovative-sleep-technologies/">Innovative Sleep Technologies®</a></div>
+											<div class="preview-name preview-name__caption"><a href="../../work/innovative-sleep-technologies/">Innovative Sleep Technologies</a></div>
 																																</div>
 									</div>
 								</div>
@@ -633,7 +1583,7 @@
 							<div class="shiftbox">
 								<div class="shiftbox-image">
 									<a href="../../work/ms-foundation-50th-anniversary-gala/">
-										<img src="../../wp-content/uploads/2023/07/Start-Slider.webp" alt="Aenfinite® designs Denver charity gala Ms. Foundation" class="cover" />
+										<img src="../../wp-content/uploads/2023/07/Start-Slider.webp" alt="Aenfinite designs Denver charity gala Ms. Foundation" class="cover" />
 									    <a href="../../work/ms-foundation-50th-anniversary-gala/" class="shiftbox-link"> </a>
 									</a>
 								</div>
@@ -664,9 +1614,9 @@
 				<div class="section">
 		<div class="wrapper">
 			<div class="textbox appear js-aos">
-				<div class="textbox-content">Aenfinite® offers comprehensive digital marketing services that transform your business with powerful online strategies. We provide SEO, PPC advertising, social media marketing, content marketing, email campaigns, and conversion optimization designed to maximize your online presence and drive measurable growth results.</div>
+				<div class="textbox-content">Aenfinite delivers expert digital marketing services that build brand awareness, drive engagement, and grow your online presence. We manage comprehensive social media campaigns, content marketing strategies, email marketing automation, and online brand management solutions that generate measurable results and long-term business growth.</div>
 									<div class="textbox-action">
-						<a href="../../work/" class="redlink">
+						<a href="../../services/digital-marketing/" class="redlink">
 							<span>Trust the experts</span>
 						</a>
 					</div>
@@ -679,21 +1629,21 @@
 				<div class="numbers">
 											<div class="numbers-item js-aos">
 							<div class="numbers-value">
-								<div>10K+</div>
+								<div>500+</div>
 							</div>
 							<div class="numbers-title">
 								<div>
-									<div>successful digital marketing campaigns designed and launched by Aenfinite®</div>
+									<div>successful digital marketing campaigns and social media projects launched by Aenfinite</div>
 																	</div>
 							</div>
 						</div>
 											<div class="numbers-item js-aos">
 							<div class="numbers-value">
-								<div>10</div>
+								<div>8+</div>
 							</div>
 							<div class="numbers-title">
 								<div>
-									<div>years in business as a top-tier Denver marketing agency, focusing on digital strategies and online growth solutions</div>
+									<div>years optimizing websites and managing SEO strategies for businesses across industries, delivering exceptional organic growth and search visibility</div>
 																	</div>
 							</div>
 						</div>
@@ -703,7 +1653,7 @@
 							</div>
 							<div class="numbers-title">
 								<div>
-									<div>client satisfaction on digital marketing campaigns and strategy projects with our agency</div>
+									<div>client satisfaction rate on digital marketing projects and social media campaigns</div>
 																	</div>
 							</div>
 						</div>
@@ -711,40 +1661,14 @@
 							</div>
 		</div>
 	</div>
-	<div class="section">
-		<div class="keygrid-wrapper">
-			<div class="keygrid">
-				<div class="keygrid-col keygrid-col__c">
-					<div class="intro-start-image js-aos fadein">
-												<img src="../../wp-content/uploads/2025/01/Screenshot-2025-01-23-at-1.24.43%e2%80%afPM.webp" alt="Aenfinite® Creative Branding, Web Design, Packaging Design Agency in Denver" />
-																					<video autoplay loop muted playsinline controls>
-									<source src="../../wp-content/uploads/2025/03/Aenfinite-music4.mp4" type='video/mp4'>
-								</video>
-																					
-					</div>
-				</div>
-				<div class="keygrid-col keygrid-col__b">
-					<div class="keygrid-inner js-aos appear">
-													<h2 class="keygrid-maintitle">Aenfinite® 2025 Agency Showreel</h2>
-												<div class="keygrid-description">
-							<p>A glimpse into the creativity, precision, and impact that define Aenfinite®. Our award-winning Denver-based web design agency. With nearly a decade of experience as a team and over 30+ years of combined expertise, we’ve partnered with global leaders and innovators in healthcare, real estate, and beyond. From the rebranding of WillowWood at Hanger Live to designing VTS’ Accelerate conference and unveiling Denver City FC’s Etihad Park Stadium, we deliver elevated website design solutions that inspire and drive results.</p>
-						</div>
-						<div class="tagslist">
-							<b></b>
-							<ul>
-															</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>		
+		
 	</div>
 	<div class="section">
 		<div class="wrapper">
 			<div class="inner-wrapper">
 				<div class="section-caption js-aos">
 					<div class="section-caption_text">
-						<h2>Aenfinite® Digital Marketing Campaign Case Studies</h2>
+						<h2>Aenfinite Digital Marketing Case Studies</h2>
 					</div>
 				</div>
 				<div class="previews js-aosfadein">
@@ -757,7 +1681,7 @@
 									</div>									
 									<div class="preview-content" data-index="01">
 										<div class="preview-name preview-name__caption">
-											<a href="../../work/symphony-sleep/">Symphony Sleep®</a>
+											<a href="../../work/symphony-sleep/">Symphony Sleep</a>
 										</div>
 																					<div class="preview-name">Branding</div>
 																					<div class="preview-name">Packaging Design</div>
@@ -772,7 +1696,7 @@
 													<div>
 								<div class="preview">									
 									<div class="preview-media">										
-										<img src="../../wp-content/uploads/2024/11/IW-800x524-1.webp" alt="IvyWise Education Consultancy Branding & Website Design by Aenfinite®" />
+										<img src="../../wp-content/uploads/2024/11/IW-800x524-1.webp" alt="IvyWise Education Consultancy Branding & Website Design by Aenfinite" />
 										<div class="preview-action"><a href="../../work/ivywise-education-consultancy/" class="not-index">View project</a></div>										
 									</div>									
 									<div class="preview-content" data-index="02">
@@ -790,7 +1714,7 @@
 													<div>
 								<div class="preview">									
 									<div class="preview-media">										
-										<img src="../../wp-content/uploads/2024/07/Stadium_800_524.gif" alt="NYCFC Denver City Stadium by Aenfinite®" />
+										<img src="../../wp-content/uploads/2024/07/Stadium_800_524.gif" alt="NYCFC Denver City Stadium by Aenfinite" />
 										<div class="preview-action"><a href="../../work/new-york-city-football-club-stadium/" class="not-index">View project</a></div>										
 									</div>									
 									<div class="preview-content" data-index="03">
@@ -799,7 +1723,7 @@
 										</div>
 																					<div class="preview-name">Web Design</div>
 																					<div class="preview-name">Web Development</div>
-																					<div class="preview-name">UI/UX</div>
+																					<div class="preview-name">PPC Management</div>
 																					<div class="preview-name">3D Design</div>
 																					<div class="preview-name">Custom Animations</div>
 											
@@ -828,7 +1752,7 @@
 													<div>
 								<div class="preview">									
 									<div class="preview-media">										
-										<img src="../../wp-content/uploads/2025/05/VBP_800x524.webp" alt="Victory Building Products Branding & Website by Aenfinite®" />
+										<img src="../../wp-content/uploads/2025/05/VBP_800x524.webp" alt="Victory Building Products Branding & Website by Aenfinite" />
 										<div class="preview-action"><a href="../../work/victory-building-products-branding-website-by-dd-nyc/" class="not-index">View project</a></div>										
 									</div>									
 									<div class="preview-content" data-index="05">
@@ -846,12 +1770,12 @@
 													<div>
 								<div class="preview">									
 									<div class="preview-media">										
-										<img src="../../wp-content/uploads/2023/12/IST-Case-2-1-971x636.jpg" alt="Innovative Sleep Technologies branding and website design by Aenfinite® best design agency." />
+										<img src="../../wp-content/uploads/2023/12/IST-Case-2-1-971x636.jpg" alt="Innovative Sleep Technologies branding and website design by Aenfinite best design agency." />
 										<div class="preview-action"><a href="../../work/innovative-sleep-technologies/" class="not-index">View project</a></div>										
 									</div>									
 									<div class="preview-content" data-index="06">
 										<div class="preview-name preview-name__caption">
-											<a href="../../work/innovative-sleep-technologies/">Innovative Sleep Technologies®</a>
+											<a href="../../work/innovative-sleep-technologies/">Innovative Sleep Technologies</a>
 										</div>
 																																	<div class="preview-name">Branding</div>
 																							<div class="preview-name">Event Design</div>
@@ -868,7 +1792,7 @@
 													<div>
 								<div class="preview">									
 									<div class="preview-media">										
-										<img src="../../wp-content/uploads/2023/07/Ms.-Foundation-Aenfinite_.webp" alt="awards gala design in Denver by Aenfinite®" />
+										<img src="../../wp-content/uploads/2023/07/Ms.-Foundation-Aenfinite_.webp" alt="awards gala design in Denver by Aenfinite" />
 										<div class="preview-action"><a href="../../work/ms-foundation-50th-anniversary-gala/" class="not-index">View project</a></div>										
 									</div>									
 									<div class="preview-content" data-index="07">
@@ -899,12 +1823,12 @@
 	<div class="block formss">
 		<div class="center">
 			<div class="formss-wrap">
-				<h2>Contact Aenfinite® for Digital Marketing Services</h2>
+				<h2>Contact Aenfinite for Expert Digital Marketing Services</h2>
 				<div class="toggle-formss">
 					
 <div class="wpcf7 no-js" id="wpcf7-f1252-o1" lang="en-US" dir="ltr" data-wpcf7-id="1252">
 <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"> <ul></ul></div>
-<form action="https://Aenfinite/services/graphic-design/#wpcf7-f1252-o1" method="post" class="wpcf7-form init" aria-label="Contact form" novalidate="novalidate" data-status="init">
+<form action="https://Aenfinite.com/services/digital-marketing/#wpcf7-f1252-o1" method="post" class="wpcf7-form init" aria-label="Contact form" novalidate="novalidate" data-status="init">
 <div style="display: none;">
 <input type="hidden" name="_wpcf7" value="1252" />
 <input type="hidden" name="_wpcf7_version" value="6.0.6" />
@@ -916,14 +1840,14 @@
 </div>
 <div class="cell">
 	<div class="inputs">
-		<span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap" data-name="your-email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" /></span><span class="wpcf7-form-control-wrap" data-name="text-tell-project"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" autocomplete="on" aria-invalid="false" placeholder="Tell us about your project…" value="" type="text" name="text-tell-project" /></span>
+		<span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap" data-name="your-email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" /></span><span class="wpcf7-form-control-wrap" data-name="text-tell-project"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" autocomplete="on" aria-invalid="false" placeholder="Tell us about your SEO project" value="" type="text" name="text-tell-project" /></span>
 		
 	</div>
 	<div class="checkbox-select">
-		<strong>I'm interested in...</strong><span class="wpcf7-form-control-wrap" data-name="checkbox-select"><span class="wpcf7-form-control wpcf7-checkbox"><span class="wpcf7-list-item first"><input type="checkbox" name="checkbox-select[]" value="Branding" /><span class="wpcf7-list-item-label">Branding</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Web Design" /><span class="wpcf7-list-item-label">Web Design</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="E-commerce Websites" /><span class="wpcf7-list-item-label">E-commerce Websites</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Digital Marketing" checked /><span class="wpcf7-list-item-label">Digital Marketing</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Packaging" /><span class="wpcf7-list-item-label">Packaging</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Graphic Design" /><span class="wpcf7-list-item-label">Graphic Design</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="UI/UX" /><span class="wpcf7-list-item-label">UI/UX</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Experiential" /><span class="wpcf7-list-item-label">Experiential</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Brand Assets" /><span class="wpcf7-list-item-label">Brand Assets</span></span><span class="wpcf7-list-item"><input type="checkbox" name="checkbox-select[]" value="Decks" /><span class="wpcf7-list-item-label">Decks</span></span><span class="wpcf7-list-item last"><input type="checkbox" name="checkbox-select[]" value="Other" /><span class="wpcf7-list-item-label">Other</span></span></span></span>
+		<strong>I'm interested in...</strong><span class="form-control-wrap" data-name="checkbox-select"><span class="form-control checkbox-group"><span class="list-item first"><input type="checkbox" name="services" value="Social Media Marketing" id="social-media-marketing" /><label for="social-media-marketing" class="list-item-label">Social Media Marketing</label></span><span class="list-item"><input type="checkbox" name="services" value="Content Marketing Strategy" id="content-marketing" /><label for="content-marketing" class="list-item-label">Content Marketing Strategy</label></span><span class="list-item"><input type="checkbox" name="services" value="Email Marketing Campaigns" id="email-marketing" /><label for="email-marketing" class="list-item-label">Email Marketing Campaigns</label></span><span class="list-item"><input type="checkbox" name="services" value="Online Brand Management" id="brand-management" /><label for="brand-management" class="list-item-label">Online Brand Management</label></span><span class="list-item"><input type="checkbox" name="services" value="Digital Marketing Analytics" id="digital-analytics" /><label for="digital-analytics" class="list-item-label">Digital Marketing Analytics</label></span><span class="list-item"><input type="checkbox" name="services" value="Social Media Advertising" id="social-advertising" /><label for="social-advertising" class="list-item-label">Social Media Advertising</label></span><span class="list-item"><input type="checkbox" name="services" value="Influencer Marketing" id="influencer-marketing" /><label for="influencer-marketing" class="list-item-label">Influencer Marketing</label></span><span class="list-item"><input type="checkbox" name="services" value="Digital Campaign Management" id="campaign-management" /><label for="campaign-management" class="list-item-label">Digital Campaign Management</label></span><span class="list-item"><input type="checkbox" name="services" value="Digital Marketing Consultation" id="digital-consultation" /><label for="digital-consultation" class="list-item-label">Digital Marketing Consultation</label></span><span class="list-item last"><input type="checkbox" name="services" value="Other Digital Marketing Services" id="other" /><label for="other" class="list-item-label">Other Digital Marketing Services</label></span></span></span>
 		
 		<div class="selectbox js-select">
-			<input class="selectbox-input js-select-holder" type="text" placeholder="Tell us your approximate budget" value="" readonly />
+			<input class="selectbox-input js-select-holder" type="text" placeholder="Tell us your approximate budget" value="" readonly name="budget" />
 			
 			<div class="selectbox-suffix">
 				<svg width="18" height="10" viewBox="0 0 18 10"><path d="M1 1L9 9L17 1" stroke="#CCC" fill="none"></path></svg>
@@ -950,8 +1874,7 @@
 					over $100,000
 					
 				</div>
-			</div>
-		</div>
+			</div>		</div>
 	</div>
 </div>
 <div class="hide">
@@ -968,606 +1891,176 @@
 		</div>
 	</div>
 
-</div>	<div class="section">
+</div>		<div class="section">
 		<div class="wrapper">
 			<div class="citebox js-karaoke">
 				<div class="citebox-content js-karaoke-content">
 					<span>
-						Graphic design is half creative and half execution. Work with a team that will impress you with both.					</span>
+						<span style="background:#227bf3;color:white;padding:2px 8px;border-radius:4px;display:inline; padding-bottom: 0 !important; margin-bottom: 0 !important;">Digital Marketing</span> is the perfect blend of creative content strategy and data-driven campaign management. Work with a team that excels at both building brand awareness and delivering exceptional digital marketing performance.					</span>
 				</div>
 				<div class="citebox-mask js-karaoke-mask"></div>
 			</div>
 		</div>
 	</div>
-<div class="section section__contrast">
-	<div class="wrapper">
-					<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Aenfinite® Clients</h2>
-					</div>
-				</div>
-				<div class="clients js-aos fadein">
-											<div class="client">
-							<img src="../../wp-content/uploads/2025/05/fifa_logo.png" alt="FIFA World Cup 2026™ NYNJ Web Design by Aenfinite®" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2025/05/matchgroup_logo.png" alt="Match Group (Tinder, Hinge, OkCuper, Match.com) Web Design by Aenfinite®" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/havas-group_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/nyc-fc-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/patricia-vash_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/sjp-properties-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/clutch_.svg" alt="Aenfinite® Clutch Global & Champion" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/dro5a_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/enthuse_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/Forbes_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/givaudan_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/Loreal_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/apple_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/the-north-face_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/vts_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/vans_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/compass_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/chelsea-film-festival_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/dupont-tyvek_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/ms-foundation_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/scholastic_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/global-new-yorker.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/walmart_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/airatae_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/groupon_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/karnak_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/lowes_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/bkcm_1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/gett_1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/innovative-sleep-technologies_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/road-star-beds_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/symphony-sleep_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/ultramed_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/willow-wood_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/ba_.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/modern-dose-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/avia-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/plumbuddy-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/10/sgs-1.svg" alt="" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/11/ivywise.svg" alt="Aenfinite® IvyWise" />
-						</div>
-											<div class="client">
-							<img src="../../wp-content/uploads/2024/12/juniper-square.svg" alt="" />
-						</div>
-									</div>
-			</div>
-			</div>
-</div>   <div class="section">
-		<div class="wrapper">
-			<div class="inner-wrapper">
-				<div class="section-caption js-aos">
-					<div class="section-caption_text">
-						<h2>Aenfinite® Digital Marketing Services</h2>
-					</div>
-				</div>
-				<div class="service-grid">
-					<div>
-						<div class="service-list js-service-container fadein js-aos">
-															<div class="service active js-service">
-									<div class="service-caption js-service-caption">Shopify Development</div>
-									<div class="service-content js-service-content">
-										<div class="service-tags">
-											<div class="chips">
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Custom Shopify Themes</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Shopify Plus</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">App Integration</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Payment Processing</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Multi-Channel Selling</a>
-													</div>
-																							</div>
-										</div>
-										<div class="service-text">
-											<p>Our expert SEO and PPC team specializes in search engine marketing strategies designed specifically for your business goals. From organic search optimization to Google Ads campaigns, we build high-converting marketing funnels that scale with your business and maximize ROI potential.</p>
-										</div>
-																					<div class="service-action">
-												<a href="../../category/all-work/web-design/" class="redlink">
-													<span>View projects</span>
-												</a>
-											</div>
-																			</div>
-								</div>
-															<div class="service  js-service">
-									<div class="service-caption js-service-caption">WooCommerce Development</div>
-									<div class="service-content js-service-content">
-										<div class="service-tags">
-											<div class="chips">
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Custom WooCommerce Sites</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">WordPress Integration</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Plugin Development</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Inventory Management</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Custom Extensions</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">B2B Solutions</a>
-													</div>
-																							</div>
-										</div>
-										<div class="service-text">
-											<p>Our team specializes in building comprehensive social media marketing campaigns that engage your audience across all platforms. We develop custom content strategies, manage social advertising, and create community-building experiences that convert followers into customers.</p>
-										</div>
-																					<div class="service-action">
-												<a href="../../category/all-work/web-design/" class="redlink">
-													<span>View projects</span>
-												</a>
-											</div>
-																			</div>
-								</div>
-															<div class="service  js-service">
-									<div class="service-caption js-service-caption">Content Marketing Solutions</div>
-									<div class="service-content js-service-content">
-										<div class="service-tags">
-											<div class="chips">
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Magento Development</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">BigCommerce</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Custom PHP Solutions</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">API Integrations</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Headless Commerce</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Multi-Store Management</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Enterprise Solutions</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Mobile Commerce Apps</a>
-													</div>
-																							</div>
-										</div>
-										<div class="service-text">
-											<p>For complex content marketing requirements, we build comprehensive strategies using cutting-edge tools and techniques. From blog content and video marketing to email campaigns and influencer partnerships, our marketing team creates scalable campaigns that drive engagement and complex customer journeys.</p>
-										</div>
-																					<div class="service-action">
-												<a href="../../category/all-work/web-design/" class="redlink">
-													<span>View projects</span>
-												</a>
-											</div>
-																			</div>
-								</div>
-															<div class="service  js-service">
-									<div class="service-caption js-service-caption">Marketing Analytics & Optimization</div>
-									<div class="service-content js-service-content">
-										<div class="service-tags">
-											<div class="chips">
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Conversion Rate Optimization</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Digital Marketing Analytics</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Performance Optimization</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Security Implementation</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">Analytics & Tracking</a>
-													</div>
-																									<div class="chip">
-														<a href="../../category/all-work/web-design/" class="chip-label">A/B Testing</a>
-													</div>
-																							</div>
-										</div>
-										<div class="service-text">
-											<p>Maximize your marketing success with our comprehensive analytics and optimization services. We implement advanced conversion tracking, performance analysis, and campaign optimization to increase leads, improve ROI, and ensure your digital marketing campaigns outperform the competition.</p>
-										</div>
-																					<div class="service-action">
-												<a href="../../category/all-work/web-design/" class="redlink">
-													<span>View projects</span>
-												</a>
-											</div>
-																			</div>
-								</div>
-													</div>
-					</div>
-					<div class="service-preview desktop fadein js-aos">
-						<div class="service-content-copy js-service-copy"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-<div class="section">
-	<div class="wrapper">
-		<div class="inner-wrapper">
-			<div class="section-caption js-aos">
-				<div class="section-caption_text">
-					<h2>Aenfinite® Recognition</h2>
-				</div>
-			</div>
-			<div class="awards-list">
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Top Firm & Best in Industry - Summer 2025</div>
-							<div class="award-type">Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Aenfinite® has been honored by 50PROS as a Top Firm and Best in Industry for Summer 2025. This recognition acknowledges the agency's consistent delivery of high-quality services and outstanding performance within its industry.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2025/06/DD.NYC_50PROS-Awards.webp" alt="Aenfinite® Named Top Firm & Best in Industry for Summer 2025 by 50PROS" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Annual Anthem Awards X5</div>
-							<div class="award-type">Impact Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Bronze & Silver & Gold X5 Winner at the Annual Anthem Awards for the Ms. Foundation - Woman of Vision Awards Gala '23 & '24 in Diversity, Equity & Inclusion - Event category; Chelsea Film Festival in Education, Art & Culture - Event category; Airatae Branding and Website - Nonprofit category; WillowWood - Health & Wellness.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2024/03/220224_AnthemAwards_079-1.webp" alt="Aenfinite® Anthem Awards Winner" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">2024 Clutch Global & Champion</div>
-							<div class="award-type">Recognition</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Aenfinite® has been honored as one of the top-performing B2B companies, acknowledged within their industry and location. To earn this recognition, Aenfinite® showcased an outstanding ability to deliver high-quality services to clients.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2025/01/27fae82b-drop-shadow-badge-clutch-1000-2024_10mo0hw000000000000028.webp" alt="Aenfinite Clutch Awards - Best Companies in Digital and Graphic and Web Design Award" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Pentawards X3</div>
-							<div class="award-type">Design Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Aenfinite® was awarded for Excellence in Brand Packaging Design for Symphony Sleep Mattress Bed Packaging and Antidote Luxury Candle Packaging. </p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2023/12/brown-3.svg" alt="Aenfinite® Pentawards Awards" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">2024 Dieline 1st Place Award</div>
-							<div class="award-type">Design Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Antidote by Aenfinite®️ - a Capsule Collection of Luxury Candles Inspired by Poisonous Reptiles</p>
-								</div>
-								<div class="award-image">
-																			<a href="https://thedieline.com/ddnycs-venom-inspired-candle-design-is-a-goth-dream-come-true/" target="_blank"><img src="../../wp-content/uploads/2023/12/black-2.svg" alt="Aenfinite® Dieline Awards" /></a>
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Clutch Global Award Winner X3</div>
-							<div class="award-type">Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Aenfinite® has been honored as one of the top-performing B2B companies, acknowledged within their industry and location. To earn this recognition, Aenfinite® showcased an outstanding ability to deliver high-quality services to clients.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2024/06/64954025-0-Clutch-Global-Badge-.svg" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Webby Nominations X2</div>
-							<div class="award-type">Design Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>2024: Hawkridge Austin Luxury Land Development in Austin, Texas website
+</div><div class="section" style="padding-bottom: 100px;">
+    <div class="wrapper">
+        <div class="inner-wrapper">
+            <div class="section-caption js-aos">
+                <div class="section-caption_text">
+                    <h2>Aenfinite Digital Marketing Services</h2>
+                </div>
+            </div>
+            <div class="service-grid">
+                <div>
+                    <div class="service-list js-service-container fadein js-aos">
 
-2023: Ms. Foundation 50th Anniversary WOV Awards website</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2023/12/brown-2.svg" alt="Aenfinite® Anthem Awards" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Behance Honors X11</div>
-							<div class="award-type">Design Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Aenfinite® was awarded for excellence in various spheres of design for Branding, UI/UX, Illustrator, Stock, and Top of Behance awards.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2023/12/brown-1.svg" alt="Aenfinite® Behance Awards" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Clutch Champion X3</div>
-							<div class="award-type">Recognition</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Aenfinite® has been named a Clutch Champion! This award highlights our team's dedication to going above and beyond for our clients and consistently delivering exceptional results. </p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2023/11/Champion-Badge-2023-Fall-3-2.svg" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">IMH Top 32 Web Development Agencies</div>
-							<div class="award-type">Recognition</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Aenfinite® was recognized as a top 32 leading web development agencies known for our cutting-edge technical proficiency. From custom solutions to complex integrations, the selected agencies excel in turning innovative ideas into high-performing digital platforms.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2024/09/image-111-1.webp" alt="Aenfinite® top web development agency award" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">UpCity Excellence & Top Web Designers Awards</div>
-							<div class="award-type">Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>To celebrate outstanding B2B service providers</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2024/05/UpCity-Excellence-Award.png" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Denver State Women-Owned Business Enterprise ("MWBE")</div>
-							<div class="award-type">Certifications</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Empire State Development's Divison of Minority and Women's Business Development grants a Women Business Enterprise (WBE) pursuant to Denver State Executive Law, Article 15-A to: Aenfinite LLC d/b/a/ Aenfinite® on March 2, 2023</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2023/03/20944339_01255736_20230302122947.pdf.jpg" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">World Brand Design Society (WBDS) Commended</div>
-							<div class="award-type">Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>World Brand Design Society COMMENDED Award
-Project: CO2 Neutral Website Builder
-Category: Digital
-Sub Category: ACDG401 – Aenfinite Creation
-Awards: WBDS Agency Design Awards 2022/23</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2023/01/trophies-group.jpg" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Best Innovation & UX Awards X2</div>
-							<div class="award-type">Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>CSSDA selected Aenfinite® as a winner of the "Best Innovation" award.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2022/10/cssda-inn-DD-NYC.jpg" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">NYC SBS Minority Women-Owned Business Enterprise</div>
-							<div class="award-type">Certifications</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Certified by Small Business Services of Denver as a Minority Women-Owned Business Enterprise, which recognizes women-owned businesses in good standing in the Denver City metro area. Our Denver-based agency has been certified and recognized by the SBS since 2020. </p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2022/07/im-08.png" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">Women Owned Businesses by Clutch</div>
-							<div class="award-type">Certifications</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Certified by Clutch as a Women-Owned Business with a stellar 5-star Clutch Top 40 Design Agency (Gold Certified) status attained with 50+ verified customer reviews and counting.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2022/09/41a4c6a9c720c98f005b81f071aac206.png" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-									<div class="award js-award">
-						<div class="award-header js-award-header">
-							<div class="award-caption">aWWWards Honorable Mention X11</div>
-							<div class="award-type">Awards</div>
-						</div>
-						<div class="award-content-wrapper js-award-content">
-							<div class="award-content">
-								<div class="award-text">
-									<p>Awwwards gives an Honorable Mention award to www.Aenfinite.</p>
-								</div>
-								<div class="award-image">
-																			<img src="../../wp-content/uploads/2022/11/certificate-dd-nyc-hm-1.jpg" alt="" />
-																	</div>
-							</div>
-						</div>
-					</div>
-							</div>	
-		</div>
-	</div>
-</div>		
+                        <!-- Social Media Marketing -->
+                        <div class="service active js-service">
+                            <div class="service-caption js-service-caption">Social Media Marketing</div>
+                            <div class="service-content js-service-content">
+                                <div class="service-tags">
+                                    <div class="chips">
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Facebook Ads</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Instagram Growth</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">LinkedIn Campaigns</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Community Engagement</a></div>
+                                    </div>
+                                </div>
+                                <div class="service-text">
+                                    <p>We create and manage high-performing social media campaigns that grow audiences, engage communities, and drive conversions across platforms.</p>
+                                    <div class="desktop-only" style="margin-top: 15px;">
+                                        <p><strong>Our social media services include:</strong></p>
+                                        <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+                                            <li>Content planning and calendar creation</li>
+                                            <li>Targeted ad campaigns for maximum ROI</li>
+                                            <li>Audience growth and engagement strategies</li>
+                                            <li>Cross-platform consistency in branding</li>
+                                            <li>Performance tracking and reporting</li>
+                                        </ul>
+                                        <p style="margin-top: 15px; font-style: italic; color: #666;">
+                                            Using tools like Meta Ads Manager, Buffer, and Hootsuite, we ensure every campaign delivers measurable results.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="service-action">
+                                    <a href="../../category/all-work/digital-marketing/" class="redlink"><span>Learn more</span></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content Marketing -->
+                        <div class="service js-service">
+                            <div class="service-caption js-service-caption">Content Marketing</div>
+                            <div class="service-content js-service-content">
+                                <div class="service-tags">
+                                    <div class="chips">
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Blogs</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Video</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Infographics</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Storytelling</a></div>
+                                    </div>
+                                </div>
+                                <div class="service-text">
+                                    <p>We craft compelling content strategies that educate, engage, and convert your audience while reinforcing your brand identity.</p>
+                                    <div class="desktop-only" style="margin-top: 15px;">
+                                        <p><strong>Our content services cover:</strong></p>
+                                        <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+                                            <li>Blog writing and long-form articles</li>
+                                            <li>Branded video content and reels</li>
+                                            <li>Infographics and visual storytelling</li>
+                                            <li>Email newsletters and campaigns</li>
+                                            <li>Thought leadership pieces</li>
+                                        </ul>
+                                        <p style="margin-top: 15px; font-style: italic; color: #666;">
+                                            Every piece of content is backed by audience research and analytics to maximize reach and engagement.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="service-action">
+                                    <a href="../../category/all-work/digital-marketing/" class="redlink"><span>Learn more</span></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paid Advertising -->
+                        <div class="service js-service">
+                            <div class="service-caption js-service-caption">Paid Advertising (PPC)</div>
+                            <div class="service-content js-service-content">
+                                <div class="service-tags">
+                                    <div class="chips">
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Google Ads</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Display</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Retargeting</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">YouTube Ads</a></div>
+                                    </div>
+                                </div>
+                                <div class="service-text">
+                                    <p>We design and optimize paid campaigns that drive targeted traffic and maximize ROI through precise targeting and data-driven decisions.</p>
+                                    <div class="desktop-only" style="margin-top: 15px;">
+                                        <p><strong>Our paid ad expertise includes:</strong></p>
+                                        <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+                                            <li>Google Search and Display campaigns</li>
+                                            <li>Social media advertising (Meta, LinkedIn, TikTok)</li>
+                                            <li>Retargeting and remarketing strategies</li>
+                                            <li>Conversion-focused landing pages</li>
+                                            <li>Budget optimization and performance tracking</li>
+                                        </ul>
+                                        <p style="margin-top: 15px; font-style: italic; color: #666;">
+                                            We continuously A/B test creatives and targeting to improve click-through and conversion rates.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="service-action">
+                                    <a href="../../category/all-work/digital-marketing/" class="redlink"><span>Learn more</span></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics & Reporting -->
+                        <div class="service js-service">
+                            <div class="service-caption js-service-caption">Analytics & Reporting</div>
+                            <div class="service-content js-service-content">
+                                <div class="service-tags">
+                                    <div class="chips">
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Google Analytics</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Data Insights</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">Dashboards</a></div>
+                                        <div class="chip"><a href="../../category/all-work/digital-marketing/" class="chip-label">ROI Tracking</a></div>
+                                    </div>
+                                </div>
+                                <div class="service-text">
+                                    <p>We turn data into actionable insights with detailed reporting that helps you measure ROI, optimize campaigns, and make smarter marketing decisions.</p>
+                                    <div class="desktop-only" style="margin-top: 15px;">
+                                        <p><strong>Our analytics process includes:</strong></p>
+                                        <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.6;">
+                                            <li>Custom Google Analytics 4 dashboards</li>
+                                            <li>Cross-channel performance reporting</li>
+                                            <li>Conversion rate and funnel analysis</li>
+                                            <li>Ad spend efficiency measurement</li>
+                                            <li>Monthly strategy reports</li>
+                                        </ul>
+                                        <p style="margin-top: 15px; font-style: italic; color: #666;">
+                                            Transparency is key — every decision is supported by data to maximize growth and marketing efficiency.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="service-action">
+                                    <a href="../../category/all-work/digital-marketing/" class="redlink"><span>Learn more</span></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="service-preview desktop fadein js-aos">
+                    <div class="service-content-copy js-service-copy"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+	
 		</div>
 	
 	
@@ -1576,13 +2069,13 @@ Awards: WBDS Agency Design Awards 2022/23</p>
 					<div>
 						<div class="footer-caption">
 							<div class="title title__default">
-								<span>Starting a new project or want to collaborate with us?</span>
+								<span>Have a Project in Mind? Let’s Build Something Great Together.</span>
 								<a href="../../contact/" class="redlink">
-									<span>Let’s talk</span>
+									<span>Lets talk</span>
 								</a>
 							</div>
 							<div class="footer-email">
-								<a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
+								<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
 							</div>
 						</div>
 						<div class="footer-grid">
@@ -1592,10 +2085,9 @@ Awards: WBDS Agency Design Awards 2022/23</p>
 									<ul id="menu-footer-company-menu" class="menuss"><li id="menu-item-959" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../../featured-work/">Work</a></li>
 <li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../../agency/">Agency</a></li>
 <li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor menu-item-482"><a href="../">Services</a></li>
-<li id="menu-item-digital-marketing" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item current_page_item"><a href="" aria-current="page">Digital Marketing</a></li>
-<li id="menu-item-4803" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../../dd-nyc-client-testimonials/">Client Testimonials</a></li>
+
+
 <li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
-</ul>									<span class="website-accessibility" data-acsb-custom-trigger="true">Website Accessibility</span>
 								</div>
 							</div>
 							<div class="footer-col">
@@ -1605,43 +2097,43 @@ Awards: WBDS Agency Design Awards 2022/23</p>
 <li id="menu-item-2369" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2369"><a href="../wordpress-websites/">WordPress Websites</a></li>
 <li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="../branding/">Branding</a></li>
 <li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="../packaging-design/">Packaging Design</a></li>
-<li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-1708 current_page_item menu-item-2259"><a href="" aria-current="page">Graphic Design</a></li>
-<li id="menu-item-2344" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2344"><a href="../web-design-and-branding-for-real-estate/">Real Estate Design</a></li>
-<li id="menu-item-6911" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6911"><a href="../trade-show-booth-design/">Trade Show Booth Design</a></li>
+<li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-1708 current_page_item menu-item-2259"><a href="" aria-current="page">Branding</a></li>
+
 </ul>														</div>
 							</div>
-							<div class="footer-col footer-col__connect">
+							<div class="footer-col ">
 								<div class="footer-col_caption">Connect</div>
 								<div class="footer-col_list">
-									<ul id="menu-footer-connect" class="menuss"><li id="menu-item-4965" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4965"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.behance.net/aenfinite">Behance</a></li>
-<li id="menu-item-4967" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4967"><a class="js-dropdown-layer-marker" target="_blank" href="https://dribbble.com/aenfinite">Dribbble</a></li>
+
 <li id="menu-item-4966" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4966"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.instagram.com/aenfinite/">Instagram</a></li>
 <li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4952"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/">Partner with us</a></li>
 <li id="menu-item-4952-1" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/white-label-services/">White Label Services</a></li>
 <li id="menu-item-4952-2" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/referral-program/">Referral Program</a></li>
 <li id="menu-item-4952-3" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/ghl-services/">GHL Services</a></li>
-<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@Aenfinite?subject=Project%20Inquiry">Email</a></li>
+<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@aenfinite.com?subject=Project%20Inquiry">Email</a></li>
 <li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5977"><a class="js-dropdown-layer-marker" href="../../contact/">Contact</a></li>
 </ul>								</div>
 							</div>
-							<div class="footer-col footer-col__address">
-								<div class="footer-col_caption">Address</div>
-								<div class="footer-col_list">
-									<ul>
-										<li>
-											85 Broad Street<br class="desktop" />
-17th Floor - Suite 17.005<br class="desktop" />
-Denver, NY<br class="desktop" />
-10004										</li>
-										<li>
-											<a style="white-space:nowrap;" href="tel:+12123801761">+1 212.380.1761</a>
-										</li>
-										<li>
-											<a href="mailto:hello@Aenfinite">hello@Aenfinite</a>
-										</li>
-									</ul>
+								<div class="footer-col " style="padding-top: 15px !important; padding-left: 40px;">
+									<div class="footer-col_caption">Address</div>
+									<div class="footer-col_list">
+										<ul>
+											<li>
+		1500 Grant Street<br class="desktop" />
+		4th Ave<br class="desktop" />
+		Denver, CO 80203<br class="desktop" />
+		United States
+	</li>
+
+											<li>
+												<a style="white-space:nowrap;" href="tel:+14692677487">+1 (469) 267-7487</a>
+											</li>
+											<li>
+												<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+											</li>
+										</ul>
+									</div>
 								</div>
-							</div>
 						</div>
 						
 						<div class="bottom-line">
@@ -1649,12 +2141,7 @@ Denver, NY<br class="desktop" />
 								<p>Copyright &copy; 2025 Aenfinite LLC</p>
 								<p>Headquartered in Denver & Beyond </p>
 							</div>
-							<div class="logotype-bottom"><span><img src="../../wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="" /></span><span><img src="../.." alt="" /></span><span><img src="../.." alt="" /></span></div>							<div class="line-last">All rights reserved									
-								<div class="heart">
-									<svg class="icon">
-										<use xlink:href="#i-heart"></use>
-									</svg>
-								</div>
+								
 							</div>
 						</div>
 
@@ -1669,7 +2156,9 @@ Denver, NY<br class="desktop" />
 							<div class="topbar">
 								<div class="topbar-logo">
 									<a href="../../">
-										<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="mobile-logo mobile-white-logo" style="opacity: 1 !important; visibility: visible !important; display: block !important; filter: none !important;">
+										<object data="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" type="image/svg+xml" class="logo-dark nav-logo">
+											<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo">
+										</object>
 									</a>
 								</div>
 								<div class="menu-close js-menu-toggle"><i></i></div>
@@ -1679,13 +2168,12 @@ Denver, NY<br class="desktop" />
 							<ul id="menu-footer-company-menu-1" class="menuss"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href="../../featured-work/">Work</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../../agency/">Agency</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor menu-item-482"><a href="../">Services</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item current_page_item"><a href="" aria-current="page">Digital Marketing</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4803"><a href="../../client-testimonials/">Testimonials</a></li>
+
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
 </ul>						</div>
 						<div class="menu-footer">
 							<a class="menu-contact" href="../../contact/">Contact</a>
-							<a class="menu-email" href="mailto:hello@Aenfinite">Email us</a>
+							<a class="menu-email" href="mailto:hello@aenfinite.com">Email us</a>
 						</div>
 					</div>
 				</div>
@@ -1693,7 +2181,240 @@ Denver, NY<br class="desktop" />
 		
 		</div>
 
-		<a href="../../contact/" class="to-contact">New Project?</a>
+				<a href="contact/" class="to-contact">New Project?</a><a href="#" class="to-meeter" onclick="openCalendlyPopup(event)">Schedule A Meeting</a>
+
+
+<div id="calendly-modal" class="calendly-modal" style="display: none;">
+	<div class="calendly-modal-content">
+		<div class="calendly-modal-header">
+			<span class="calendly-close" onclick="closeCalendlyPopup()">&times;</span>
+			<h3>Schedule Your Business Meeting</h3>
+		</div>
+		<div class="calendly-modal-body">
+			<div class="calendly-inline-widget" data-url="https://calendly.com/aenfinite/business-meeting" style="min-width:320px;height:630px;"></div>
+		</div>
+	</div>
+</div>
+
+<!-- 3. CSS STYLES (Place this in your <head> section or CSS file) -->
+<style>
+/* ===== BUTTON STYLES ===== */
+
+/* ===== MODAL STYLES ===== */
+.calendly-modal {
+	position: fixed;
+	z-index: 10000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.8);
+	animation: fadeIn 0.3s ease;
+}
+
+.calendly-modal-content {
+	background-color: #fefefe;
+	margin: 2% auto;
+	border: none;
+	border-radius: 15px;
+	width: 90%;
+	max-width: 900px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease;
+}
+
+.calendly-modal-header {
+	background: linear-gradient(135deg, #227bf3, #1e6fd9);
+	color: white;
+	padding: 20px 30px;
+	border-radius: 15px 15px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.calendly-modal-header h3 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.calendly-close {
+	color: white;
+	font-size: 32px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 1;
+	transition: color 0.3s ease;
+}
+
+.calendly-close:hover {
+	color: #f1f1f1;
+	transform: scale(1.1);
+}
+
+.calendly-modal-body {
+	padding: 0;
+	border-radius: 0 0 15px 15px;
+	overflow: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideIn {
+	from { 
+		opacity: 0;
+		transform: translateY(-30px) scale(0.9);
+	}
+	to { 
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 200px !important;
+		padding: 10px 16px !important;
+		font-size: 13px !important;
+	}
+	
+	
+
+	.calendly-modal-content {
+		width: 95%;
+		margin: 5% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 15px 20px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 20px;
+	}
+	
+	.calendly-inline-widget {
+		height: 500px !important;
+		min-width: 280px !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 180px !important;
+		padding: 8px 14px !important;
+		font-size: 12px !important;
+	}
+
+	.calendly-modal-content {
+		width: 98%;
+		margin: 3% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 12px 15px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 18px;
+	}
+	
+	.calendly-inline-widget {
+		height: 450px !important;
+		min-width: 260px !important;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.to-meeting {
+		max-width: 160px !important;
+		padding: 8px 12px !important;
+		font-size: 11px !important;
+	}
+}
+</style>
+
+
+<script>
+/* ===== CALENDLY POPUP FUNCTIONS ===== */
+function openCalendlyPopup(event) {
+	event.preventDefault();
+	document.getElementById('calendly-modal').style.display = 'block';
+	document.body.style.overflow = 'hidden'; // Prevent background scrolling
+	
+	// Load Calendly widget if not already loaded
+	if (!window.Calendly) {
+		loadCalendlyScript();
+	} else {
+		// Initialize widget if Calendly is already loaded
+		initializeCalendlyWidget();
+	}
+}
+
+function closeCalendlyPopup() {
+	document.getElementById('calendly-modal').style.display = 'none';
+	document.body.style.overflow = 'auto'; // Re-enable background scrolling
+}
+
+function loadCalendlyScript() {
+	// Load Calendly CSS
+	if (!document.querySelector('link[href*="calendly.com"]')) {
+		const calendlyCss = document.createElement('link');
+		calendlyCss.href = 'https://assets.calendly.com/assets/external/widget.css';
+		calendlyCss.rel = 'stylesheet';
+		document.head.appendChild(calendlyCss);
+	}
+	
+	// Load Calendly JS
+	if (!document.querySelector('script[src*="calendly.com"]')) {
+		const calendlyScript = document.createElement('script');
+		calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
+		calendlyScript.onload = function() {
+			initializeCalendlyWidget();
+		};
+		document.head.appendChild(calendlyScript);
+	}
+}
+
+function initializeCalendlyWidget() {
+	if (window.Calendly) {
+		Calendly.initInlineWidget({
+			url: 'https://calendly.com/aenfinite/business-meeting',
+			parentElement: document.querySelector('.calendly-inline-widget'),
+			prefill: {},
+			utm: {}
+		});
+	}
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+	const modal = document.getElementById('calendly-modal');
+	if (event.target == modal) {
+		closeCalendlyPopup();
+	}
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+	if (event.key === 'Escape') {
+		const modal = document.getElementById('calendly-modal');
+		if (modal.style.display === 'block') {
+			closeCalendlyPopup();
+		}
+	}
+});
+</script>
 		
 		<div class="cookie-banner" style="">
 			<div class="cookie-banner__inner">
@@ -1731,56 +2452,6 @@ Denver, NY<br class="desktop" />
 
 		<script src="../../wp-content/themes/aenfinite.com/static/js/demo5163.js?v=20241204-0018"></script>	
 		<script src="../../wp-content/themes/aenfinite.com/static/js/aos.js"></script>
-		
-		<script>
-			// Enhanced dropdown functionality for both mobile and desktop
-			$(document).ready(function() {
-				function isMobileDevice() {
-					return typeof window.orientation !== 'undefined' || navigator.userAgent.indexOf('IEMobile') !== -1 || window.innerWidth <= 768;
-				}
-				
-				// Add click handler for both mobile and desktop (accessibility)
-				$('.js-dropdown > a').on('click', function(e) {
-					// On desktop, let hover work naturally but also support click
-					// On mobile, prevent default and handle click
-					if (isMobileDevice()) {
-						e.preventDefault();
-					}
-					
-					var $dropdown = $(this).parent();
-					var $dropdownLayer = $('.js-dropdown-layer');
-					var $dropdownList = $dropdown.find('.js-dropdown-list');
-					
-					// Check if dropdown layer exists (needed for functionality)
-					if ($dropdownLayer.length) {
-						// Toggle the dropdown
-						if ($dropdown.hasClass('hover')) {
-							$dropdown.removeClass('hover');
-							$dropdownLayer.removeClass('active').height(0);
-						} else {
-							// Close other dropdowns first
-							$('.js-dropdown').removeClass('hover');
-							
-							// Open this dropdown
-							$dropdown.addClass('hover');
-							var bottom = $dropdownList.outerHeight() + $dropdownList.offset().top - $dropdownLayer.offset().top;
-							$dropdownLayer.addClass('active').height(bottom);
-						}
-					}
-				});
-				
-				// Close dropdown when clicking outside
-				$(document).on('click', function(e) {
-					if (!$(e.target).closest('.js-dropdown').length) {
-						$('.js-dropdown').removeClass('hover');
-						var $dropdownLayer = $('.js-dropdown-layer');
-						if ($dropdownLayer.length) {
-							$dropdownLayer.removeClass('active').height(0);
-						}
-					}
-				});
-			});
-		</script>
 				
 		<script>
 			$(function() {
@@ -1799,23 +2470,23 @@ Denver, NY<br class="desktop" />
 				{
 				  "@context": "https://schema.org",
 				  "@type": "LocalBusiness",
-				  "name": "IvyWise",
-				  "image": "https://www.ivywise.com/core/wp-content/uploads/2019/06/ivywise-logo-larger.png",
-				  "@id": "https://www.ivywise.com",
-				  "url": "https://www.ivywise.com",
-				  "telephone": "+12122623500",
+				  "name": "Aenfinite",
+				  "image": "https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg",
+				  "@id": "https://Aenfinite.com",
+				  "url": "https://Aenfinite.com",
+				  "telephone": "+1234567890",
 				  "address": {
 					"@type": "PostalAddress",
-					"streetAddress": "501 Madison Avenue, Suite 802",
+					"streetAddress": "123 Business Avenue",
 					"addressLocality": "Denver",
-					"addressRegion": "NY",
-					"postalCode": "10022",
+					"addressRegion": "CO",
+					"postalCode": "80202",
 					"addressCountry": "US"
 				  },
 				  "geo": {
 					"@type": "GeoCoordinates",
-					"latitude": 40.7593246,
-					"longitude": -73.97430480000003
+					"latitude": 39.7392,
+					"longitude": -104.9903
 				  },
 				  "openingHoursSpecification": {
 					"@type": "OpeningHoursSpecification",
@@ -1830,17 +2501,23 @@ Denver, NY<br class="desktop" />
 					"closes": "18:00"
 				  },
 				  "sameAs": [
-					"https://www.facebook.com/ivywise/",
-					"https://twitter.com/ivywise",
-					"https://www.instagram.com/followivywise/",
-					"https://www.youtube.com/user/IvyWiseTV",
-					"https://www.linkedin.com/company/ivywise",
-					"https://www.pinterest.com/ivywise/",
-					"https://www.ivywise.com/",
-					"https://vimeo.com/ivywise",
-					"https://mp.weixin.qq.com/s/0yBt_Gcq1LDfU-xDxuZAKA",
-					"https://wa.me/12122623500"
-				  ]
+					"https://www.facebook.com/aenfinite/",
+					"https://twitter.com/digitaldesignny",
+					"https://www.instagram.com/Aenfinite/",
+					"https://dribbble.com/aenfinite",
+					"https://www.behance.net/aenfinite"
+				  ],
+				  "description": "Expert search engine optimization agency specializing in keyword research, on-page SEO, technical audits, and link building strategies.",
+				  "priceRange": "$$",
+				  "serviceArea": {
+					"@type": "GeoCircle",
+					"geoMidpoint": {
+					  "@type": "GeoCoordinates",
+					  "latitude": 39.7392,
+					  "longitude": -104.9903
+					},
+					"geoRadius": "50000"
+				  }
 				}
 		</script>
 		<script>
@@ -1914,48 +2591,11 @@ var wpcf7_recaptcha = {
 /* ]]> */
 </script>
 <script  src="../../wp-content/plugins/contact-form-7/modules/recaptcha/indexfc7a.js?ver=6.0.6" id="wpcf7-recaptcha-js"></script>
-	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f9866719a521e6',t:'MTc1NTI2OTY0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-	
-	<script>
-	// Force mobile logo to stay white
-	document.addEventListener('DOMContentLoaded', function() {
-		const mobileLogoElements = document.querySelectorAll('.mobile-white-logo');
-		mobileLogoElements.forEach(function(logo) {
-			// Force the src attribute to always be the white logo
-			const whiteLogoSrc = '../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg';
-			logo.src = whiteLogoSrc;
-			
-			// Create a MutationObserver to watch for changes
-			const observer = new MutationObserver(function(mutations) {
-				mutations.forEach(function(mutation) {
-					if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-						if (logo.src !== whiteLogoSrc) {
-							logo.src = whiteLogoSrc;
-						}
-					}
-				});
-			});
-			
-			observer.observe(logo, { attributes: true, attributeFilter: ['src'] });
-			
-			// Also watch for style changes that might affect visibility
-			const styleObserver = new MutationObserver(function(mutations) {
-				mutations.forEach(function(mutation) {
-					if (mutation.type === 'attributes' && (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
-						logo.style.opacity = '1';
-						logo.style.visibility = 'visible';
-						logo.style.display = 'block';
-					}
-				});
-			});
-			
-			styleObserver.observe(logo, { attributes: true, attributeFilter: ['style', 'class'] });
-		});
-	});
-	</script>
-</body>
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f9866719a521e6',t:'MTc1NTI2OTY0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>	<!-- Universal Button and Checkbox Highlighting Script -->	<script src="js/button-highlights.js"></script>
+		</body>
 
 <!-- Mirrored from Aenfinite/services/graphic-design/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Aug 2025 15:09:34 GMT -->
 </html>
+
 
 
