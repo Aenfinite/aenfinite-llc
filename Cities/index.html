@@ -6,17 +6,17 @@
 <head>
 			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 		<style>
-				.checkbox-group .list-item input[type="checkbox"]:checked + .list-item-label {
+				.list-item input[type="checkbox"]:checked + .list-item-label {
 			background: #227bf3 !important;
 			color: white !important;
 		}
 		
-		.checkbox-group .list-item:has(input[type="checkbox"]:checked) {
+		.list-item:has(input[type="checkbox"]:checked) {
 			background: #227bf3 !important;
 			border-color: #227bf3 !important;
 		}
 		
-		.checkbox-group .list-item:has(input[type="checkbox"]:checked) .list-item-label {
+		.list-item:has(input[type="checkbox"]:checked) .list-item-label {
 			color: white !important;
 		}
 		.form-control-wrap .checkbox-group {
@@ -25,7 +25,7 @@
 			gap: 10px !important;
 		}
 		
-		.checkbox-group .list-item {
+		.list-item {
 			display: flex !important;
 			align-items: center !important;
 			background: #f8f9fa !important;
@@ -41,20 +41,20 @@
 			transform-origin: center center !important;
 		}
 		
-		.checkbox-group .list-item:hover {
+		.list-item:hover {
 			background: #e3f2fd !important;
 			border-color: #227bf3 !important;
 			box-shadow: 0 4px 8px rgba(34, 123, 243, 0.15) !important;
 			transform: translateY(-1px) !important;
 		}
 		
-		.checkbox-group .list-item input[type="checkbox"] {
+		.list-item input[type="checkbox"] {
 			margin: 0 8px 0 0 !important;
 			accent-color: #227bf3 !important;
 			transform: scale(1.1) !important;
 		}
 		
-		.checkbox-group .list-item-label {
+		.list-item-label {
 			font-size: 14px !important;
 			font-weight: 500 !important;
 			color: #555 !important;
@@ -63,7 +63,7 @@
 			white-space: nowrap !important;
 		}
 		
-		.checkbox-group .list-item:hover .list-item-label {
+		.list-item:hover .list-item-label {
 			color: #227bf3 !important;
 		}
 		
@@ -1178,12 +1178,12 @@
 				gap: 8px !important;
 			}
 			
-			.checkbox-group .list-item {
+			.list-item {
 				padding: 10px 15px !important;
 				font-size: 14px !important;
 			}
 			
-			.checkbox-group .list-item-label {
+			.list-item-label {
 				font-size: 14px !important;
 			}
 			
@@ -5327,7 +5327,7 @@ window.onload = function() {
 						<div class="menu-header">
 							<div class="topbar">
 								<div class="topbar-logo">
-									<a href="../../">
+									<a href="/">
 										<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
 										<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
 									</a>
