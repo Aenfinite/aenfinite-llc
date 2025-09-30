@@ -15,7 +15,7 @@
 class AenfiniteFormHandler {
     constructor() {
         // Hardcoded N8N webhook URL - change this once for all forms
-        this.n8nWebhookUrl = 'http://n8n.aenfinite.com:5678/webhook/aenfinite-contact-form';
+        this.n8nWebhookUrl = 'https://n8n.aenfinite.com/webhook/aenfinite-contact-form';
         this.init();
     }
 
@@ -63,43 +63,71 @@ class AenfiniteFormHandler {
         const submitButton = form.querySelector('input[type="submit"]');
         const responseOutput = form.querySelector('.wpcf7-response-output');
         
+        // Store original button text and state
+        const originalButtonText = submitButton ? submitButton.value : 'Send';
+        const originalButtonDisabled = submitButton ? submitButton.disabled : false;
+        
         // Show loading state
         if (submitButton) {
             submitButton.disabled = true;
             submitButton.value = 'Sending...';
+            console.log('Button set to loading state');
         }
+        
+        // Create a function to reset button state
+        const resetButton = () => {
+            if (submitButton) {
+                setTimeout(() => {
+                    submitButton.disabled = originalButtonDisabled;
+                    submitButton.value = originalButtonText;
+                    console.log('Button reset to original state');
+                }, 100);
+            }
+        };
+
+        // Set up a failsafe timeout to reset button after 15 seconds
+        const failsafeTimeout = setTimeout(() => {
+            console.warn('Failsafe timeout triggered - resetting button');
+            resetButton();
+        }, 15000);
         
         try {
             // Collect WordPress form data
             const formData = this.collectWordPressFormData(form);
+            console.log('Form data collected:', formData);
             
             // Validate required fields
             if (!this.validateForm(formData)) {
                 this.showResponse(responseOutput, 'Please fill in all required fields.', 'error');
+                resetButton();
                 return;
             }
 
             // Send to CRM
+            console.log('Sending to CRM...');
             const crmSuccess = await this.sendToCRM(formData);
+            console.log('CRM result:', crmSuccess);
             
             // Send emails
+            console.log('Sending emails...');
             const emailSuccess = await this.sendEmails(formData);
+            console.log('Email result:', emailSuccess);
             
             if (crmSuccess || emailSuccess) {
+                console.log('Form submission successful, showing success message');
+                clearTimeout(failsafeTimeout); // Clear the failsafe since we're successful
                 this.showSuccessMessage(form);
+                // Don't reset button since form will be replaced with success message
+                return;
             } else {
                 throw new Error('Submission failed - please check your configuration');
             }
             
         } catch (error) {
             console.error('Form submission error:', error);
+            clearTimeout(failsafeTimeout); // Clear the failsafe
             this.showResponse(responseOutput, error.message || 'An error occurred. Please try again later.', 'error');
-        } finally {
-            // Reset button state
-            if (submitButton) {
-                submitButton.disabled = false;
-                submitButton.value = 'Send';
-            }
+            resetButton();
         }
     }
 
@@ -349,6 +377,8 @@ class AenfiniteFormHandler {
     }
 
     async sendToN8N(formData) {
+        console.log('N8N webhook URL:', this.n8nWebhookUrl);
+        
         if (!this.n8nWebhookUrl || this.n8nWebhookUrl.includes('your-n8n-instance.com')) {
             console.log('⚠️ N8N webhook URL not set - please update the URL in custom-form-handler.js');
             console.log('Form data that would be sent:', formData);
@@ -408,7 +438,15 @@ class AenfiniteFormHandler {
                 }
             };
 
-            const response = await fetch(this.n8nWebhookUrl, {
+            console.log('Sending data to N8N:', n8nData);
+
+            // Create a timeout promise
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000);
+            });
+
+            // Race the fetch against the timeout
+            const fetchPromise = fetch(this.n8nWebhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -416,9 +454,28 @@ class AenfiniteFormHandler {
                 body: JSON.stringify(n8nData)
             });
 
+            const response = await Promise.race([fetchPromise, timeoutPromise]);
+
+            console.log('N8N response status:', response.status);
+            console.log('N8N response ok:', response.ok);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('N8N webhook error response:', errorText);
+                throw new Error(`N8N webhook returned ${response.status}: ${errorText}`);
+            }
+
+            const responseData = await response.text();
+            console.log('N8N response data:', responseData);
+
             return response.ok;
         } catch (error) {
             console.error('N8N webhook submission failed:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                url: this.n8nWebhookUrl
+            });
             return false;
         }
     }
