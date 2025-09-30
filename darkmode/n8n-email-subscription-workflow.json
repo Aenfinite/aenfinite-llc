@@ -1,0 +1,180 @@
+{
+  "name": "Email Subscription Handler - Darkmode Page",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "email-subscription",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "email-subscription-darkmode"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.email}}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{$json.email}}",
+              "operation": "regex",
+              "value2": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+            }
+          ]
+        }
+      },
+      "id": "email-validation",
+      "name": "Email Validation",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetName": "Email Subscriptions",
+        "columnMappings": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{$json.email}}",
+            "Form Type": "={{$json.form_type}}",
+            "Page": "={{$json.page}}",
+            "Timestamp": "={{$json.timestamp}}",
+            "IP Address": "={{$json.ip}}",
+            "User Agent": "={{$json.user_agent}}",
+            "Referrer": "={{$json.referrer}}",
+            "URL": "={{$json.url}}",
+            "UTM Source": "={{$json.utm_source}}",
+            "UTM Medium": "={{$json.utm_medium}}",
+            "UTM Campaign": "={{$json.utm_campaign}}",
+            "UTM Term": "={{$json.utm_term}}",
+            "UTM Content": "={{$json.utm_content}}",
+            "UTM ID": "={{$json.utm_id}}"
+          }
+        },
+        "options": {}
+      },
+      "id": "save-to-sheets",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [680, 240]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "toEmail": "hello@aenfinite.com",
+        "subject": "New Email Subscription - Darkmode Page",
+        "emailFormat": "html",
+        "html": "=<h2>New Email Subscription</h2>\n<p><strong>Email:</strong> {{$json.email}}</p>\n<p><strong>Page:</strong> {{$json.page}}</p>\n<p><strong>Timestamp:</strong> {{$json.timestamp}}</p>\n<p><strong>IP Address:</strong> {{$json.ip}}</p>\n<p><strong>Referrer:</strong> {{$json.referrer}}</p>\n<p><strong>UTM Data:</strong></p>\n<ul>\n<li>Source: {{$json.utm_source}}</li>\n<li>Medium: {{$json.utm_medium}}</li>\n<li>Campaign: {{$json.utm_campaign}}</li>\n</ul>",
+        "options": {}
+      },
+      "id": "send-notification",
+      "name": "Send Email Notification",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [680, 360]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"success\": true, \"message\": \"Email subscription successful\"}",
+        "options": {}
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"success\": false, \"message\": \"Invalid email address\"}",
+        "responseCode": 400,
+        "options": {}
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 480]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Email Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Validation": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email Notification": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "email-subscription",
+      "name": "Email Subscription"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}
