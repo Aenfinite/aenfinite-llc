@@ -7,7 +7,7 @@
 <!-- Aenfinite Services Section CSS -->
 <style>
 /* ===== AENFINITE SERVICES SECTION CSS ===== */
-/* Extracted from Cities/index.html for reuse across projects */
+/* Extracted from Cities/ for reuse across projects */
 
 /* ===== DESKTOP SERVICES STYLES ===== */
 .service-list {
@@ -419,6 +419,9 @@
 			gap: 15px !important;
 			width: 100% !important;
 			max-width: 100% !important;
+			position: relative !important;
+			z-index: 5 !important;
+			isolation: isolate !important;
 		}
 		
 		.checkbox-group .list-item {
@@ -435,6 +438,8 @@
 			flex: 0 0 auto !important;
 			box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
 			margin: 0 !important;
+			position: relative !important;
+			transform-origin: center center !important;
 		}
 		
 		.checkbox-group .list-item:hover {
@@ -872,8 +877,9 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Professional Software & Platform Development | Enterprise Solutions | Aenfinite" />
 <meta name="twitter:description" content="Aenfinite delivers expert software development services including enterprise platforms, custom applications, system architecture, and scalable solutions. Specializing in high-performance software that drives digital transformation and business growth." />
-<meta name="twitter:site" content="@aenfinite" />
-<meta name="twitter:creator" content="@aenfinite" />
+<meta name="twitter:site" content="@aenfinitee" />
+<meta name="twitter:creator" content="@aenfinitee" />
+
 <meta name="twitter:image" content="https://Aenfinite.com/wp-content/uploads/2024/11/share-image-dd-768x432.jpg" />
 <meta name="twitter:label1" content="Time to read" />
 <meta name="twitter:data1" content="Less than a minute" />
@@ -941,7 +947,7 @@
 <link rel="icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-192x192.png" sizes="192x192" />
 <link rel="apple-touch-icon" href="../../wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-180x180.png" />
 <meta name="msapplication-TileImage" content="https://Aenfinite.com/wp-content/uploads/2024/11/cropped-png-new-logo-dd-1-270x270.png" />
-		<meta name="google-site-verification" content="w5x4RIV--Je9QfyBMKTz_kRMtBGYQ_0e80K3uAykqoc" />	
+			
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
 		<!-- Powered by Aenfinite https://Aenfinite.com/ -->
@@ -1811,7 +1817,7 @@
 	<div class="checkbox-select">
 		<strong>I'm interested in...</strong>
 		<span class="form-control-wrap" data-name="checkbox-select">
-			<span class="form-control checkbox-group" style="padding-top: 50px">
+			<span class="form-control checkbox-group" style="padding-bottom: 50px">
 				<span class="list-item first">
 					<input type="checkbox" name="services" value="Custom Software Development" id="custom-software" />
 					<label for="custom-software" class="list-item-label">Custom Software Development</label>
@@ -1864,7 +1870,7 @@
 	</div>
 </div>
 <!-- hidden tracking fields remain unchanged -->
-<input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" value="Send" />
+<input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" value="Send" style="margin-bottom: 50px" />
 <div class="wpcf7-response-output" aria-hidden="true"></div>
 </form>
 </div>
@@ -2330,7 +2336,7 @@
 </li>
 
 										<li>
-											<a style="white-space:nowrap;" href="tel:+14692677487">+1 (469) 267-7487</a>
+											<a style="white-space:nowrap;" href="tel:+13034199782">+1 (303) 419-9782</a>
 										</li>
 										<li>
 											<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
@@ -2734,9 +2740,7 @@ on-page SEO, technical audits, and link building strategies.",					"geoMidpoint"
 
 		<!-- LinkedIn Insight Tag -->
     <script >
-        _linkedin_partner_id = "6313658";
-        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-        window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+        
     </script>
     <script >
         (function(l) {

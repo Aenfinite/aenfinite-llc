@@ -545,7 +545,7 @@ class AenfiniteFormHandler {
                         <a href="https://aenfinite.com" style="color: #667eea; text-decoration: none;">www.aenfinite.com</a></p>
                         
                         <div style="margin-top: 15px;">
-                            <a href="mailto:info@aenfinite.com" style="color: #667eea; text-decoration: none; margin: 0 10px;">📧 Email</a>
+                            <a href="mailto:hello@aenfinite.com" style="color: #667eea; text-decoration: none; margin: 0 10px;">📧 Email</a>
                             <a href="tel:+1234567890" style="color: #667eea; text-decoration: none; margin: 0 10px;">📞 Call</a>
                         </div>
                     </div>

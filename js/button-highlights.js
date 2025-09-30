@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				item.style.transition = 'all 0.3s ease';
 				item.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
 				item.style.margin = '0';
+				item.style.position = 'relative';
+				item.style.transformOrigin = 'center center';
 				
 				// Find checkbox and label
 				const checkbox = item.querySelector('input[type="checkbox"]');
