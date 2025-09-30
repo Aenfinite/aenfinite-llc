@@ -2761,15 +2761,31 @@ recommend a service from 1-10</div>
 }
 
 /* Center FAQ Content Text and Headings */
+.faq-content {
+    display: block !important;
+    grid-template-columns: none !important;
+    text-align: center !important;
+}
+
 .faq-content-text {
     text-align: center !important;
     max-width: 100% !important;
-    grid-column: 1/-1 !important;
+    grid-column: unset !important;
     margin: 0 auto !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+.faq-header {
+    grid-template-columns: none !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
 }
 
 .faq-header-title {
     text-align: center !important;
+    flex: 1 !important;
 }
 </style>
 
