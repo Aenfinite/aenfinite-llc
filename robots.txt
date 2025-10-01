@@ -1,5 +1,5 @@
 # Aenfinite Creative Agency - Robots.txt
-# https://aenfinite.com/robots.txt
+# https://aenfinite.com//robots.txt
 
 User-agent: *
 Allow: /
@@ -30,10 +30,10 @@ User-agent: Twitterbot
 Allow: /
 
 # Sitemap location
-Sitemap: https://aenfinite.com/sitemap.xml
-Sitemap: https://aenfinite.com/sitemap-services.xml
-Sitemap: https://aenfinite.com/sitemap-work.xml
-Sitemap: https://aenfinite.com/sitemap-pages.xml
+Sitemap: https://aenfinite.com//sitemap.xml
+Sitemap: https://aenfinite.com//sitemap-services.xml
+Sitemap: https://aenfinite.com//sitemap-work.xml
+Sitemap: https://aenfinite.com//sitemap-pages.xml
 
 # Disallow admin and private areas
 Disallow: /wp-admin/
@@ -67,4 +67,4 @@ Disallow: /*.md$
 Crawl-delay: 1
 
 # Host preference (if you have www vs non-www preference)
-# Host: https://aenfinite.com
+# Host: https://aenfinite.com/

@@ -591,15 +591,15 @@ class AenfiniteFormHandler {
                     
                     <p>In the meantime, feel free to:</p>
                     <ul>
-                        <li>Browse our <a href="https://aenfinite.com/work" style="color: #667eea; text-decoration: none;">portfolio</a> for inspiration</li>
-                        <li>Read our <a href="https://aenfinite.com/client-testimonials" style="color: #667eea; text-decoration: none;">client testimonials</a></li>
-                        <li>Check out our <a href="https://aenfinite.com/services" style="color: #667eea; text-decoration: none;">other services</a></li>
+                        <li>Browse our <a href="https://aenfinite.com//work" style="color: #667eea; text-decoration: none;">portfolio</a> for inspiration</li>
+                        <li>Read our <a href="https://aenfinite.com//client-testimonials" style="color: #667eea; text-decoration: none;">client testimonials</a></li>
+                        <li>Check out our <a href="https://aenfinite.com//services" style="color: #667eea; text-decoration: none;">other services</a></li>
                     </ul>
                     
                     <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
                         <p style="margin: 0;"><strong>Aenfinite</strong><br>
                         Professional Digital Solutions<br>
-                        <a href="https://aenfinite.com" style="color: #667eea; text-decoration: none;">www.aenfinite.com</a></p>
+                        <a href="https://aenfinite.com/" style="color: #667eea; text-decoration: none;">www.aenfinite.com</a></p>
                         
                         <div style="margin-top: 15px;">
                             <a href="mailto:hello@aenfinite.com" style="color: #667eea; text-decoration: none; margin: 0 10px;">📧 Email</a>

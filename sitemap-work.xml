@@ -6,7 +6,7 @@
         
     <!-- Work Categories -->
     <url>
-        <loc>https://aenfinite.com/work//</loc>
+        <loc>https://aenfinite.com/work/</loc>
         <lastmod>2025-09-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -105,7 +105,7 @@
     </url>
     
     <url>
-        <loc>https://aenfinite.com/work/Mindfit/</loc>
+        <loc>https://aenfinite.com/work/mindfit/</loc>
         <lastmod>2025-09-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>

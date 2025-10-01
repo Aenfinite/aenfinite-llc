@@ -9,7 +9,7 @@
 
     Team: Aenfinite Creative Agency
     Contact: team [at] aenfinite.com
-    Website: https://aenfinite.com
+    Website: https://aenfinite.com/
 
 # THANKS
 
