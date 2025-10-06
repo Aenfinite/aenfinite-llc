@@ -1,0 +1,68 @@
+# Aenfinite Creative Agency - Robots.txt
+# https://aenfinite.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# Sitemap location
+Sitemap: https://aenfinite.com/sitemap-index.xml
+Sitemap: https://aenfinite.com/sitemap.xml
+Sitemap: https://aenfinite.com/sitemap-services.xml
+Sitemap: https://aenfinite.com/sitemap-work.xml
+Sitemap: https://aenfinite.com/sitemap-pages.xml
+
+# Disallow admin and private areas
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/themes/
+Disallow: /wp-json/
+Disallow: /cdn-cgi/
+Disallow: /challenge-platform/
+
+# Disallow temporary and test files
+Disallow: /*test*.html
+Disallow: /*backup*.html
+Disallow: /*-test/
+Disallow: /mass-page-generator.html
+Disallow: /mpc-mvp.html
+Disallow: /dashboard-sample.html
+Disallow: /animation-test.html
+Disallow: /faq-heart-rotation-template.html
+Disallow: /faq-heart-rotation-component.html
+Disallow: /schedule-meeting-component.html
+
+# Disallow script files from indexing
+Disallow: /*.js$
+Disallow: /*.css$
+Disallow: /*.bat$
+Disallow: /*.ps1$
+Disallow: /*.md$
+
+# Host preference (if you have www vs non-www preference)
+# Host: https://aenfinite.com/
