@@ -24,5 +24,23 @@
         <loc>https://aenfinite.com/sitemap-pages.xml</loc>
         <lastmod>2025-10-02</lastmod>
     </sitemap>
+
+    <!-- Contact Page Sitemap -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-contact.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+
+    <!-- Featured Work Sitemap -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-featured-work.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+
+    <!-- Partner With Us Sitemap -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-partner-with-us.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
     
 </sitemapindex>
