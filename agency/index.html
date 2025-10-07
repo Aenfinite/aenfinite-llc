@@ -256,7 +256,6 @@
 <meta property="og:url" content="https://aenfinite.com/agency/" />
 <meta property="og:site_name" content="aenfinite.com" />
 <meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
-<
 <meta property="og:image:alt" content="Software Agency" />
 <meta property="og:image:type" content="image/jpeg" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -1251,7 +1250,7 @@
 			mousePosition.y = rect.height / 2;
 		});
 	</script>
-		</head>
+		<script src="form-validation.js"></script></head>
 	<body class="page-template page-template-page-about-php page-id-6 page-parent document loading body_hide document">
 		
 		<!-- Google Tag Manager (noscript) -->
@@ -1826,7 +1825,47 @@
 
 Our white-label services enable agencies and consultants to expand their offerings while we manage the execution seamlessly. Every project we deliver is optimized for performance, user experience, and search visibility, ensuring your business stays ahead in today’s digital-first world.			</div>
 				</div>
-				<div class="logotype"><span><img src="/wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="" /></span><span><img src="/wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="" /></span></div>			</div>
+				<style>
+					.logotype {
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						gap: 30px;
+						margin: 30px 0;
+						width: 100%;
+					}
+					.logotype span {
+						display: inline-block;
+						width: auto;
+					}
+					.logotype img {
+						max-width: 200px;
+						height: auto;
+						transition: transform 0.3s ease;
+					}
+					.logotype img:hover {
+						transform: scale(1.05);
+					}
+					@media (max-width: 768px) {
+						.logotype {
+							gap: 25px;
+							padding: 0 20px;
+						}
+						.logotype img {
+							max-width: 1 80px;
+						}
+					}
+					@media (max-width: 480px) {
+						.logotype {
+							gap: 20px;
+						}
+						.logotype img {
+							max-width: 150px;
+							min-width: 130px;
+						}
+					}
+				</style>
+				<div class="logotype"><span><img src="/wp-content/themes/aenfinite.com/images/aenfinite-logo.png" alt="Aenfinite Logo" /></span><span><img src="/wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite White Logo" /></span></div>			</div>
 		</div>
 	</div>
 <div class="section">
@@ -2191,9 +2230,35 @@ Our white-label services enable agencies and consultants to expand their offerin
 					<div class="textbox-content">
 						Aenfinite® is a digital innovation agency offering web design, mobile app development, branding, digital marketing, GoHighLevel implementation, white label services, e-commerce solutions, UI/UX design, graphic design, and complete digital transformation services that amplify conversion ability for businesses worldwide. 					</div>
 				</div>
-				<div class="logotype"><span><img src="https://assets.crowdspring.com/marketing/landing-page/dba/colorado-state-seal.png" alt="Aenfinite Certification of colorado" style="padding: 35px;" /></span>
-        <span><img src="https://i0.wp.com/storyteller.co.za/wp-content/uploads/2018/06/How-To-Get-More-Google-Reviews-.png?fit=1030%2C514&ssl=1" style="padding: 35px;"/></span>
-        <span><img src="https://www.pikpng.com/pngl/b/328-3285377_how-to-apply-trustpilot-5-star-logo-clipart.png" style="padding: 35px;" alt="Aenfinite Recognized Agency" /></span></div>			</div>
+				<style>
+					.trust-icons {
+						display: flex;
+						justify-content: space-around;
+						align-items: center;
+						flex-wrap: wrap;
+						gap: 20px;
+						margin: 30px 0;
+					}
+					.trust-icons img {
+						max-width: 200px;
+						height: auto;
+						padding: 15px;
+						transition: transform 0.3s ease;
+					}
+					.trust-icons img:hover {
+						transform: scale(1.05);
+					}
+					@media (max-width: 768px) {
+						.trust-icons img {
+							max-width: 150px;
+						}
+					}
+				</style>
+				<div class="trust-icons">
+					<img src="https://assets.crowdspring.com/marketing/landing-page/dba/colorado-state-seal.png" alt="Aenfinite Certification of colorado" />
+					<img src="https://i0.wp.com/storyteller.co.za/wp-content/uploads/2018/06/How-To-Get-More-Google-Reviews-.png?fit=1030%2C514&ssl=1" alt="Google Reviews" />
+					<img src="https://www.pikpng.com/pngl/b/328-3285377_how-to-apply-trustpilot-5-star-logo-clipart.png" alt="Aenfinite Recognized Agency" />
+				</div>			</div>
 		</div>
 	</div>
 	<div class="section">
