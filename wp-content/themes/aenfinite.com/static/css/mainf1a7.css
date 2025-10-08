@@ -445,7 +445,7 @@
 .shiftbox-current{width: 40px;text-align: right;display: inline-block;}
 .shiftbox-num{width: 40px;display: inline-block;}
 
-.shiftbox{display: grid;grid-auto-flow: column;align-items: flex-end;margin-top: -218px;position: relative;z-index: 1;min-height: 400px;grid-template-columns: auto 1fr;}
+.shiftbox{display: grid;grid-auto-flow: column;align-items: flex-end;margin-top: -130px;position: relative;z-index: 1;min-height: 400px;grid-template-columns: auto 1fr;}
 .shiftbox-image{min-height: 100%;position: relative;width: 60vw;display: flex;}
 .shiftbox-image::before{content: "";flex: none;width: 0;padding-top: 55%;}
 .shiftbox-content{padding-top: 94px;margin-left: 36px;}
