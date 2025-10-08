@@ -1670,13 +1670,17 @@ span.wpcf7-form-control-wrap {
 	left:50%!important;
 	bottom:0px!important;
 	margin:0 0 0 -90px!important;
-	display:block!important;
+	display:none!important;
 	border-radius:0px!important;
 	width:180px!important;
 	height:130px!important;
 	z-index:11;
 	opacity:1!important;
 	background:none!important;
+}
+
+form.submitting .wpcf7-spinner {
+    display:block!important;
 }
 
 .wpcf7-spinner::after {

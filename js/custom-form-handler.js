@@ -29,6 +29,11 @@ class AenfiniteFormHandler {
                 this.captureTrackingData();
             });
         } else {
+            // Clean up any stuck submitting states first
+            document.querySelectorAll('.wpcf7-form.submitting, form[class*="wpcf7"].submitting').forEach(form => {
+                form.classList.remove('submitting');
+            });
+            
             this.setupUniversalFormHandler();
             this.setupFormListeners();
             this.setupSelectBoxes();
@@ -42,6 +47,9 @@ class AenfiniteFormHandler {
         const wpForms = document.querySelectorAll('.wpcf7-form, form[class*="wpcf7"]');
         
         wpForms.forEach(form => {
+            // Clean up any stuck submitting states
+            form.classList.remove('submitting');
+            
             form.addEventListener('submit', (e) => {
                 e.preventDefault(); // Prevent WordPress form submission
                 this.handleWordPressFormSubmission(form);
@@ -67,20 +75,22 @@ class AenfiniteFormHandler {
         const originalButtonText = submitButton ? submitButton.value : 'Send';
         const originalButtonDisabled = submitButton ? submitButton.disabled : false;
         
-        // Show loading state
+        // Show loading state and spinner
         if (submitButton) {
             submitButton.disabled = true;
             submitButton.value = 'Sending...';
-            console.log('Button set to loading state');
+            form.classList.add('submitting'); // Add submitting class for spinner visibility
+            console.log('Button and spinner set to loading state');
         }
         
-        // Create a function to reset button state
+        // Create a function to reset button state and hide spinner
         const resetButton = () => {
             if (submitButton) {
                 setTimeout(() => {
                     submitButton.disabled = originalButtonDisabled;
                     submitButton.value = originalButtonText;
-                    console.log('Button reset to original state');
+                    form.classList.remove('submitting'); // Remove submitting class to hide spinner
+                    console.log('Button and spinner reset to original state');
                 }, 100);
             }
         };
