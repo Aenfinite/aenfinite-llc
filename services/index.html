@@ -415,6 +415,138 @@
 			background: #227bf3 !important;
 			color: white !important;
 		}
+			.list-item input[type="checkbox"]:checked + .list-item-label {
+			background: #227bf3 !important;
+			color: white !important;
+		}
+		
+		.list-item:has(input[type="checkbox"]:checked) {
+			background: #227bf3 !important;
+			border-color: #227bf3 !important;
+		}
+		
+		.list-item:has(input[type="checkbox"]:checked) .list-item-label {
+			color: white !important;
+		}
+		.form-control-wrap .checkbox-group {
+			display: flex !important;
+			flex-wrap: wrap !important;
+			gap: 15px !important;
+			width: 100% !important;
+			max-width: 100% !important;
+			position: relative !important;
+			z-index: 5 !important;
+			isolation: isolate !important;
+		}
+		
+		.list-item {
+			display: flex !important;
+			align-items: center !important;
+			background: #f8f9fa !important;
+			border: 1px solid #e0e0e0 !important;
+			border-radius: 25px !important;
+			padding: 8px 16px !important;
+			transition: all 0.3s ease !important;
+			cursor: pointer !important;
+			min-width: fit-content !important;
+			max-width: fit-content !important;
+			flex: 0 0 auto !important;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+			margin: 0 !important;
+			position: relative !important;
+			transform-origin: center center !important;
+		}
+		
+		.list-item:hover {
+			background: #e3f2fd !important;
+			border-color: #227bf3 !important;
+			box-shadow: 0 4px 8px rgba(34, 123, 243, 0.15) !important;
+			transform: translateY(-1px) !important;
+		}
+		
+		.list-item input[type="checkbox"] {
+			margin: 0 8px 0 0 !important;
+			accent-color: #227bf3 !important;
+			transform: scale(1.1) !important;
+		}
+		
+		.list-item-label {
+			font-size: 14px !important;
+			font-weight: 500 !important;
+			color: #555 !important;
+			cursor: pointer !important;
+			margin: 0 !important;
+			white-space: nowrap !important;
+		}
+		
+		.list-item:hover .list-item-label {
+			color: #227bf3 !important;
+		}
+		
+		/* Force override any existing styles */
+		.checkbox-group span.list-item {
+			display: flex !important;
+			flex: 0 0 auto !important;
+			width: auto !important;
+			max-width: fit-content !important;
+		}
+		
+		/* Extra specific targeting for desktop layout */
+		
+		/* Responsive design for contact form */
+		@media (max-width: 768px) {
+			.form-control-wrap .checkbox-group {
+				gap: 8px !important;
+			}
+			
+			.list-item {
+				padding: 6px 12px !important;
+			}
+			
+			.list-item-label {
+				font-size: 13px !important;
+			}
+			
+			/* Mobile responsive heading */
+			.section-caption_text h2 {
+				font-size: 14px !important;
+				line-height: 1.3 !important;
+				word-wrap: break-word !important;
+				hyphens: auto !important;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.section-caption_text h2 {
+				font-size: 14px !important;
+				line-height: 1.4 !important;
+			}
+		}
+		
+		/* Fix for highlighted text overlap */
+		.title h1 span span[style*="background:#227bf3"] {
+			white-space: nowrap !important;
+			overflow-wrap: normal !important;
+			font-size: inherit !important;
+		}
+		
+		.title h1 {
+			text-align: left !important;
+		}
+		
+		@media (max-width: 768px) {
+			.title h1 span span[style*="background:#227bf3"] {
+				display: block !important;
+				margin-bottom: 8px !important;
+				white-space: normal !important;
+				text-align: left !important;
+				font-size: inherit !important;
+			}
+			
+			.title h1 {
+				text-align: left !important;
+			}
+		}
 		
 		
 		
@@ -954,7 +1086,7 @@
                 <div class="service-tags">
                   <div class="chips">
                     <div class="chip"><a href="/services/e-commerce-websites/" class="chip-label">E-Commerce</a></div>
-                    <div class="chip"><a href="/services/Custom-Web-Development/" class="chip-label">Custom Websites</a></div>
+                    <div class="chip"><a href="/services/custom-web-development/" class="chip-label">Custom Websites</a></div>
                     <div class="chip"><a href="/services/software-&-platform-development/" class="chip-label">Software & Platforms</a></div>
                     <div class="chip"><a href="/services/app-development/" class="chip-label">Mobile Apps</a></div>
                     <div class="chip"><a href="/services/web-design/" class="chip-label">Website Design</a></div>
@@ -965,7 +1097,7 @@
                   <p>Our development team builds scalable, future-ready digital solutionsfrom responsive websites and custom web applications to enterprise-level software and mobile apps. We blend creativity with robust code to ensure performance, security, and a seamless user experience. Whether you need an e-commerce platform or a complex SaaS product, Aenfinite delivers clean, reliable, and conversion-driven solutions.</p>
                 </div>
                 <div class="service-action">
-                  <a href="../services/custom-web-development" class="redlink">
+                  <a href="/contact/" class="redlink">
                     <span>Learn More</span>
                   </a>
                 </div>
@@ -981,6 +1113,7 @@
                     <div class="chip"><a href="/services/ui-ux-design/" class="chip-label">UI/UX</a></div>
                     <div class="chip"><a href="/services/branding/" class="chip-label">Brand Identity</a></div>
                     <div class="chip"><a href="/services/graphic-design/" class="chip-label">Graphics</a></div>
+					<div class="chip"><a href="/services/logo-design/" class="chip-label">Logo Design</a></div>
                  
                     <div class="chip"><a href="/services/trade-show-booth-design/" class="chip-label">Trade Show</a></div>
                     <div class="chip"><a href="/services/conference-branding/" class="chip-label">Conference Branding</a></div>
@@ -990,7 +1123,7 @@
                   <p>Our creative team helps brands stand out with visually striking designs and strategic branding. From crafting a unique identity to designing intuitive interfaces and captivating marketing assets, we ensure every touchpoint feels consistent, premium, and on-brand. Aenfinite is where creativity meets strategyturning ideas into memorable digital experiences.</p>
                 </div>
                 <div class="service-action">
-                  <a href="../services/branding/" class="redlink">
+                  <a href="/contact/" class="redlink">
                     <span>Learn More</span>
                   </a>
                 </div>
@@ -1006,6 +1139,7 @@
                     <div class="chip"><a href="/services/digital-marketing/" class="chip-label">Digital Marketing Strategy</a></div>
                     <div class="chip"><a href="/services/search-engine-optimization/" class="chip-label">SEO</a></div>
                     <div class="chip"><a href="/services/Pay-per-click/" class="chip-label">PPC</a></div>
+					 <div class="chip"><a href="/services/paid-ads/" class="chip-label">Paid Ads</a></div>
                     <div class="chip"><a href="/services/social-media-marketing/" class="chip-label">Social Media Marketing</a></div>
                   </div>
                 </div>
@@ -1013,7 +1147,7 @@
                   <p>We create data-driven marketing campaigns that drive measurable results. Our team specializes in SEO, PPC, and social media strategies to boost visibility, capture leads, and grow your business. With Aenfinite, your brand gets a growth-focused digital partner, not just a marketing service provider.</p>
                 </div>
                 <div class="service-action">
-                  <a href="../services/digital-marketing/" class="redlink">
+                  <a href="/contact/" class="redlink">
                     <span>Learn More</span>
                   </a>
                 </div>
@@ -1034,7 +1168,7 @@
                   <p>Stay ahead of the curve with our AI-powered solutions and business automation tools. We build chatbots, virtual assistants, and intelligent workflows that save time, reduce costs, and scale operations. Aenfinite helps businesses embrace the future of technology with ease and confidence.</p>
                 </div>
                 <div class="service-action">
-                  <a href="../services/ai-chatbots-&-virtual-assistants/" class="redlink">
+                  <a href="/contact/" class="redlink">
                     <span>Learn More</span>
                   </a>
                 </div>
