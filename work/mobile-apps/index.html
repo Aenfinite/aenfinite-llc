@@ -1,0 +1,2963 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head><link rel="apple-touch-icon" sizes="180x180" href="/wp-content/themes/aenfinite.com/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/wp-content/themes/aenfinite.com/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/wp-content/themes/aenfinite.com/favicon/favicon-16x16.png">
+<link rel="shortcut icon" href="/wp-content/themes/aenfinite.com/favicon/favicon.ico" type="image/x-icon">
+<link rel="manifest" href="/wp-content/themes/aenfinite.com/favicon/site.webmanifest"><!-- Advanced Cursor System -->
+		<style>
+			/* Advanced Cursor Styles */
+			* {
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body, html {
+				cursor: none !important;
+			}
+
+			svg {
+				display: none;
+			}
+
+			.aenfinite-cursor {
+				pointer-events: none;
+				position: fixed;
+				display: block;
+				border-radius: 0;
+				transform-origin: center center;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				filter: url("#goo");
+				width: 26px;
+				height: 26px;
+			}
+
+			.aenfinite-cursor span {
+				position: absolute;
+				display: block;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #227bf3;
+				transform-origin: center center;
+				transform: translate(-50%, -50%);
+			}
+
+			/* On mobile devices, hide the cursor and restore default behavior */
+			@media (max-width: 768px) {
+				.aenfinite-cursor {
+					display: none !important;
+				}
+				
+				body, html {
+					cursor: auto !important;
+				}
+			}
+
+			/* Button and Checkbox Toggle Styles - Exact Homepage Match */
+			.form-control-wrap .checkbox-group {
+				display: flex !important;
+				flex-wrap: wrap !important;
+				gap: 10px !important;
+			}
+			
+			
+			.list-item-label {
+				font-size: 14px !important;
+				font-weight: 500 !important;
+				color: #555 !important;
+				cursor: pointer !important;
+				margin: 0 !important;
+				white-space: nowrap !important;
+			}
+			
+			.list-item:hover .list-item-label {
+				color: #227bf3 !important;
+			}
+			
+			.list-item input[type="checkbox"]:checked + .list-item-label {
+				background: #227bf3 !important;
+				color: white !important;
+			}
+			
+			
+
+			/* Submit Button Styling */
+			.wpcf7-submit {
+				background-color: #227bf3;
+				color: white;
+				border: none;
+				padding: 12px 32px;
+				border-radius: 8px;
+				font-size: 16px;
+				font-weight: 500;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				margin-top: 20px;
+				display: inline-block;
+				text-transform: none;
+			}
+
+			
+
+			.wpcf7-submit:active {
+				transform: translateY(0);
+			}
+
+			/* Form styling improvements */
+			.checkbox-select strong {
+				display: block;
+				margin-bottom: 10px;
+				color: #333;
+				font-size: 16px;
+			}
+		</style>
+
+		<!-- SVG Filter for Goo Effect -->
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+			  <filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			  </filter>
+			</defs>
+		</svg>
+
+		<script>
+			// Advanced Cursor Implementation
+			function initAdvancedCursor() {
+				// Check if mobile device
+				if (window.innerWidth <= 768) {
+					return; // Don't initialize cursor on mobile
+				}
+
+				// Remove any existing cursor elements
+				const existingCursors = document.querySelectorAll('.aenfinite-cursor');
+				existingCursors.forEach(cursor => cursor.remove());
+
+				const cursor = document.createElement('div');
+				cursor.className = 'aenfinite-cursor';
+				cursor.id = 'aenfinite-cursor';
+				document.body.appendChild(cursor);
+
+				const amount = 20;
+				const sineDots = Math.floor(amount * 0.3);
+				const width = 26;
+				const idleTimeout = 150;
+				let lastFrame = 0;
+				let mousePosition = {x: 0, y: 0};
+				let dots = [];
+				let timeoutID;
+				let idle = false;
+
+				class Dot {
+					constructor(index = 0) {
+						this.index = index;
+						this.anglespeed = 0.05;
+						this.x = 0;
+						this.y = 0;
+						this.scale = 1 - 0.05 * index;
+						this.range = width / 2 - width / 2 * this.scale + 2;
+						this.limit = width * 0.75 * this.scale;
+						this.element = document.createElement("span");
+						if (window.gsap && window.gsap.set) {
+							gsap.set(this.element, {scale: this.scale});
+						} else {
+							this.element.style.transform = `scale(${this.scale})`;
+						}
+						cursor.appendChild(this.element);
+					}
+
+					lock() {
+						this.lockX = this.x;
+						this.lockY = this.y;
+						this.angleX = Math.PI * 2 * Math.random();
+						this.angleY = Math.PI * 2 * Math.random();
+					}
+
+					draw(delta) {
+						if (!idle || this.index <= sineDots) {
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						} else {
+							this.angleX += this.anglespeed;
+							this.angleY += this.anglespeed;
+							this.y = this.lockY + Math.sin(this.angleY) * this.range;
+							this.x = this.lockX + Math.sin(this.angleX) * this.range;
+							if (window.gsap && window.gsap.set) {
+								gsap.set(this.element, {x: this.x, y: this.y});
+							} else {
+								this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+							}
+						}
+					}
+				}
+
+				function startIdleTimer() {
+					timeoutID = setTimeout(goInactive, idleTimeout);
+					idle = false;
+				}
+
+				function resetIdleTimer() {
+					clearTimeout(timeoutID);
+					startIdleTimer();
+				}
+
+				function goInactive() {
+					idle = true;
+					for (let dot of dots) {
+						dot.lock();
+					}
+				}
+
+				function buildDots() {
+					for (let i = 0; i < amount; i++) {
+						let dot = new Dot(i);
+						dots.push(dot);
+					}
+				}
+
+				const onMouseMove = event => {
+					mousePosition.x = event.clientX - width / 2;
+					mousePosition.y = event.clientY - width / 2;
+					resetIdleTimer();
+				};
+
+				const onTouchMove = (event) => {
+					if (event.touches && event.touches.length > 0) {
+						mousePosition.x = event.touches[0].clientX - width / 2;
+						mousePosition.y = event.touches[0].clientY - width / 2;
+						resetIdleTimer();
+					}
+				};
+
+				const render = timestamp => {
+					const delta = timestamp - lastFrame;
+					positionCursor(delta);
+					lastFrame = timestamp;
+					requestAnimationFrame(render);
+				};
+
+				const positionCursor = delta => {
+					let x = mousePosition.x;
+					let y = mousePosition.y;
+					dots.forEach((dot, index, dots) => {
+						let nextDot = dots[index + 1] || dots[0];
+						dot.x = x;
+						dot.y = y;
+						dot.draw(delta);
+						if (!idle || index <= sineDots) {
+							const dx = (nextDot.x - dot.x) * 0.35;
+							const dy = (nextDot.y - dot.y) * 0.35;
+							x += dx;
+							y += dy;
+						}
+					});
+				};
+
+				// Initialize cursor system
+				window.addEventListener("mousemove", onMouseMove);
+				window.addEventListener("touchmove", onTouchMove);
+				lastFrame = performance.now();
+				buildDots();
+				render();
+				startIdleTimer();
+
+				// Handle window resize
+				window.addEventListener('resize', function() {
+					if (window.innerWidth <= 768) {
+						// Remove cursor on mobile
+						const cursorEl = document.getElementById('aenfinite-cursor');
+						if (cursorEl) {
+							cursorEl.remove();
+						}
+					} else if (!document.getElementById('aenfinite-cursor')) {
+						// Reinitialize cursor on desktop
+						initAdvancedCursor();
+					}
+				});
+			}
+
+			// Initialize cursor when DOM is ready
+			document.addEventListener('DOMContentLoaded', function() {
+				initAdvancedCursor();
+			});
+
+			// Backup initialization
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initAdvancedCursor);
+			} else {
+				initAdvancedCursor();
+			}
+		</script>
+			<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
+	
+<title>Mobile App Development Portfolio | iOS & Android Apps | Aenfinite</title>
+<meta name="description" content="Discover Aenfinite's mobile app development portfolio. We create cutting-edge iOS and Android applications, cross-platform mobile solutions, and native app experiences that drive user engagement and business growth."/>
+<meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
+<link rel="canonical" href="" />
+<link rel="next" href="page/2/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Mobile App Development Portfolio | iOS & Android Apps | Aenfinite" />
+<meta property="og:description" content="Discover Aenfinite's mobile app development portfolio. We create cutting-edge iOS and Android applications, cross-platform mobile solutions, and native app experiences that drive user engagement and business growth." />
+<meta property="og:url" content="https://aenfinite.com/work/mobile-apps/" />
+<meta property="og:site_name" content="Aenfinite" />
+<meta property="article:publisher" content="https://www.facebook.com/aenfinite/" />
+<meta property="og:image:width" content="768" />
+<meta property="og:image:height" content="432" />
+<meta property="og:image:alt" content="Aenfinite - Mobile App Development Studio - iOS & Android Applications" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Mobile App Development Portfolio | iOS & Android Apps | Aenfinite" />
+<meta name="twitter:description" content="Discover Aenfinite's mobile app development portfolio. We create cutting-edge iOS and Android applications, cross-platform mobile solutions, and native app experiences that drive user engagement and business growth." />
+<meta name="twitter:site" content="@aenfinite" />
+<meta name="twitter:label1" content="Posts" />
+<meta name="twitter:data1" content="57" />
+<script type="application/ld+json" class="rank-math-schema-pro">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aenfinite.com/#organization","name":"Aenfinite\u00ae","sameAs":["https://www.facebook.com/aenfinite/","https://twitter.com/aenfinitee","https://www.instagram.com/aenfinite/","finite"]},{"@type":"WebSite","@id":"https://aenfinite.com/#website","url":"https://Aenfinite","name":"Aenfinite\u00ae","alternateName":"Aenfinite\u00ae - Mobile App Development Studio","publisher":{"@id":"https://aenfinite.com/#organization"},"inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://aenfinite.com/work/mobile-apps/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://Aenfinite","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://aenfinite.com/work/mobile-apps/","name":"Mobile Apps"}}]},{"@type":"CollectionPage","@id":"https://aenfinite.com/work/mobile-apps/#webpage","url":"https://aenfinite.com/work/mobile-apps/","name":"Mobile App Development Portfolio | Aenfinite\u00ae","isPartOf":{"@id":"https://aenfinite.com/#website"},"inLanguage":"en-US","breadcrumb":{"@id":"https://aenfinite.com/work/mobile-apps/#breadcrumb"}}]}</script>
+<!-- /Rank Math WordPress SEO plugin -->
+
+<link rel="https://api.w.org/" href="../../wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="../../wp-json/wp/v2/categories/4.json" />    <style type="text/css">
+		#wp-admin-bar-wp-logo > .ab-item .ab-icon:before {
+			content: url('../../wp-content/uploads/2024/05/logo.svg') !important;
+			width: 75%;
+			height: auto;
+			left: 50%;
+			transform: translateX(-50%);
+			display: block;
+			background-size: contain;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+		#wpadminbar #wp-admin-bar-wp-logo > .ab-item .ab-icon {
+			width: 9rem;
+			height: auto;
+		}		
+		#adminmenu, #adminmenuback, #adminmenuwrap, #wpadminbar {
+			background-color: #000 !important;
+		}
+
+		#adminmenu .wp-has-current-submenu .wp-submenu .wp-submenu-head, #adminmenu .wp-menu-arrow, #adminmenu .wp-menu-arrow div, #adminmenu li.current a.menu-top, #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu {
+			background: #227bf3;
+		}
+		div#wpadminbar {
+			padding: 5px 0;
+		}
+		.acf-flexible-content .layout .acf-fc-layout-handle {
+			border-bottom: #383838 solid 1px !important;
+			background-color: #383838 !important;
+			color: #fff !important;
+		}
+		.acf-icon.-clear {
+			color: #fff;
+			border-color: #fff;
+		}				
+		.acf-flexible-content .layout .acf-fc-layout-controls .acf-icon.-plus, .acf-flexible-content .layout .acf-fc-layout-controls .acf-icon.-minus, .acf-flexible-content .layout .acf-fc-layout-controls .acf-icon.-duplicate {
+			visibility: visible!important;
+		}		
+		@media (min-width:1024px) {
+			#post-body.columns-2 #postbox-container-1 {
+				float: right;
+				margin-right: 20px;
+				width: 280px;
+				height: 100%;
+				position: fixed;
+				right: 0;
+			}
+			#poststuff #post-body.columns-2 #side-sortables {
+				overflow-y: scroll;
+				max-height: 80vh;
+				padding-bottom: 30px;
+			}	
+		}		
+		
+		/* Navigation Logo Styling */
+		.nav-logo {
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			transition: all 0.3s ease;
+			filter: none;
+			object-fit: contain;
+			object-position: left center;
+		}
+		
+		/* Ensure consistent sizing for both logo variants */
+		.nav-logo-default,
+		.nav-logo-active {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 28px !important;
+			width: auto !important;
+			max-width: 140px !important;
+			object-fit: contain;
+			object-position: left center;
+			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			transform-origin: left center;
+		}
+		
+		/* Container for logos to maintain position */
+		.topbar-logo a {
+			position: relative;
+			display: inline-block;
+			height: 28px;
+			min-width: 140px;
+		}
+		
+		/* Default state - show white logo, hide active logo */
+		.nav-logo-default {
+			display: block;
+			opacity: 1;
+			transform: scale(1);
+			z-index: 2;
+		}
+		
+		.nav-logo-active {
+			display: block;
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+		
+		/* When navbar becomes active/dark - hide white logo, show blue logo */
+		.mainnav.active .nav-logo-default,
+		.mainnav.always-active .nav-logo-default,
+		.mainnav:hover .nav-logo-default {
+			opacity: 0;
+			transform: scale(0.95);
+			z-index: 1;
+		}
+		
+		.mainnav.active .nav-logo-active,
+		.mainnav.always-active .nav-logo-active,
+		.mainnav:hover .nav-logo-active {
+			opacity: 1;
+			transform: scale(1.05);
+			z-index: 2;
+		}
+		
+		/* Center navigation and improve spacing */
+		.projects-nav {
+			display: flex !important;
+			justify-content: center !important;
+			align-items: center !important;
+			margin: 40px 0 !important;
+			gap: 25px !important;
+			padding: 0 !important;
+			list-style: none !important;
+			width: 100% !important;
+			flex-wrap: wrap !important;
+		}
+		
+		.projects-nav .projects-nav_item {
+			margin: 0 !important;
+			padding: 0 !important;
+		}
+		
+		.projects-nav .projects-nav_item a {
+			display: block !important;
+			padding: 10px 20px !important;
+			text-decoration: none !important;
+			color: #333 !important;
+			border-radius: 25px !important;
+			transition: all 0.3s ease !important;
+			white-space: nowrap !important;
+		}
+		
+		.projects-nav .projects-nav_item.active a,
+		.projects-nav .projects-nav_item.current-category-ancestor a {
+			background-color: #007cba !important;
+			color: white !important;
+		}
+		
+		.projects-nav .projects-nav_item a:hover {
+			background-color: #005a87 !important;
+			color: white !important;
+		}
+		
+		/* Add spacing to main content sections */
+		.section {
+			margin-bottom: 60px;
+		}
+		
+		.textbox-content {
+			text-align: center;
+			max-width: 900px;
+			margin: 0 auto;
+			padding: 40px 20px;
+		}
+    </style>
+			
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		
+		<script src="../../wp-content/themes/aenfinite.com/static/js/jquery.min.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/slick.min.js"></script>
+		<link href="../../wp-content/themes/aenfinite.com/static/css/mainf1a7.css?v=20250731-2020" rel="stylesheet" type="text/css" />
+		<link href="../../wp-content/themes/aenfinite.com/stylef1a7.css?v=20250731-2020" rel="stylesheet" type="text/css" />
+		
+		<script src="../../wp-content/themes/aenfinite.com/static/js/smartScroll.min.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/gsap.min.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/ScrollMagic.js"></script>
+		<script src="../../wp-content/themes/aenfinite.com/static/js/animation.gsap.js"></script>
+		
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-K9VRBCFE61"></script>
+		<script>
+		 window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', 'G-K9VRBCFE61');
+		</script>		
+		
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'../../../www.googletagmanager.com/gtm5445.html?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-53L4TW5R');</script>
+		<!-- End Google Tag Manager -->
+
+
+<script> (function(){ var s = document.createElement('script'); var h = document.querySelector('head') || document.body; s.src = '../../../acsbapp.com/apps/app/dist/js/app.js'; s.async = true; s.onload = function(){ acsbJS.init({ statementLink : '', footerHtml : 'Web Accessibility Powered by Aenfinite with ️', hideMobile : false, hideTrigger : false, disableBgProcess : false, language : 'en', position : 'left', leadColor : '#000000', triggerColor : '#050505', triggerRadius : '10px', triggerPositionX : 'left', triggerPositionY : 'bottom', triggerIcon : 'display', triggerSize : 'small', triggerOffsetX : 40, triggerOffsetY : 40, mobile : { triggerSize : 'small', triggerPositionX : 'right', triggerPositionY : 'center', triggerOffsetX : 10, triggerOffsetY : 0, triggerRadius : '50%' } }); }; h.appendChild(s); })(); </script>
+		
+	<script src="../../../tag.clearbitscripts.com/v1/pk_08e6c6ce3b014e610695b74a91741212/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>	
+		
+
+	<!-- Animated Cursor Implementation -->
+	<style>
+		
+		/* Enhanced Checkbox Button Styling */
+		.checkbox-select {
+			margin: 30px 0;
+		}
+		
+		.checkbox-select strong {
+			display: block;
+			font-size: 18px;
+			font-weight: 600;
+			color: #333;
+			margin-bottom: 20px;
+		}
+		
+		.checkbox-group {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: flex-start;
+		}
+		
+		.list-item {
+			position: relative;
+			display: inline-block;
+		}
+		
+		.list-item input[type="checkbox"] {
+			position: absolute;
+			opacity: 0;
+			cursor: pointer;
+			height: 0;
+			width: 0;
+		}
+		
+		.list-item-label {
+			display: inline-block;
+			padding: 12px 24px;
+			background: #f8f9fa;
+			border: 2px solid #e9ecef;
+			border-radius: 50px;
+			font-size: 14px;
+			font-weight: 500;
+			color: #6c757d;
+			cursor: pointer;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			user-select: none;
+			position: relative;
+			overflow: hidden;
+		}
+		
+		.list-item-label::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(90deg, transparent, rgba(34, 123, 243, 0.1), transparent);
+			transition: left 0.5s;
+		}
+		
+		.list-item-label:hover {
+			background: #e3f2fd;
+			border-color: #227bf3;
+			color: #227bf3;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(34, 123, 243, 0.15);
+		}
+		
+		.list-item-label:hover::before {
+			left: 100%;
+		}
+		
+		.list-item input[type="checkbox"]:checked + .list-item-label {
+			background: #227bf3;
+			border-color: #227bf3;
+			color: white;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(34, 123, 243, 0.3);
+		}
+		
+		.list-item input[type="checkbox"]:checked + .list-item-label::after {
+			content: '✓';
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-weight: bold;
+			font-size: 12px;
+		}
+		
+		.list-item input[type="checkbox"]:focus + .list-item-label {
+			outline: 2px solid #227bf3;
+			outline-offset: 2px;
+		}
+		
+		/* Responsive Design */
+		@media (max-width: 768px) {
+			.checkbox-group {
+				gap: 8px;
+			}
+			
+			.list-item-label {
+				padding: 10px 18px;
+				font-size: 13px;
+			}
+			
+			.checkbox-select strong {
+				font-size: 16px;
+				margin-bottom: 15px;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.list-item-label {
+				padding: 8px 16px;
+				font-size: 12px;
+			}
+			
+			.checkbox-group {
+				gap: 6px;
+			}
+		}
+		* {
+			cursor: none !important;
+		}
+		
+		.cursor-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			pointer-events: none;
+			z-index: 99999;
+		}
+		
+		.cursor-dot {
+			position: absolute;
+			width: 4px;
+			height: 4px;
+			background: rgb(255, 255, 255);
+			border-radius: 50%;
+			filter: url(#goo);
+			transform: translate(-50%, -50%);
+		}
+		
+		@media (max-width: 768px) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		@media (pointer: coarse) {
+			.cursor-container {
+				display: none;
+			}
+			* {
+				cursor: auto !important;
+			}
+		}
+		
+		/* Fade-in animations for smooth page loading */
+		.fade-in {
+			opacity: 0;
+			transform: translateY(20px);
+			animation: fadeInUp 0.2s ease-out forwards;
+		}
+
+		.fade-in-delay-1 { animation-delay: 0.05s; }
+		.fade-in-delay-2 { animation-delay: 0.1s; }
+		.fade-in-delay-3 { animation-delay: 0.15s; }
+		.fade-in-delay-4 { animation-delay: 0.2s; }
+		.fade-in-delay-5 { animation-delay: 0.25s; }
+
+		@keyframes fadeInUp {
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	</style>
+	
+	<svg style="position: fixed; top: -1000px; left: -1000px; width: 0; height: 0;">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check if it's a mobile device
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isMobile || hasTouch) {
+				return; // Exit early on mobile devices
+			}
+			
+			const cursorContainer = document.createElement('div');
+			cursorContainer.className = 'cursor-container';
+			document.body.appendChild(cursorContainer);
+			
+			const numDots = 20;
+			const dots = [];
+			const mousePosition = { x: 0, y: 0 };
+			
+			// Create dots
+			for (let i = 0; i < numDots; i++) {
+				const dot = document.createElement('div');
+				dot.className = 'cursor-dot';
+				cursorContainer.appendChild(dot);
+				dots.push({
+					element: dot,
+					x: 0,
+					y: 0,
+					targetX: 0,
+					targetY: 0,
+					delay: i * 0.02
+				});
+			}
+			
+			// Mouse move handler
+			function handleMouseMove(e) {
+				mousePosition.x = e.clientX;
+				mousePosition.y = e.clientY;
+			}
+			
+			document.addEventListener('mousemove', handleMouseMove);
+			
+			// Animation loop
+			function animate() {
+				dots.forEach((dot, index) => {
+					const delay = index * 0.1;
+					const ease = 0.15 - (index * 0.005);
+					
+					dot.targetX = mousePosition.x;
+					dot.targetY = mousePosition.y;
+					
+					dot.x += (dot.targetX - dot.x) * ease;
+					dot.y += (dot.targetY - dot.y) * ease;
+					
+					dot.element.style.left = dot.x + 'px';
+					dot.element.style.top = dot.y + 'px';
+					dot.element.style.opacity = Math.max(0, 1 - index * 0.05);
+					dot.element.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.1, 1 - index * 0.05) + ")";
+				});
+				
+				requestAnimationFrame(animate);
+			}
+			
+			// Start animation
+			animate();
+			
+			// Hide cursor when leaving window
+			document.addEventListener('mouseleave', function() {
+				cursorContainer.style.opacity = '0';
+			});
+			
+			document.addEventListener('mouseenter', function() {
+				cursorContainer.style.opacity = '1';
+			});
+			
+			// Handle hover effects
+			const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .clickable');
+			
+			interactiveElements.forEach(element => {
+				element.addEventListener('mouseenter', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(200, 200, 200)';
+						dot.element.style.transform += ' scale(1.5)';
+					});
+				});
+				
+				element.addEventListener('mouseleave', function() {
+					dots.forEach(dot => {
+						dot.element.style.backgroundColor = 'rgb(255, 255, 255)';
+					});
+				});
+			});
+			
+			// Initialize cursor position
+			const rect = document.body.getBoundingClientRect();
+			mousePosition.x = rect.width / 2;
+			mousePosition.y = rect.height / 2;
+		});
+	</script>
+
+	<!-- FontAwesome Icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+		<script src="form-validation.js"></script><meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+	<body class="category category-graphic-design category-4 document">
+		
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53L4TW5R"
+		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->	
+
+		<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+			<symbol id="i-chevron" viewBox="0 0 18 10">
+				<path d="M1 1L9 9L17 1" stroke="currentColor" fill="none" />
+			</symbol>
+			<symbol id="i-heart2" viewBox="0 0 177 131">
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M88.374 46.1963L42.7566 0.578893L0.642578 42.6929L88.3777 130.428L130.492 88.314L130.488 88.3103L176.684 42.114L134.57 0L88.374 46.1963Z" fill="currentColor" />
+			</symbol>
+			<symbol id="i-heart" viewBox="0 0 428 317">
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M213.037 112.292L102.149 1.28808L0.0263672 103.517L212.776 316.488L214.104 315.159L215.873 313.451L427.115 102.009L325.211 0L213.037 112.292Z" fill="currentColor"/>
+<path d="M215.497 294.602L207.394 286.5L209.932 283.962C210.007 283.887 210.148 283.75 210.354 283.551C210.564 283.349 210.776 283.167 210.99 283.005C211.703 282.45 212.462 282.144 213.269 282.088C214.079 282.028 214.884 282.176 215.683 282.533C216.478 282.885 217.219 283.405 217.905 284.091C218.595 284.781 219.119 285.526 219.475 286.325C219.828 287.12 219.974 287.923 219.914 288.733C219.854 289.536 219.546 290.294 218.991 291.007C218.83 291.22 218.648 291.432 218.445 291.642C218.247 291.849 218.11 291.989 218.035 292.064L215.497 294.602ZM215.581 292.278L216.915 290.945C217.042 290.817 217.191 290.661 217.359 290.478C217.528 290.294 217.669 290.123 217.781 289.966C218.115 289.474 218.271 288.962 218.248 288.43C218.226 287.889 218.07 287.355 217.781 286.826C217.493 286.297 217.117 285.802 216.656 285.34C216.18 284.864 215.677 284.485 215.148 284.204C214.615 283.919 214.083 283.769 213.55 283.754C213.017 283.731 212.511 283.885 212.031 284.215C211.87 284.324 211.697 284.466 211.513 284.643C211.329 284.811 211.176 284.958 211.052 285.082L209.718 286.415L215.581 292.278ZM225.681 284.756C225.073 285.364 224.409 285.754 223.689 285.926C222.969 286.099 222.246 286.067 221.522 285.831C220.799 285.587 220.121 285.15 219.491 284.52C218.857 283.886 218.424 283.205 218.191 282.477C217.955 281.746 217.927 281.024 218.107 280.311C218.283 279.594 218.67 278.938 219.266 278.341C219.874 277.734 220.538 277.344 221.258 277.171C221.978 276.999 222.7 277.03 223.424 277.267C224.148 277.503 224.824 277.934 225.45 278.561C226.084 279.195 226.519 279.878 226.755 280.609C226.992 281.333 227.024 282.055 226.851 282.775C226.675 283.492 226.285 284.152 225.681 284.756ZM224.572 283.648C225.154 283.066 225.392 282.438 225.287 281.763C225.182 281.08 224.82 280.429 224.201 279.81C223.567 279.176 222.914 278.816 222.243 278.73C221.571 278.636 220.949 278.876 220.375 279.45C219.981 279.844 219.746 280.258 219.671 280.693C219.592 281.125 219.649 281.56 219.84 281.999C220.028 282.434 220.328 282.858 220.74 283.271C221.378 283.908 222.035 284.272 222.71 284.362C223.385 284.452 224.006 284.214 224.572 283.648ZM233.602 276.497L230.614 273.509C230.378 273.273 230.115 273.052 229.826 272.845C229.537 272.632 229.23 272.474 228.903 272.373C228.581 272.268 228.253 272.251 227.919 272.322C227.589 272.39 227.262 272.585 226.94 272.907C226.73 273.117 226.566 273.352 226.45 273.611C226.33 273.866 226.276 274.141 226.287 274.438C226.302 274.73 226.394 275.044 226.563 275.378C226.735 275.708 227.002 276.053 227.362 276.413L226.355 276.869C225.803 276.317 225.42 275.728 225.207 275.102C224.989 274.472 224.955 273.845 225.105 273.222C225.255 272.6 225.604 272.015 226.152 271.467C226.572 271.047 226.992 270.762 227.412 270.612C227.832 270.462 228.241 270.409 228.639 270.454C229.037 270.492 229.412 270.593 229.764 270.758C230.117 270.923 230.434 271.112 230.715 271.326C230.997 271.54 231.231 271.741 231.419 271.928L234.795 275.304L233.602 276.497ZM229.331 280.768L223.254 274.691L224.306 273.639L226.062 275.394L226.203 275.254L230.524 279.575L229.331 280.768ZM230.127 269.169L229.677 268.572C229.849 268.422 229.945 268.267 229.964 268.105C229.982 267.944 229.943 267.785 229.845 267.627C229.748 267.47 229.609 267.32 229.429 267.177L228.782 267.824L227.426 266.468L228.669 265.225L230.138 266.693C230.581 267.136 230.808 267.577 230.819 268.015C230.834 268.451 230.603 268.835 230.127 269.169ZM241.467 268.632C241.159 269.09 240.816 269.497 240.437 269.853C240.058 270.21 239.659 270.467 239.238 270.624C238.818 270.782 238.394 270.793 237.967 270.658C237.584 270.538 237.258 270.354 236.988 270.107C236.718 269.852 236.418 269.559 236.087 269.229L230.714 263.855L231.895 262.674L237.213 267.991C237.457 268.235 237.67 268.445 237.854 268.621C238.042 268.794 238.233 268.906 238.428 268.959C238.796 269.056 239.143 268.976 239.469 268.717C239.795 268.451 240.129 268.09 240.471 267.637L241.467 268.632ZM232.182 267.653L231.237 266.708L235.39 262.556L236.335 263.501L232.182 267.653ZM247.235 263.202C246.653 263.783 246.025 264.13 245.35 264.243C244.671 264.352 243.988 264.266 243.302 263.984C242.615 263.703 241.968 263.258 241.36 262.651C240.753 262.043 240.306 261.398 240.021 260.715C239.74 260.029 239.655 259.351 239.768 258.684C239.88 258.009 240.224 257.384 240.798 256.81C241.368 256.24 242 255.889 242.694 255.758C243.388 255.619 244.089 255.679 244.798 255.938C245.503 256.193 246.162 256.626 246.773 257.238C247.381 257.845 247.816 258.506 248.079 259.218C248.341 259.924 248.407 260.623 248.276 261.317C248.148 262.007 247.801 262.636 247.235 263.202ZM246.908 268.593L238.13 259.815L239.177 258.768L243.549 263.14L243.684 263.005L248.09 267.411L246.908 268.593ZM246.008 262.302C246.383 261.927 246.597 261.522 246.649 261.086C246.706 260.647 246.633 260.207 246.43 259.764C246.227 259.314 245.925 258.888 245.524 258.487C245.126 258.089 244.704 257.791 244.258 257.592C243.815 257.39 243.373 257.318 242.93 257.378C242.487 257.438 242.071 257.663 241.681 258.054C241.313 258.421 241.1 258.815 241.04 259.235C240.983 259.652 241.058 260.079 241.265 260.518C241.475 260.953 241.79 261.381 242.21 261.801C242.63 262.221 243.058 262.536 243.493 262.746C243.928 262.956 244.359 263.031 244.787 262.971C245.215 262.911 245.622 262.688 246.008 262.302ZM250.666 259.433L244.589 253.356L245.635 252.31L247.11 253.784L246.772 253.739C246.652 253.469 246.571 253.193 246.53 252.912C246.485 252.627 246.489 252.353 246.541 252.09C246.583 251.824 246.667 251.567 246.795 251.319C246.922 251.064 247.08 250.832 247.267 250.622C247.451 250.408 247.652 250.226 247.869 250.076L248.972 251.179C248.721 251.325 248.485 251.531 248.263 251.798C248.046 252.06 247.901 252.358 247.83 252.692C247.762 253.007 247.761 253.309 247.824 253.598C247.892 253.883 248.01 254.159 248.179 254.425C248.344 254.688 248.546 254.939 248.787 255.179L251.853 258.246L250.666 259.433ZM257.378 253.059C256.774 253.663 256.112 254.062 255.392 254.257C254.672 254.445 253.948 254.43 253.22 254.212C252.492 253.987 251.815 253.561 251.189 252.935C250.525 252.271 250.073 251.571 249.833 250.836C249.596 250.097 249.568 249.371 249.748 248.658C249.928 247.946 250.315 247.293 250.907 246.7C251.526 246.081 252.198 245.699 252.922 245.552C253.642 245.402 254.373 245.485 255.116 245.8C255.863 246.111 256.577 246.653 257.26 247.426L256.084 248.602L255.656 248.175C254.944 247.477 254.287 247.09 253.687 247.015C253.09 246.937 252.526 247.164 251.993 247.696C251.404 248.285 251.147 248.914 251.222 249.581C251.297 250.249 251.686 250.934 252.387 251.635C253.055 252.303 253.721 252.672 254.385 252.743C255.045 252.811 255.654 252.565 256.213 252.006C256.581 251.639 256.815 251.239 256.917 250.808C257.018 250.369 256.988 249.919 256.827 249.457L258.346 248.67C258.654 249.45 258.717 250.23 258.537 251.01C258.353 251.787 257.967 252.47 257.378 253.059ZM252.336 252.35L251.419 251.432L255.758 247.094L256.675 248.011L252.336 252.35ZM263.322 247.103C262.583 247.842 261.818 248.281 261.026 248.42C260.235 248.559 259.49 248.384 258.792 247.897L259.811 246.507C260.201 246.747 260.623 246.824 261.077 246.738C261.531 246.644 261.96 246.394 262.365 245.989C262.733 245.622 262.945 245.26 263.001 244.903C263.061 244.543 262.96 244.232 262.697 243.969C262.544 243.815 262.382 243.729 262.214 243.71C262.045 243.684 261.801 243.744 261.482 243.89C261.163 244.037 260.702 244.284 260.098 244.633C259.441 245.02 258.882 245.29 258.421 245.443C257.96 245.59 257.56 245.625 257.223 245.55C256.885 245.468 256.568 245.278 256.272 244.982C255.904 244.614 255.681 244.196 255.602 243.727C255.523 243.258 255.585 242.773 255.788 242.27C255.994 241.764 256.335 241.272 256.812 240.796C257.277 240.331 257.765 239.989 258.275 239.772C258.785 239.554 259.288 239.468 259.783 239.513C260.274 239.554 260.722 239.732 261.128 240.047L260.143 241.471C259.809 241.22 259.441 241.126 259.04 241.19C258.639 241.253 258.245 241.463 257.858 241.82C257.487 242.161 257.258 242.51 257.172 242.866C257.082 243.219 257.153 243.512 257.386 243.744C257.521 243.879 257.676 243.952 257.853 243.964C258.033 243.971 258.288 243.896 258.618 243.739C258.948 243.581 259.411 243.324 260.008 242.968C260.649 242.589 261.201 242.33 261.662 242.191C262.12 242.049 262.523 242.024 262.872 242.118C263.221 242.204 263.551 242.403 263.862 242.714C264.462 243.315 264.714 244.005 264.616 244.785C264.522 245.562 264.091 246.334 263.322 247.103ZM268.962 241.464C268.223 242.203 267.457 242.642 266.666 242.781C265.874 242.919 265.13 242.745 264.432 242.257L265.45 240.867C265.841 241.107 266.263 241.184 266.717 241.098C267.17 241.004 267.6 240.755 268.005 240.35C268.373 239.982 268.585 239.62 268.641 239.264C268.701 238.904 268.6 238.592 268.337 238.33C268.183 238.176 268.022 238.09 267.853 238.071C267.684 238.045 267.44 238.105 267.122 238.251C266.803 238.397 266.341 238.645 265.737 238.994C265.081 239.38 264.522 239.65 264.061 239.804C263.599 239.95 263.2 239.986 262.862 239.911C262.525 239.828 262.208 239.639 261.911 239.343C261.544 238.975 261.32 238.557 261.242 238.088C261.163 237.619 261.225 237.133 261.427 236.63C261.634 236.124 261.975 235.633 262.451 235.156C262.917 234.691 263.404 234.35 263.914 234.132C264.425 233.915 264.927 233.828 265.422 233.873C265.914 233.915 266.362 234.093 266.767 234.408L265.782 235.831C265.449 235.58 265.081 235.486 264.68 235.55C264.278 235.614 263.884 235.824 263.498 236.18C263.127 236.522 262.898 236.87 262.812 237.227C262.721 237.579 262.793 237.872 263.025 238.105C263.16 238.24 263.316 238.313 263.492 238.324C263.672 238.332 263.927 238.257 264.258 238.099C264.588 237.941 265.051 237.684 265.647 237.328C266.289 236.949 266.84 236.69 267.302 236.552C267.759 236.409 268.163 236.385 268.511 236.478C268.86 236.565 269.19 236.764 269.502 237.075C270.102 237.675 270.353 238.365 270.256 239.146C270.162 239.922 269.731 240.695 268.962 241.464ZM277.451 232.649C277.143 233.106 276.8 233.513 276.421 233.87C276.042 234.226 275.642 234.483 275.222 234.64C274.802 234.798 274.378 234.809 273.951 234.674C273.568 234.554 273.242 234.37 272.972 234.123C272.702 233.868 272.401 233.575 272.071 233.245L266.698 227.871L267.879 226.69L273.197 232.007C273.44 232.251 273.654 232.461 273.838 232.637C274.026 232.81 274.217 232.922 274.412 232.975C274.78 233.072 275.127 232.992 275.453 232.733C275.779 232.467 276.113 232.107 276.455 231.653L277.451 232.649ZM268.166 231.669L267.221 230.724L271.374 226.572L272.319 227.517L268.166 231.669ZM282.603 227.496L279.615 224.508C279.379 224.272 279.116 224.051 278.827 223.844C278.539 223.63 278.231 223.473 277.905 223.372C277.582 223.267 277.254 223.25 276.92 223.321C276.59 223.388 276.263 223.584 275.941 223.906C275.731 224.116 275.568 224.351 275.451 224.61C275.331 224.865 275.277 225.14 275.288 225.437C275.303 225.729 275.395 226.042 275.564 226.376C275.736 226.706 276.003 227.052 276.363 227.412L275.356 227.867C274.804 227.316 274.422 226.727 274.208 226.101C273.99 225.47 273.956 224.844 274.107 224.221C274.257 223.599 274.605 223.013 275.153 222.466C275.573 222.046 275.993 221.76 276.414 221.61C276.834 221.46 277.243 221.408 277.64 221.453C278.038 221.49 278.413 221.592 278.766 221.757C279.118 221.922 279.435 222.111 279.716 222.325C279.998 222.539 280.232 222.74 280.42 222.927L283.796 226.303L282.603 227.496ZM278.332 231.767L270.23 223.664L271.282 222.612L275.654 226.984L275.795 226.843L279.525 230.574L278.332 231.767ZM277.907 218.046L276.765 216.904L277.941 215.728L279.083 216.87L277.907 218.046ZM284.98 225.119L278.903 219.042L280.079 217.866L286.156 223.943L284.98 225.119ZM289.939 220.486C289.2 221.225 288.435 221.664 287.643 221.803C286.852 221.942 286.107 221.767 285.409 221.28L286.428 219.89C286.818 220.13 287.24 220.207 287.694 220.121C288.148 220.027 288.577 219.777 288.983 219.372C289.35 219.005 289.562 218.643 289.618 218.286C289.678 217.926 289.577 217.615 289.314 217.352C289.161 217.198 288.999 217.112 288.831 217.093C288.662 217.067 288.418 217.127 288.099 217.273C287.78 217.42 287.319 217.667 286.715 218.016C286.058 218.403 285.5 218.673 285.038 218.826C284.577 218.973 284.177 219.008 283.84 218.933C283.502 218.851 283.185 218.661 282.889 218.365C282.521 217.997 282.298 217.579 282.219 217.11C282.14 216.641 282.202 216.156 282.405 215.653C282.611 215.147 282.952 214.655 283.429 214.179C283.894 213.714 284.382 213.372 284.892 213.155C285.402 212.937 285.905 212.851 286.4 212.896C286.891 212.937 287.339 213.115 287.745 213.43L286.76 214.854C286.426 214.603 286.058 214.509 285.657 214.573C285.256 214.636 284.862 214.846 284.475 215.203C284.104 215.544 283.875 215.893 283.789 216.249C283.699 216.602 283.77 216.895 284.003 217.127C284.138 217.262 284.293 217.335 284.47 217.347C284.65 217.354 284.905 217.279 285.235 217.122C285.565 216.964 286.028 216.707 286.625 216.351C287.266 215.972 287.818 215.713 288.279 215.574C288.737 215.432 289.14 215.407 289.489 215.501C289.838 215.587 290.168 215.786 290.479 216.097C291.079 216.698 291.331 217.388 291.233 218.168C291.139 218.945 290.708 219.717 289.939 220.486ZM299.216 210.883L296.228 207.896C295.992 207.659 295.729 207.438 295.44 207.232C295.151 207.018 294.844 206.86 294.517 206.759C294.195 206.654 293.867 206.637 293.533 206.708C293.203 206.776 292.876 206.971 292.554 207.293C292.344 207.504 292.18 207.738 292.064 207.997C291.944 208.252 291.89 208.528 291.901 208.824C291.916 209.117 292.008 209.43 292.177 209.764C292.349 210.094 292.615 210.439 292.976 210.799L291.968 211.255C291.417 210.703 291.034 210.114 290.821 209.488C290.603 208.858 290.569 208.231 290.719 207.609C290.869 206.986 291.218 206.401 291.766 205.853C292.186 205.433 292.606 205.148 293.026 204.998C293.446 204.848 293.855 204.795 294.253 204.84C294.651 204.878 295.026 204.979 295.378 205.144C295.731 205.309 296.048 205.498 296.329 205.712C296.611 205.926 296.845 206.127 297.033 206.314L300.409 209.69L299.216 210.883ZM294.945 215.154L286.842 207.051L287.895 205.999L292.267 210.371L292.407 210.231L296.138 213.961L294.945 215.154ZM304.344 206.092C303.74 206.696 303.078 207.096 302.358 207.291C301.638 207.478 300.914 207.463 300.186 207.246C299.458 207.021 298.781 206.595 298.155 205.969C297.491 205.305 297.039 204.605 296.799 203.87C296.563 203.131 296.534 202.405 296.714 201.692C296.895 200.979 297.281 200.327 297.874 199.734C298.493 199.115 299.164 198.732 299.888 198.586C300.608 198.436 301.34 198.519 302.082 198.834C302.829 199.145 303.544 199.687 304.226 200.46L303.05 201.636L302.623 201.208C301.91 200.511 301.253 200.124 300.653 200.049C300.057 199.97 299.492 200.197 298.96 200.73C298.371 201.319 298.114 201.947 298.189 202.615C298.264 203.283 298.652 203.967 299.353 204.669C300.021 205.336 300.687 205.706 301.351 205.777C302.011 205.845 302.621 205.599 303.18 205.04C303.547 204.672 303.782 204.273 303.883 203.842C303.984 203.403 303.954 202.953 303.793 202.491L305.312 201.703C305.62 202.484 305.684 203.264 305.504 204.044C305.32 204.821 304.933 205.503 304.344 206.092ZM299.303 205.383L298.386 204.466L302.724 200.128L303.641 201.045L299.303 205.383ZM309.576 200.86C309.126 201.31 308.667 201.605 308.198 201.744C307.725 201.879 307.273 201.888 306.842 201.772C306.41 201.648 306.03 201.421 305.699 201.091C305.392 200.783 305.176 200.459 305.052 200.118C304.929 199.776 304.893 199.418 304.946 199.043C304.994 198.664 305.124 198.268 305.334 197.856C305.525 197.507 305.761 197.132 306.043 196.73C306.324 196.329 306.626 195.914 306.949 195.487C307.275 195.055 307.598 194.628 307.916 194.204L307.725 194.868C307.256 194.384 306.802 194.133 306.363 194.114C305.925 194.088 305.452 194.328 304.946 194.834C304.627 195.153 304.409 195.52 304.293 195.937C304.173 196.35 304.231 196.779 304.467 197.225L303.032 197.985C302.661 197.314 302.532 196.614 302.644 195.886C302.76 195.155 303.169 194.438 303.871 193.737C304.415 193.193 304.981 192.814 305.57 192.6C306.159 192.379 306.748 192.375 307.337 192.589C307.633 192.69 307.903 192.84 308.147 193.039C308.391 193.238 308.64 193.465 308.896 193.72L312.637 197.462L311.596 198.503L310.207 197.113L310.589 197.09C310.803 197.807 310.829 198.475 310.668 199.094C310.507 199.705 310.143 200.294 309.576 200.86ZM308.822 199.69C309.156 199.356 309.385 199.011 309.509 198.655C309.629 198.295 309.67 197.949 309.633 197.619C309.595 197.289 309.499 197.002 309.346 196.758C309.229 196.515 309.062 196.276 308.845 196.044C308.631 195.807 308.457 195.622 308.322 195.487L308.845 195.245C308.53 195.672 308.243 196.061 307.984 196.41C307.725 196.758 307.494 197.079 307.292 197.372C307.089 197.657 306.922 197.925 306.791 198.176C306.686 198.394 306.609 198.606 306.56 198.812C306.515 199.015 306.512 199.21 306.549 199.397C306.59 199.581 306.692 199.754 306.853 199.915C307.011 200.073 307.196 200.179 307.41 200.236C307.62 200.288 307.845 200.273 308.085 200.191C308.325 200.108 308.571 199.941 308.822 199.69ZM313.705 196.394L307.628 190.318L308.674 189.271L310.148 190.745L309.811 190.7C309.691 190.43 309.61 190.154 309.569 189.873C309.524 189.588 309.528 189.314 309.58 189.052C309.621 188.785 309.706 188.528 309.833 188.281C309.961 188.026 310.118 187.793 310.306 187.583C310.49 187.369 310.691 187.187 310.908 187.037L312.011 188.14C311.76 188.286 311.523 188.493 311.302 188.759C311.084 189.021 310.94 189.32 310.869 189.654C310.801 189.969 310.799 190.271 310.863 190.559C310.931 190.845 311.049 191.12 311.218 191.387C311.383 191.649 311.585 191.901 311.825 192.141L314.892 195.207L313.705 196.394ZM321.14 188.959C320.832 189.417 320.489 189.824 320.11 190.18C319.732 190.536 319.332 190.793 318.912 190.951C318.492 191.108 318.068 191.12 317.64 190.985C317.258 190.865 316.931 190.681 316.661 190.433C316.391 190.178 316.091 189.886 315.761 189.555L310.387 184.182L311.569 183L316.886 188.318C317.13 188.561 317.344 188.771 317.528 188.948C317.715 189.12 317.907 189.233 318.102 189.285C318.469 189.383 318.816 189.302 319.143 189.043C319.469 188.777 319.803 188.417 320.144 187.963L321.14 188.959ZM311.856 187.98L310.911 187.035L315.063 182.882L316.008 183.827L311.856 187.98Z" fill="black"/>
+			</symbol>
+		</svg>
+		
+		<div class="mainnav js-mainnav ">
+			<div class="wrapper">
+				<div class="topbar">
+					<div class="topbar-nav js-topnav-follow">
+						<div class="topbar-logo js-topnav-follow-item active">
+							<a href="/">
+								<img src="/wp-content/themes/aenfinite.com/images/aenfinite-white.svg" alt="Aenfinite" class="nav-logo nav-logo-default">
+								<img src="/wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" class="nav-logo nav-logo-active">
+							</a>
+						</div>
+						<ul class="topnav desktop">
+							<li class="topnav-item js-topnav-follow-item">
+								<a href="/featured-work/">Work</a>
+							</li>
+							<li class="topnav-item js-topnav-follow-item">
+								<a href="/agency">Agency</a>
+							</li>
+							                            <li class="topnav-item js-topnav-follow-item dropdown js-dropdown">
+                                <a href="/services/">Services</a>
+                                <ul id="menu-header-services-menu" class="dropdown-list js-dropdown-list">
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Development Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            
+											<li><a href="/services/wordpress-websites/">WordPress Websites</a></li>
+<li><a href="/services/e-commerce-websites/">E-Commerce Websites</a></li>
+											<li><a href="/services/custom-web-development">Custom Web Development</a></li>
+											<li><a href="/services/software-&-platform-development/">Software & Platform Development</a></li>
+											<li><a href="/services/app-development/">App Development</a></li>
+											<li><a href="/services/web-design/">Website Design & Development</a></li>
+											<li><a href="/services/web-design-and-branding-for-real-estate/">Real Estate Web Solutions</a></li>                                      </ul>
+                                    </li>
+									<li class="menu-item menu-item-has-children">
+                                    <a href="#">Design & Creative Services ›</a>
+										<ul class="sub-menu">
+											<li><a href="/services/ui-ux-design/">UI/UX Design</a></li>
+											<li><a href="/services/branding/">Brand Identity & Strategy</a></li>
+											<li><a href="/services/graphic-design/">Graphic Design</a></li> <li><a href="/services/logo-design/">Logo Design</a></li>
+											
+											<li><a href="/services/trade-show-booth-design/">Trade Show Booth Design</a></li>
+											<li><a href="/services/conference-branding/">Conference Branding</a></li>
+										</ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">Marketing & Digital Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/digital-marketing/">Digital Marketing Strategy</a></li>
+                                            <li><a href="/services/search-engine-optimization/">Search Engine Optimization (SEO)</a></li>
+                                            <li><a href="/services/pay-per-click">Pay-Per-Click (PPC) Advertising</a></li>
+                                            <li><a href="/services/social-media-marketing/">Social Media Marketing</a></li> <li><a href="/services/paid-ads/">Paid Advertising</a></li>
+                                            
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item menu-item-has-children">
+                                        <a href="#">AI & Technology Solutions ›</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="/services/ai-chatbots-&-virtual-assistants/">AI Chatbots & Virtual Assistants</a></li>
+                                            <li><a href="/services/workflow-&-business-automation/">Workflow & Business Automation</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li><style>/* Multi-Level Dropdown Navigation Styles - Partner With Us Style */
+.menu-item-has-children {
+    position: relative;
+}
+
+/* Main dropdown from Services menu - adaptive styling */
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Sub-menus - adaptive styling based on navbar state */
+.sub-menu {
+    position: absolute;
+    top: -5px;
+    left: 100%;
+    margin-left: 1px;
+    min-width: 250px;
+    width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    z-index: 1001;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Default dropdown styling - no background, dark text (for top of page) */
+.dropdown-list a,
+.sub-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.dropdown-list a:hover,
+.sub-menu a:hover {
+    color: #007cba;
+    padding-left: 15px;
+}
+
+/* When navbar is active/scrolled - black background, white text */
+.mainnav.active .dropdown-list,
+.mainnav.active .sub-menu {
+    margin-top: 10px;
+    background: #000;
+}
+
+.mainnav.active .dropdown-list a,
+.mainnav.active .sub-menu a {
+    color: #fff;
+}
+
+.mainnav.active .dropdown-list a:hover,
+.mainnav.active .sub-menu a:hover {
+    color: #007cba;
+}
+
+/* When hovering over menu item with children, expand main dropdown to match sub-menu */
+.menu-item-has-children:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Expand main dropdown when sub-menu is hovered */
+.menu-item-has-children:hover {
+    min-width: 250px;
+}
+
+.dropdown-list:has(.menu-item-has-children:hover) {
+    min-width: 250px;
+    width: 250px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sub-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 3px solid #007cba;
+        margin-left: 15px;
+        background: #f9f9f9;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .menu-item-has-children.active > .sub-menu {
+        max-height: 500px;
+    }
+}</style>						</ul>
+						<div class="topnav-follower desktop js-topnav-follow-bar"></div>
+					</div>
+					<div class="topbar-social desktop">
+						<ul id="menu-header-contact-left" class="menuss"><li id="menu-item-4954" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4954"><a class="js-dropdown-layer-marker" href="/agency/partner-with-us/">Partner with us</a></li>
+</ul>					</div>
+					<div class="topbar-contact desktop">
+						<a href="/contact/" class="topbar-contact_button">Contact</a>
+					</div>
+					<div class="menu-button mobile js-menu-toggle"><i></i></div>
+				</div>
+			</div>
+			<div class="mainnav-dropdown-layer js-dropdown-layer">
+				<div class="mainnav-dropdown-layer-container js-dropdown-layer-text">
+					<div class="wrapper">
+						<div class="mainnav-dropdown-layer-text">
+							If you can't find the service you need, just write to us and we'll figure something out <a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+						</div>
+					</div>
+				</div>
+			</div>		</div>
+		
+		<div class="container">
+		
+					
+			<a class="fab js-fab" href="#contact">
+				<div class="fab-button js-fab-button desktop">
+					<svg width="100%" height="100%" viewBox="0 0 232 199" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<defs>
+							<path id="myHeart" fill-rule="evenodd" clip-rule="evenodd" d="M115.353 78.843L56.1288 19.6478L1.58594 74.1637L115.214 187.735L115.923 187.027L116.868 186.116L229.691 73.3598L175.265 18.9609L115.353 78.843Z" fill="#227bf3" />
+						</defs>
+						<mask id="mask0_2906_19095">
+							<rect x="116" y="0" width="116" height="140" fill="#fff" />
+						</mask>
+						<use href="#myHeart" />
+						<image href="../../wp-content/themes/aenfinite.com/static/img/fab-text.svg" height="199" width="232" class="fab-text" />
+						<g mask="url(#mask0_2906_19095)">
+							<use href="#myHeart" />
+						</g>
+					</svg>
+				</div>
+			</a>
+	<div class="main fade-in">
+		
+				
+			<div class="section fade-in-delay-1">
+				<div class="wrapper">
+					<div class="textbox-content normaltext">
+						<h1><strong>Mobile App Development & iOS/Android Solutions</strong></h1>
+<p>Aenfinite creates cutting-edge mobile applications that drive user engagement and business growth. Our expert development team specializes in native iOS apps, Android applications, cross-platform solutions, and progressive web apps. From initial concept to app store deployment, we deliver exceptional mobile experiences with intuitive interfaces, robust functionality, and seamless performance across all devices and platforms.</p>
+					</div>
+				</div>
+			</div>
+		
+		
+		<div class="section fade-in-delay-2" style="margin-top:0!important;">
+			<div class="wrapper">
+				<ul id="menu-work-page-categories-filter" class="projects-nav"><li id="menu-item-3197" class="menu-item projects-nav_item menu-item-object-category menu-item-3197"><a href="/work/">All Work</a></li>
+<li id="menu-item-3730" class="menu-item menu-item-type-post_type projects-nav_item menu-item-3730"><a href="/featured-work/">Featured Work</a></li>
+<li id="menu-item-3168" class="menu-item projects-nav_item menu-item-object-category menu-item-3168"><a href="../branding/">Branding</a></li>
+<li id="menu-item-3169" class="menu-item projects-nav_item menu-item-object-category menu-item-3169"><a href="../web-design-&-development/">Web Design and Development</a></li>
+<li id="menu-item-7016" class="menu-item projects-nav_item menu-item-object-category menu-item-7016"><a href="../logo-design/">Logo Design</a></li>
+<li id="menu-item-7017" class="menu-item projects-nav_item menu-item-object-category menu-item-7017"><a href="../graphic-design/">Graphic Design</a></li>
+<li id="menu-item-3174" class="menu-item projects-nav_item menu-item-object-category menu-item-3174"><a href="/work/packaging-design/">Packaging Design</a></li>
+<li id="menu-item-3174" class="menu-item projects-nav_item menu-item-object-category active menu-item-3174"><a href="" aria-current="page">Mobile Apps</a></li>
+</ul>				<div class="projects fade-in-delay-3" id="ajax">
+						
+						<div class="project fade-in-delay-4" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/fiscoclic/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/processed/fiscoclicthumbnail.avif" alt="FiscoClic - Cloud-Based Mexican Electronic Invoicing CFDI App" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="01">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/fiscoclic/">FiscoClic - Cloud-Based Mexican Electronic Invoicing CFDI App</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">Business Apps</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Mobile UI/UX</a></div>
+									<div class="preview-name"><a href="../custom-web-development/">Cloud Integration</a></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="project fade-in-delay-5" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/lumea/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/processed/lumeaUntitled-1.avif" alt="Lumea - Smart Wellness & Light Therapy Mobile App" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="02">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/lumea/">Lumea - Smart Wellness & Light Therapy Mobile App</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">Wellness Apps</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Health UI/UX</a></div>
+									<div class="preview-name"><a href="../app-development/">Smart Technology</a></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="project" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/mindfit/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/images/Untitled-1.png" alt="Mindfit - Mental Wellness & Fitness App" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="03">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/mindfit/">Mindfit - Mental Wellness & Fitness App</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">Fitness Apps</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Wellness UI/UX</a></div>
+									<div class="preview-name"><a href="../app-development/">Mental Health</a></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="project" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/neocert/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/processed/neocertbanner.avif" alt="NeoCert - Concert Booking & Management Platform" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="04">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/neocert/">NeoCert - Concert Booking & Management Platform</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">Event Apps</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Entertainment UI/UX</a></div>
+									<div class="preview-name"><a href="../app-development/">Booking Systems</a></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="project" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/neurolinker/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/images/Untitled-3.png" alt="Neurolinker - Brain-Computer Interface & Neurotechnology Platform" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="05">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/neurolinker/">Neurolinker - Brain-Computer Interface & Neurotechnology Platform</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">Neurotechnology</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Advanced UI/UX</a></div>
+									<div class="preview-name"><a href="../software-&-platform-development/">Brain-Computer Interface</a></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="project" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/olly/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/processed/ollythumbnail.avif" alt="Olly - Smart Personal Assistant & Productivity Mobile App" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="06">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/olly/">Olly - Smart Personal Assistant & Productivity Mobile App</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">AI Assistant</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Productivity UI/UX</a></div>
+									<div class="preview-name"><a href="../ai-chatbots-&-virtual-assistants/">Smart Technology</a></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="project" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/quarena/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/images/Untitled-4.png" alt="Quarena - Advanced Trading Platform UI/UX & App Development" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="07">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/quarena/">Quarena - Advanced Trading Platform UI/UX & App Development</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">Trading Apps</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Financial UI/UX</a></div>
+									<div class="preview-name"><a href="../app-development/">Cryptocurrency</a></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="project" data-lightbox="false">
+							<div class="preview">
+								<a href="/work/ansu/" class="a-preview"></a>
+								<div class="preview-media">
+									<img src="/wp-content/themes/aenfinite.com/processed/ansuthumbnail.avif" alt="Ansu - Advanced Neural Interface & Brain-Computer Technology Platform" class="cover" />
+									<div class="preview-action">
+										View project									</div>
+								</div>
+								<div class="preview-content" data-index="08">
+									<div class="preview-name preview-name__caption">
+										<a href="/work/ansu/">Ansu - Advanced Neural Interface & Brain-Computer Technology Platform</a>
+									</div>
+									<div class="preview-name"><a href="">Mobile Apps</a></div>
+									<div class="preview-name"><a href="../app-development/">Neural Technology</a></div>
+									<div class="preview-name"><a href="../ui-ux-design/">Advanced UI/UX</a></div>
+									<div class="preview-name"><a href="../software-&-platform-development/">Brain Technology</a></div>
+								</div>
+							</div>
+						</div>
+									</div>
+			</div>
+		</div>
+		
+				
+			<script>
+				var ajaxurl = '../../wp-admin/admin-ajax.html';
+				var true_posts = 'a:65:{s:13:"category_name";s:8:"branding";s:5:"error";s:0:"";s:1:"m";s:0:"";s:1:"p";i:0;s:11:"post_parent";s:0:"";s:7:"subpost";s:0:"";s:10:"subpost_id";s:0:"";s:10:"attachment";s:0:"";s:13:"attachment_id";i:0;s:4:"name";s:0:"";s:8:"pagename";s:0:"";s:7:"page_id";i:0;s:6:"second";s:0:"";s:6:"minute";s:0:"";s:4:"hour";s:0:"";s:3:"day";i:0;s:8:"monthnum";i:0;s:4:"year";i:0;s:1:"w";i:0;s:3:"tag";s:0:"";s:3:"cat";i:4;s:6:"tag_id";s:0:"";s:6:"author";s:0:"";s:11:"author_name";s:0:"";s:4:"feed";s:0:"";s:2:"tb";s:0:"";s:5:"paged";i:0;s:8:"meta_key";s:0:"";s:10:"meta_value";s:0:"";s:7:"preview";s:0:"";s:1:"s";s:0:"";s:8:"sentence";s:0:"";s:5:"title";s:0:"";s:6:"fields";s:0:"";s:10:"menu_order";s:0:"";s:5:"embed";s:0:"";s:12:"category__in";a:0:{}s:16:"category__not_in";a:0:{}s:13:"category__and";a:0:{}s:8:"post__in";a:0:{}s:12:"post__not_in";a:0:{}s:13:"post_name__in";a:0:{}s:7:"tag__in";a:0:{}s:11:"tag__not_in";a:0:{}s:8:"tag__and";a:0:{}s:12:"tag_slug__in";a:0:{}s:13:"tag_slug__and";a:0:{}s:15:"post_parent__in";a:0:{}s:19:"post_parent__not_in";a:0:{}s:10:"author__in";a:0:{}s:14:"author__not_in";a:0:{}s:14:"search_columns";a:0:{}s:19:"ignore_sticky_posts";b:0;s:16:"suppress_filters";b:0;s:13:"cache_results";b:1;s:22:"update_post_term_cache";b:1;s:22:"update_menu_item_cache";b:0;s:19:"lazy_load_term_meta";b:1;s:22:"update_post_meta_cache";b:1;s:9:"post_type";s:0:"";s:14:"posts_per_page";i:10;s:8:"nopaging";b:0;s:17:"comments_per_page";s:2:"50";s:13:"no_found_rows";b:0;s:5:"order";s:4:"DESC";}';
+				var current_page = 1;
+				var max_pages = '6';
+			</script>
+		
+		
+		</div>
+<div class="section">
+	<div class="wrapper">
+		<div class="inner-wrapper">
+			<div class="section-caption js-aos" data-aos="fade-up" data-aos-offset="350" data-aos-delay="0" data-aos-duration="500">
+				<div class="section-caption_text">
+					<h2>Aenfinite Digital Services</h2>
+				</div>
+			</div>
+			<div class="service-grid">
+				<div class="service-nav">
+					<div class="service-list js-service-container fadein js-aos" data-aos="fade-up" data-aos-offset="300" data-aos-delay="100" data-aos-duration="500">
+													<div class="service active js-service">
+								<div class="service-caption js-service-caption">Web Design</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/web-design/" class="chip-label">Custom Website Design</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/web-design/" class="chip-label">Responsive Design</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/web-design/" class="chip-label">Landing Pages</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/web-design/" class="chip-label">Corporate Websites</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/ui-ux-design/" class="chip-label">UI/UX Design</a>
+												</div>
+																							
+																					</div>
+									</div>
+									<div class="service-text">
+										<p> we design and develop world-class websites that combine modern design practices with powerful functionality. 
+        Our mobile-first, SEO-friendly websites are built to performoptimized for speed, responsive across all devices, and crafted to deliver an exceptional user experience. 
+        From strategy to launch, our team focuses on creating a unique online presence that attracts your target audience, boosts engagement, drives conversions, and strengthens your brand’s authority.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/web-design/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">Branding & Logo Design</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/branding/" class="chip-label">Brand Identity</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/logo-design/" class="chip-label">Logo Design</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/branding/" class="chip-label">Brand Strategy</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/branding/" class="chip-label">Brand Guidelines</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/branding/" class="chip-label">Corporate Identity</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/branding/" class="chip-label">Re-branding</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>our branding and logo design experts specialize in creating powerful brand identities that leave a lasting impression. 
+    Whether you’re launching a new business, rebranding to reach fresh audiences, or refining your existing identity, we craft custom logos, brand guidelines, and visual systems tailored to your goals. 
+    With a distinctive and cohesive brand presence, you’ll build trust, attract loyal customers, and maximize your business potential.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/branding/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">Digital Marketing</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/search-engine-optimization/" class="chip-label">SEO Optimization</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/digital-marketing/" class="chip-label">Email Marketing</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/paid-ads/" class="chip-label">Paid Advertising</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/Pay-per-click/" class="chip-label">PPC Campaigns</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/social-media-marketing/" class="chip-label">Social Media Marketing</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/digital-marketing/" class="chip-label">Content Marketing</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>Our digital marketing experts drive measurable results for  businesses. We create comprehensive strategies that increase your online visibility, attract quality leads, and convert visitors into customers. From SEO optimization to social media campaigns and paid advertising, we ensure your brand reaches the right audience at the right time with compelling messaging that drives action and growth.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/digital-marketing/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">E-Commerce Websites</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/e-commerce-websites/" class="chip-label">Shopify Development</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/e-commerce-websites/" class="chip-label">WooCommerce</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/e-commerce-websites/" class="chip-label">Online Stores</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/e-commerce-websites/" class="chip-label">Payment Integration</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/e-commerce-websites/" class="chip-label">Product Catalogs</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/e-commerce-websites/" class="chip-label">Mobile Commerce</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>Transform your  business with powerful e-commerce solutions that drive sales and growth. We build stunning online stores with seamless user experiences, secure payment processing, and conversion-optimized designs. From product catalogs to checkout flows, we ensure every element of your e-commerce store maximizes revenue and provides exceptional customer experiences.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/e-commerce-websites/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">WordPress Websites</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/wordpress-websites/" class="chip-label">Custom WordPress</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/wordpress-websites/" class="chip-label">Theme Development</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/wordpress-websites/" class="chip-label">Plugin Development</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/wordpress-websites/" class="chip-label">CMS Solutions</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/wordpress-websites/" class="chip-label">Site Optimization</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/wordpress-websites/" class="chip-label">Maintenance</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>Expert WordPress development services for  businesses seeking powerful, flexible websites. We create custom WordPress solutions that are easy to manage, lightning-fast, and built for growth. From simple blogs to complex enterprise sites, our WordPress experts deliver scalable solutions that put you in control of your content while maintaining professional design standards.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/wordpress-websites/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">App Development</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/app-development/" class="chip-label">iOS Apps</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/app-development/" class="chip-label">Android Apps</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/app-development/" class="chip-label">React Native</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/app-development/" class="chip-label">Progressive Web Apps</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/app-development/" class="chip-label">Cross Platforms</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/app-development/" class="chip-label">App Store Launch</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>Turn your innovative ideas into powerful mobile applications that engage users and drive business growth. Our expert development team creates native and cross-platform apps with stunning user interfaces and robust functionality. From concept to App Store launch, we guide  businesses through every step of mobile app development and success.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/app-development/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">Graphic Design</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/graphic-design/" class="chip-label">Print Design</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/graphic-design/" class="chip-label">Business Cards</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/graphic-design/" class="chip-label">Brochures</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/graphic-design/" class="chip-label">Digital Graphics</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/graphic-design/" class="chip-label">Content Design</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/graphic-design/" class="chip-label">Marketing Materials</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>We believe design is more than just visuals  it’s a strategy to connect brands with people. 
+    Our graphic design team blends creativity with purpose to produce stunning digital assets, print materials, and marketing visuals that tell your story. 
+    From bold social media campaigns to polished corporate materials, every design is crafted to inspire action, build trust, and reflect your unique brand personality. 
+    We deliver innovative, results-driven designs that capture attention and keep your audience engaged.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/graphic-design/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">Packaging Design</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/packaging-design/" class="chip-label">Brand Label</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/packaging-design/" class="chip-label">Product Label</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/packaging-design/" class="chip-label">Food & Beverage</a>
+												</div>
+													
+																							<div class="chip">
+													<a href="/services/packaging-design/" class="chip-label">3D Mockups</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/packaging-design/" class="chip-label">Retail Ready</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>we create packaging that does more than protect a product  it tells a story and grabs attention on the shelf. 
+    Our team blends creative design with production-ready solutions, ensuring your packaging not only looks stunning but is practical and cost-effective to manufacture. 
+    From innovative concepts for new startups to reimagining established product lines, we craft packaging that stands out, builds emotional connection, and turns casual shoppers into loyal customers.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/packaging-design/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													<div class="service  js-service">
+								<div class="service-caption js-service-caption">Custom Development</div>
+								<div class="service-content js-service-content">
+									<div class="service-tags">
+										<div class="chips">
+																							<div class="chip">
+													<a href="/services/custom-web-development/" class="chip-label">Custom Web Development</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/software-&-platform-development/" class="chip-label">Software Development</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/workflow-&-business-automation/" class="chip-label">Business Automation</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/ai-chatbots-&-virtual-assistants/" class="chip-label">AI Chatbots</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/custom-web-development/" class="chip-label">Platform Development</a>
+												</div>
+																							<div class="chip">
+													<a href="/services/workflow-&-business-automation/" class="chip-label">Workflow Automation</a>
+												</div>
+																					</div>
+									</div>
+									<div class="service-text">
+										<p>Advanced custom development solutions for  businesses requiring specialized functionality. We build custom web applications, software platforms, business automation systems, and AI-powered chatbots tailored to your unique requirements. Our development team creates scalable, secure solutions that streamline operations and drive innovation for your business.</p>
+									</div>
+									<div class="service-action">
+										<a href="/services/custom-web-development/" class="redlink">
+											<span>Learn more</span>
+										</a>
+									</div>
+								</div>
+							</div>
+													
+													
+											</div>
+				</div>
+				<div class="service-preview desktop fadein js-aos" data-aos="fade-up" data-aos-offset="350" data-aos-delay="0" data-aos-duration="500">
+					<div class="service-content-copy js-service-copy" style="padding-bottom: 500px"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div	
+		<a href="#contact" class="to-formss"></a>
+<div class="section" id="contact">
+	<div class="block formss">
+		<div class="center">
+			<div class="formss-wrap">
+				<h2>Contact Your Next Agency for your Project Needs | Aenfinite</h2>
+				<div class="toggle-formss">
+					
+<div class="wpcf7 no-js" id="wpcf7-f1252-o1" lang="en-US" dir="ltr" data-wpcf7-id="1252">
+<div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"> <ul></ul></div>
+<form action="https://aenfinite.com/work/branding/#wpcf7-f1252-o1" method="post" class="wpcf7-form init" aria-label="Contact form" novalidate="novalidate" data-status="init">
+<div style="display: none;">
+<input type="hidden" name="_wpcf7" value="1252" />
+<input type="hidden" name="_wpcf7_version" value="6.0.6" />
+<input type="hidden" name="_wpcf7_locale" value="en_US" />
+<input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1252-o1" />
+<input type="hidden" name="_wpcf7_container_post" value="0" />
+<input type="hidden" name="_wpcf7_posted_data_hash" value="" />
+<input type="hidden" name="_wpcf7_recaptcha_response" value="" />
+</div>
+<div class="cell">
+	<div class="inputs">
+		<span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" placeholder="Your name*" value="" type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap" data-name="your-email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="Your e-mail*" value="" type="email" name="your-email" /></span><span class="wpcf7-form-control-wrap" data-name="text-tell-project"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" autocomplete="on" aria-invalid="false" placeholder="Tell us about your project" value="" type="text" name="text-tell-project" /></span>
+		
+	</div>
+	<div class="checkbox-select">
+		<strong>I'm interested in...</strong><span class="form-control-wrap" data-name="checkbox-select"><span class="form-control checkbox-group" style="padding-bottom: 50px"><span class="list-item first"><input type="checkbox" name="services" value="Premium Brand Identity" id="premium-branding" /><label for="premium-branding" class="list-item-label">Premium Brand Identity</label></span><span class="list-item"><input type="checkbox" name="services" value="Award-Winning Web Design" id="award-web-design" /><label for="award-web-design" class="list-item-label">Award-Winning Web Design</label></span><span class="list-item"><input type="checkbox" name="services" value="Mobile App Development" id="mobile-app-development" /><label for="mobile-app-development" class="list-item-label">Mobile App Development</label></span><span class="list-item"><input type="checkbox" name="services" value="UI/UX Design Excellence" id="ui-ux-excellence" /><label for="ui-ux-excellence" class="list-item-label">UI/UX Design Excellence</label></span><span class="list-item"><input type="checkbox" name="services" value="Creative Campaign Design" id="creative-campaigns" /><label for="creative-campaigns" class="list-item-label">Creative Campaign Design</label></span><span class="list-item"><input type="checkbox" name="services" value="Motion Graphics & Animation" id="motion-graphics" /><label for="motion-graphics" class="list-item-label">Motion Graphics & Animation</label></span><span class="list-item"><input type="checkbox" name="services" value="Software Platform Design" id="software-design" /><label for="software-design" class="list-item-label">Software Platform Design</label></span><span class="list-item"><input type="checkbox" name="services" value="Luxury Product Design" id="luxury-design" /><label for="luxury-design" class="list-item-label">Luxury Product Design</label></span><span class="list-item"><input type="checkbox" name="services" value="Digital Experience Design" id="digital-experience" /><label for="digital-experience" class="list-item-label">Digital Experience Design</label></span><span class="list-item last"><input type="checkbox" name="services" value="Other Premium Services" id="other-premium" /><label for="other-premium" class="list-item-label">Other Premium Services</label></span></span></span>
+		
+		<div class="selectbox js-select">
+			<input class="selectbox-input js-select-holder" type="text" placeholder="Tell us your approximate budget" value="" readonly name="budget" />
+			
+			<div class="selectbox-suffix">
+				<svg width="18" height="10" viewBox="0 0 18 10"><path d="M1 1L9 9L17 1" stroke="#CCC" fill="none"></path></svg>
+				
+			</div>
+			<div class="select js-select-list">
+				<div class="select-option js-select-option">
+					Starting from $100
+					
+				</div>
+				<div class="select-option js-select-option">
+					from $500 to $5000
+					
+				</div>
+				<div class="select-option js-select-option">
+					from $5000 to $20,000
+					
+				</div>
+				<div class="select-option js-select-option">
+					from $20,000 to $50,000
+					
+				</div>
+				<div class="select-option js-select-option">
+					over $100,000
+					
+				</div>
+			</div>		</div>
+	</div>
+</div>
+<div class="hide" style="padding-bottom: 50px ;">
+	<span class="wpcf7-form-control-wrap" data-name="datas-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="datas-message" /></span><span class="wpcf7-form-control-wrap" data-name="times-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="times-message" /></span><span class="wpcf7-form-control-wrap" data-name="datac-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="datac-message" /></span><span class="wpcf7-form-control-wrap" data-name="timec-message"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="timec-message" /></span><span class="wpcf7-form-control-wrap" data-name="ip"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="ip" /></span><span class="wpcf7-form-control-wrap" data-name="ipdetails"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="ipdetails" /></span><span class="wpcf7-form-control-wrap" data-name="urll"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="urll" /></span><span class="wpcf7-form-control-wrap" data-name="idd2"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="idd2" /></span><span class="wpcf7-form-control-wrap" data-name="utm_id"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_id" /></span><span class="wpcf7-form-control-wrap" data-name="utm_source"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_source" /></span><span class="wpcf7-form-control-wrap" data-name="utm_medium"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_medium" /></span><span class="wpcf7-form-control-wrap" data-name="utm_campaign"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_campaign" /></span><span class="wpcf7-form-control-wrap" data-name="utm_term"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_term" /></span><span class="wpcf7-form-control-wrap" data-name="utm_content"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="utm_content" /></span><span class="wpcf7-form-control-wrap" data-name="urlback"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="urlback" /></span><span class="wpcf7-form-control-wrap" data-name="linkcontact"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="linkcontact" /></span><span class="wpcf7-form-control-wrap" data-name="idd1"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" aria-invalid="false" value="" type="text" name="idd1" /></span>
+	
+</div>
+<input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" value="Send" style="margin-bottom: 50px ;"  />
+<div class="wpcf7-response-output" aria-hidden="true" style="padding-bottom: 50px;"></div>
+</form>
+</div>
+				</div>
+				<i class="formss-heart"></i>
+			</div>
+		</div>
+	</div>
+
+</div>
+		
+	</div>
+
+			<div class="footer fade-in">
+				<div class="wrapper">
+					<div>
+						<div class="footer-caption">
+							<div class="title title__default">
+								<span>Have a Project in Mind? Let’s Build Something Great Together.</span>
+								<a href="../../contact/" class="redlink">
+									<span>Lets talk</span>
+								</a>
+							</div>
+							<div class="footer-email">
+								<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+							</div>
+						</div>
+						<div class="footer-grid">
+							<div class="footer-col">
+								<div class="footer-col_caption">Company</div>
+								<div class="footer-col_list">
+									<ul id="menu-footer-company-menu" class="menuss"><li id="menu-item-959" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href=/featured-work/">Work</a></li>
+<li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../../agency/">Agency</a></li>
+<li id="menu-item-482" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="/services/">Services</a></li>
+
+
+<li id="menu-item-4127" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
+								</div>
+							</div>
+							<div class="footer-col">
+								<div class="footer-col_caption">Services</div>
+								<div class="footer-col_list">
+									<ul id="menu-footer-service-menu" class="menuss"><li id="menu-item-279" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-279"><a href="/services/web-design/">Web Design</a></li>
+<li id="menu-item-2369" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2369"><a href="/services/wordpress-websites/">WordPress Websites</a></li>
+<li id="menu-item-282" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="/services/branding/">Branding</a></li>
+<li id="menu-item-1730" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1730"><a href="/services/packaging-design/">Packaging Design</a></li>
+<li id="menu-item-2259" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2259"><a href="/services/graphic-design/">Graphic Design</a></li>
+
+</ul>														</div>
+							</div>
+							<div class="footer-col ">
+								<div class="footer-col_caption">Connect</div>
+								<div class="footer-col_list">
+
+<li id="menu-item-4966" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4966"><a class="js-dropdown-layer-marker" target="_blank" href="https://www.instagram.com/Aenfinite/">Instagram</a></li>
+<li id="menu-item-4952" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4952"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/">Partner with us</a></li>
+<li id="menu-item-4952-1" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/white-label-services/">White Label Services</a></li>
+<li id="menu-item-4952-2" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/referral-program/">Referral Program</a></li>
+<li id="menu-item-4952-3" class="menu-item menu-item-type-post_type menu-item-object-page"><a class="js-dropdown-layer-marker" href="../../agency/partner-with-us/ghl-services/">GHL Services</a></li>
+<li id="menu-item-4953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4953"><a class="js-dropdown-layer-marker" target="_blank" href="mailto:hello@aenfinite.com?subject=Project%20Inquiry">Email</a></li>
+<li id="menu-item-5977" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5977"><a class="js-dropdown-layer-marker" href="../../contact/">Contact</a></li>
+</ul>								</div>
+							</div>
+							<div class="footer-col " style="padding-top: 15px !important; padding-left: 40px;">
+									<div class="footer-col_caption">Address</div>
+									<div class="footer-col_list">
+										<ul>
+											<li>
+	1500 N Grant St Ste<br class="desktop" />
+	Denver, CO 80203<br class="desktop" />
+	Denver County, USA
+</li>
+
+											<li>
+												<a style="white-space:nowrap;" href="tel:+13034199782">+1 (303) 419-9782</a>
+											</li>
+											<li>
+												<a href="mailto:hello@aenfinite.com">hello@aenfinite.com</a>
+											</li>
+										</ul>
+									</div>
+								</div>							</div>
+						</div>
+						
+						<div class="bottom-line">
+							<div class="line-1-2">
+								<p>Copyright &copy; 2025 Aenfinite LLC</p>
+								<p>Headquartered in Colorado & Beyond </p>
+							</div>
+													<div class="line-last">All rights reserved									
+								
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="menu js-menu mobile">
+				<div class="wrapper">
+					<div class="menu-inner">
+						<div class="menu-header">
+							<div class="topbar">
+								<div class="topbar-logo">
+									<a href="/">
+										<img src="../../wp-content/themes/aenfinite.com/images/aenfinite-full.svg" alt="Aenfinite" />
+									</a>
+								</div>
+								<div class="menu-close js-menu-toggle"><i></i></div>
+							</div>
+						</div>
+						<div class="menu-nav">
+							<ul id="menu-footer-company-menu-1" class="menuss"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-959"><a href=/featured-work/">Work</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="../../agency/">Agency</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-482"><a href="/services/">Services</a></li>
+
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4127"><a href="../../contact/">Contact</a></li>
+</ul>						</div>
+						<div class="menu-footer">
+							<a class="menu-contact" href="../../contact/">Contact</a>
+							<a class="menu-email" href="mailto:hello@aenfinite.com">Email us</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+
+				<a href="contact/" class="to-contact">New Project?</a><a href="#" class="to-meeter" onclick="openCalendlyPopup(event)">Schedule A Meeting</a>
+
+
+<div id="calendly-modal" class="calendly-modal" style="display: none;">
+	<div class="calendly-modal-content">
+		<div class="calendly-modal-header">
+			<span class="calendly-close" onclick="closeCalendlyPopup()">&times;</span>
+			<h3>Schedule Your Business Meeting</h3>
+		</div>
+		<div class="calendly-modal-body">
+			<div class="calendly-inline-widget" data-url="https://calendly.com/aenfinite/business-meeting" style="min-width:320px;height:630px;"></div>
+		</div>
+	</div>
+</div>
+
+<!-- 3. CSS STYLES (Place this in your <head> section or CSS file) -->
+<style>
+/* ===== BUTTON STYLES ===== */
+
+/* ===== MODAL STYLES ===== */
+.calendly-modal {
+	position: fixed;
+	z-index: 10000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.8);
+	animation: fadeIn 0.3s ease;
+}
+
+.calendly-modal-content {
+	background-color: #fefefe;
+	margin: 2% auto;
+	border: none;
+	border-radius: 15px;
+	width: 90%;
+	max-width: 900px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease;
+}
+
+.calendly-modal-header {
+	background: linear-gradient(135deg, #227bf3, #1e6fd9);
+	color: white;
+	padding: 20px 30px;
+	border-radius: 15px 15px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.calendly-modal-header h3 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.calendly-close {
+	color: white;
+	font-size: 32px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 1;
+	transition: color 0.3s ease;
+}
+
+.calendly-close:hover {
+	color: #f1f1f1;
+	transform: scale(1.1);
+}
+
+.calendly-modal-body {
+	padding: 0;
+	border-radius: 0 0 15px 15px;
+	overflow: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideIn {
+	from { 
+		opacity: 0;
+		transform: translateY(-30px) scale(0.9);
+	}
+	to { 
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 200px !important;
+		padding: 10px 16px !important;
+		font-size: 13px !important;
+	}
+	
+	
+
+	.calendly-modal-content {
+		width: 95%;
+		margin: 5% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 15px 20px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 20px;
+	}
+	
+	.calendly-inline-widget {
+		height: 500px !important;
+		min-width: 280px !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.to-meeting {
+		bottom: 15px !important;
+		max-width: 180px !important;
+		padding: 8px 14px !important;
+		font-size: 12px !important;
+	}
+
+	.calendly-modal-content {
+		width: 98%;
+		margin: 3% auto;
+	}
+	
+	.calendly-modal-header {
+		padding: 12px 15px;
+	}
+	
+	.calendly-modal-header h3 {
+		font-size: 18px;
+	}
+	
+	.calendly-inline-widget {
+		height: 450px !important;
+		min-width: 260px !important;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.to-meeting {
+		max-width: 160px !important;
+		padding: 8px 12px !important;
+		font-size: 11px !important;
+	}
+}
+
+/* Design Process Timeline Mobile Styles */
+@media screen and (max-width: 768px) {
+    .design-process-timeline::before {
+        left: 25px;
+    }
+
+    .process-step {
+        flex-direction: column;
+        padding-left: 60px;
+        margin-bottom: 40px;
+        position: relative;
+    }
+
+    .step-number {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+        margin-right: 0;
+    }
+
+    .step-content {
+        width: 100%;
+        margin-right: 0;
+        padding-top: 10px;
+    }
+
+    .step-content h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .step-content p {
+        text-align: left;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .step-highlight {
+        font-size: 13px;
+        padding: 8px 15px;
+        display: inline-block;
+        margin-top: 10px;
+    }
+
+    .step-visual {
+        width: 100%;
+        height: auto;
+        padding: 15px 0;
+        margin-top: 15px;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .process-icon {
+        font-size: 24px;
+    }
+
+    .keynumbers {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .keynumber {
+        width: 100%;
+        text-align: center;
+    }
+
+    .inner-wrapper {
+        padding: 0 15px;
+    }
+
+    .section-caption_text h2 {
+        font-size: 24px;
+        line-height: 1.3;
+    }
+}
+
+/* ===== PORTFOLIO LIGHTBOX STYLES ===== */
+.lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.lightbox-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.lightbox-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lightbox-title h3 {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.lightbox-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.lightbox-tag {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.lightbox-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.lightbox-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+.lightbox-btn i {
+    line-height: 1;
+}
+
+.lightbox-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.lightbox-btn:active {
+    transform: scale(0.95);
+}
+
+.lightbox-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.lightbox-image-container {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    cursor: grab;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-image.dragging {
+    cursor: grabbing;
+}
+
+.lightbox-image.zoomed {
+    cursor: move;
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+    font-size: 18px;
+}
+
+.lightbox-nav i {
+    line-height: 1;
+}
+
+.lightbox-nav:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-prev {
+    left: 20px;
+}
+
+.lightbox-next {
+    right: 20px;
+}
+
+.lightbox-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lightbox-zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lightbox-zoom-level {
+    color: white;
+    font-size: 14px;
+    min-width: 50px;
+    text-align: center;
+}
+
+.lightbox-info {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .lightbox-header,
+    .lightbox-footer {
+        padding: 12px 16px;
+    }
+    
+    .lightbox-title h3 {
+        font-size: 16px;
+    }
+    
+    .lightbox-nav {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .lightbox-prev {
+        left: 10px;
+    }
+    
+    .lightbox-next {
+        right: 10px;
+    }
+    
+    .lightbox-zoom-controls {
+        gap: 8px;
+    }
+    
+    .lightbox-btn {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lightbox-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .lightbox-controls {
+        align-self: flex-end;
+    }
+    
+    .lightbox-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .lightbox-content {
+        padding: 10px;
+    }
+}
+
+/* Animation keyframes */
+@keyframes lightboxFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.lightbox-container {
+    animation: lightboxFadeIn 0.3s ease;
+}
+</style>
+
+
+<script>
+/* ===== CALENDLY POPUP FUNCTIONS ===== */
+function openCalendlyPopup(event) {
+	event.preventDefault();
+	document.getElementById('calendly-modal').style.display = 'block';
+	document.body.style.overflow = 'hidden'; // Prevent background scrolling
+	
+	// Load Calendly widget if not already loaded
+	if (!window.Calendly) {
+		loadCalendlyScript();
+	} else {
+		// Initialize widget if Calendly is already loaded
+		initializeCalendlyWidget();
+	}
+}
+
+function closeCalendlyPopup() {
+	document.getElementById('calendly-modal').style.display = 'none';
+	document.body.style.overflow = 'auto'; // Re-enable background scrolling
+}
+
+function loadCalendlyScript() {
+	// Load Calendly CSS
+	if (!document.querySelector('link[href*="calendly.com"]')) {
+		const calendlyCss = document.createElement('link');
+		calendlyCss.href = 'https://assets.calendly.com/assets/external/widget.css';
+		calendlyCss.rel = 'stylesheet';
+		document.head.appendChild(calendlyCss);
+	}
+	
+	// Load Calendly JS
+	if (!document.querySelector('script[src*="calendly.com"]')) {
+		const calendlyScript = document.createElement('script');
+		calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
+		calendlyScript.onload = function() {
+			initializeCalendlyWidget();
+		};
+		document.head.appendChild(calendlyScript);
+	}
+}
+
+function initializeCalendlyWidget() {
+	if (window.Calendly) {
+		Calendly.initInlineWidget({
+			url: 'https://calendly.com/aenfinite/business-meeting',
+			parentElement: document.querySelector('.calendly-inline-widget'),
+			prefill: {},
+			utm: {}
+		});
+	}
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+	const modal = document.getElementById('calendly-modal');
+	if (event.target == modal) {
+		closeCalendlyPopup();
+	}
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+	if (event.key === 'Escape') {
+		const modal = document.getElementById('calendly-modal');
+		if (modal.style.display === 'block') {
+			closeCalendlyPopup();
+		}
+	}
+});
+</script>
+		
+		<div class="cookie-banner" style="">
+			<div class="cookie-banner__inner">
+				<div class="cookie-banner__text">
+					<span class="cookie-banner__icon">
+						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+							<circle cx="7.5" cy="7.5" r="6.5" stroke="#E4E4E4"/>
+							<path d="M7.87778 4.70654L7.82222 8.79543H7.17778L7.12222 4.70654H7.87778ZM7.5 10.4399C7.36296 10.4399 7.24537 10.3908 7.14722 10.2927C7.04907 10.1945 7 10.0769 7 9.93988C7 9.80284 7.04907 9.68525 7.14722 9.5871C7.24537 9.48895 7.36296 9.43988 7.5 9.43988C7.63704 9.43988 7.75463 9.48895 7.85278 9.5871C7.95093 9.68525 8 9.80284 8 9.93988C8 10.0306 7.97685 10.114 7.93056 10.1899C7.88611 10.2658 7.82593 10.3269 7.75 10.3732C7.67593 10.4177 7.59259 10.4399 7.5 10.4399Z" fill="white"/>
+						</svg>
+					</span>
+					<span class="cookie-banner__message">
+						We use cookies to enhance your user experience. By clicking ACCEPT or continuing to browse, you agree to our
+						<a href="../../privacy-policy/" class="cookie-banner__link" target="_blank">Privacy Policy</a>.
+					</span>
+				</div>
+				<button class="cookie-banner__button">Accept</button>
+			</div>
+		</div>
+
+		<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const banner = document.querySelector(".cookie-banner");
+			const acceptBtn = document.querySelector(".cookie-banner__button");
+
+			if (localStorage.getItem("cookieAccepted") === "true") {
+				banner.style.display = "none";
+			}
+
+			acceptBtn.addEventListener("click", function () {
+				localStorage.setItem("cookieAccepted", "true");
+				banner.style.display = "none";
+			});
+		});
+		</script>
+
+		<script src="../../wp-content/themes/aenfinite.com/static/js/demo5163.js?v=20241204-0018"></script>	
+		<script src="../../wp-content/themes/aenfinite.com/static/js/aos.js"></script>
+				
+		<script>
+			$(function() {
+				AOS.init();
+				
+								
+					// Immediate visibility for better performance
+					document.body.classList.add('body_visible');
+					document.body.classList.remove('loading', 'body_hide');
+					
+								
+								
+			});
+		</script>
+		
+		<script>
+			$(".faq-item").each(function(i){
+				var el = $(this);
+				el.find(".faq-header").click(function(e){
+					e.preventDefault();
+					el.toggleClass("active");
+				});
+			});
+		</script>
+
+		<!-- LinkedIn Insight Tag -->
+    <script >
+        
+    </script>
+    <script >
+        (function(l) {
+            if (!l) {
+                window.lintrk = function(a,b) {
+                    window.lintrk.q.push([a,b])
+                };
+                window.lintrk.q=[]
+            }
+            var s = document.getElementsByTagName("script")[0];
+            var b = document.createElement("script");
+            b.type = "text/javascript";
+            b.async = true;
+            b.src = "../../../snap.licdn.com/li.lms-analytics/insight.min.js";
+            s.parentNode.insertBefore(b, s);
+        })(window.lintrk);
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=6313658&amp;fmt=gif" />
+    </noscript>
+    <!-- End LinkedIn Insight Tag --><link rel='stylesheet' id='classic-theme-styles-css' href='../../wp-includes/css/classic-themes.mind1c0.css?ver=6.7.2'  media='all' />
+<script  src="../../wp-includes/js/dist/hooks.min4fdd.js?ver=4d63a3d491d11ffd8ac6" id="wp-hooks-js"></script>
+<script  src="../../wp-includes/js/dist/i18n.minc33c.js?ver=5e580eb46a90c2b997e6" id="wp-i18n-js"></script>
+<script  id="wp-i18n-js-after">
+/* <![CDATA[ */
+wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
+
+</script>
+
+<script  src="../../../www.google.com/recaptcha/api234c.js?render=6LecDXgUAAAAAEvI5y3riqTuwsANQmQo9Y7B55Jf&amp;ver=3.0" id="google-recaptcha-js"></script>
+<script  src="../../wp-includes/js/dist/vendor/wp-polyfill.min2c7c.js?ver=3.15.0" id="wp-polyfill-js"></script>
+
+
+<!-- Portfolio Lightbox JavaScript -->
+<script>
+class PortfolioLightbox {
+    constructor() {
+        this.lightbox = document.getElementById('portfolioLightbox');
+        this.lightboxImage = document.getElementById('lightboxImage');
+        this.lightboxTitle = document.getElementById('lightboxTitle');
+        this.lightboxTags = document.getElementById('lightboxTags');
+        this.lightboxCounter = document.getElementById('lightboxCounter');
+        this.zoomLevel = 1;
+        this.isDragging = false;
+        this.startX = 0;
+        this.startY = 0;
+        this.imageX = 0;
+        this.imageY = 0;
+        this.currentIndex = 0;
+        this.projects = [];
+        
+        this.init();
+    }
+    
+    init() {
+        // Get all project items and build image collections
+        this.projects = Array.from(document.querySelectorAll('.project'));
+        this.imageCollections = this.buildImageCollections();
+        
+        // Add event listeners
+        this.addEventListeners();
+    }
+    
+    buildImageCollections() {
+        const collections = [];
+        
+        this.projects.forEach((project, index) => {
+            const projectGroup = project.dataset.projectGroup;
+            const mainImg = project.querySelector('.cover');
+            
+            if (projectGroup) {
+                // This is a multi-image project (like cyclethe6)
+                const images = [mainImg];
+                const hiddenImages = project.querySelectorAll('.hidden-lightbox-images img');
+                hiddenImages.forEach(img => images.push(img));
+                
+                collections.push({
+                    projectIndex: index,
+                    projectGroup: projectGroup,
+                    images: images,
+                    currentImageIndex: 0
+                });
+            } else {
+                // Single image project
+                collections.push({
+                    projectIndex: index,
+                    projectGroup: null,
+                    images: [mainImg],
+                    currentImageIndex: 0
+                });
+            }
+        });
+        
+        return collections;
+    }
+    
+    addEventListeners() {
+        // Close button
+        document.querySelector('.lightbox-close').addEventListener('click', () => this.close());
+        
+        // Zoom controls
+        document.querySelector('.lightbox-zoom-in').addEventListener('click', () => this.zoomIn());
+        document.querySelector('.lightbox-zoom-out').addEventListener('click', () => this.zoomOut());
+        document.querySelector('.lightbox-fit').addEventListener('click', () => this.fitToScreen());
+        
+        // Navigation
+        document.querySelector('.lightbox-prev').addEventListener('click', () => this.prev());
+        document.querySelector('.lightbox-next').addEventListener('click', () => this.next());
+        
+        // Share button
+        document.querySelector('.lightbox-share').addEventListener('click', () => this.share());
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => this.handleKeydown(e));
+        
+        // Close on overlay click
+        this.lightbox.addEventListener('click', (e) => {
+            if (e.target === this.lightbox) this.close();
+        });
+        
+        // Image drag functionality
+        this.lightboxImage.addEventListener('mousedown', (e) => this.startDrag(e));
+        document.addEventListener('mousemove', (e) => this.drag(e));
+        document.addEventListener('mouseup', () => this.endDrag());
+        
+        // Mouse wheel zoom
+        this.lightboxImage.addEventListener('wheel', (e) => this.handleWheel(e));
+        
+        // Touch events for mobile
+        this.lightboxImage.addEventListener('touchstart', (e) => this.startDrag(e.touches[0]));
+        document.addEventListener('touchmove', (e) => this.drag(e.touches[0]));
+        document.addEventListener('touchend', () => this.endDrag());
+    }
+    
+    open(projectIndex) {
+        this.currentIndex = projectIndex;
+        const collection = this.imageCollections[projectIndex];
+        
+        if (!collection) return;
+        
+        const project = this.projects[projectIndex];
+        const currentImage = collection.images[collection.currentImageIndex];
+        
+        // Set image
+        this.lightboxImage.src = currentImage.src;
+        this.lightboxImage.alt = currentImage.alt;
+        
+        // Get project data for title and tags
+        const titleLink = project.querySelector('.preview-name__caption a');
+        const tags = project.querySelectorAll('.preview-name a');
+        
+        // Set title
+        this.lightboxTitle.textContent = titleLink ? titleLink.textContent.trim() : 'Project';
+        
+        // Set tags
+        this.lightboxTags.innerHTML = '';
+        tags.forEach(tag => {
+            if (tag !== titleLink && tag.textContent.trim()) {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'lightbox-tag';
+                tagElement.textContent = tag.textContent.trim();
+                this.lightboxTags.appendChild(tagElement);
+            }
+        });
+        
+        // Update counter
+        this.updateCounter();
+        
+        // Reset zoom and position
+        this.resetImageTransform();
+        
+        // Show lightbox
+        this.lightbox.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        // Trigger animation with reduced delay
+        setTimeout(() => {
+            this.lightbox.classList.add('active');
+        }, 5);
+    }
+    
+    close() {
+        this.lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        setTimeout(() => {
+            this.lightbox.style.display = 'none';
+        }, 300);
+    }
+    
+    prev() {
+        const collection = this.imageCollections[this.currentIndex];
+        
+        if (collection.images.length > 1) {
+            // Multi-image project: navigate within the collection
+            if (collection.currentImageIndex > 0) {
+                collection.currentImageIndex--;
+                this.updateCurrentImage();
+                return;
+            }
+        }
+        
+        // Navigate to previous project
+        const newIndex = this.currentIndex > 0 ? this.currentIndex - 1 : this.projects.length - 1;
+        this.imageCollections[newIndex].currentImageIndex = 0; // Reset to first image
+        this.open(newIndex);
+    }
+    
+    next() {
+        const collection = this.imageCollections[this.currentIndex];
+        
+        if (collection.images.length > 1) {
+            // Multi-image project: navigate within the collection
+            if (collection.currentImageIndex < collection.images.length - 1) {
+                collection.currentImageIndex++;
+                this.updateCurrentImage();
+                return;
+            }
+        }
+        
+        // Navigate to next project
+        const newIndex = this.currentIndex < this.projects.length - 1 ? this.currentIndex + 1 : 0;
+        this.imageCollections[newIndex].currentImageIndex = 0; // Reset to first image
+        this.open(newIndex);
+    }
+    
+    updateCurrentImage() {
+        // Update the current image without reopening the lightbox
+        const collection = this.imageCollections[this.currentIndex];
+        const currentImage = collection.images[collection.currentImageIndex];
+        
+        this.lightboxImage.src = currentImage.src;
+        this.lightboxImage.alt = currentImage.alt;
+        
+        // Update counter
+        this.updateCounter();
+        
+        // Reset zoom and position
+        this.resetImageTransform();
+    }
+    
+    zoomIn() {
+        this.zoomLevel = Math.min(this.zoomLevel * 1.2, 5);
+        this.updateImageTransform();
+        this.updateZoomLevel();
+    }
+    
+    zoomOut() {
+        this.zoomLevel = Math.max(this.zoomLevel / 1.2, 0.1);
+        this.updateImageTransform();
+        this.updateZoomLevel();
+    }
+    
+    fitToScreen() {
+        this.zoomLevel = 1;
+        this.imageX = 0;
+        this.imageY = 0;
+        this.updateImageTransform();
+        this.updateZoomLevel();
+    }
+    
+    share() {
+        const project = this.projects[this.currentIndex];
+        const titleLink = project.querySelector('.preview-name__caption a');
+        const title = titleLink ? titleLink.textContent.trim() : 'Portfolio Project';
+        
+        if (navigator.share) {
+            navigator.share({
+                title: title,
+                text: `Check out this ${title} by Aenfinite`,
+                url: window.location.href
+            });
+        } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+    }
+    
+    startDrag(e) {
+        if (this.zoomLevel <= 1) return;
+        
+        this.isDragging = true;
+        this.lightboxImage.classList.add('dragging');
+        this.startX = e.clientX - this.imageX;
+        this.startY = e.clientY - this.imageY;
+        e.preventDefault();
+    }
+    
+    drag(e) {
+        if (!this.isDragging) return;
+        
+        this.imageX = e.clientX - this.startX;
+        this.imageY = e.clientY - this.startY;
+        this.updateImageTransform();
+        e.preventDefault();
+    }
+    
+    endDrag() {
+        this.isDragging = false;
+        this.lightboxImage.classList.remove('dragging');
+    }
+    
+    handleWheel(e) {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? 0.9 : 1.1;
+        this.zoomLevel = Math.max(0.1, Math.min(5, this.zoomLevel * delta));
+        this.updateImageTransform();
+        this.updateZoomLevel();
+    }
+    
+    handleKeydown(e) {
+        if (!this.lightbox.classList.contains('active')) return;
+        
+        switch(e.key) {
+            case 'Escape':
+                this.close();
+                break;
+            case 'ArrowLeft':
+                this.prev();
+                break;
+            case 'ArrowRight':
+                this.next();
+                break;
+            case '+':
+            case '=':
+                this.zoomIn();
+                break;
+            case '-':
+                this.zoomOut();
+                break;
+            case '0':
+                this.fitToScreen();
+                break;
+        }
+    }
+    
+    updateImageTransform() {
+        const transform = `translate(${this.imageX}px, ${this.imageY}px) scale(${this.zoomLevel})`;
+        this.lightboxImage.style.transform = transform;
+        
+        if (this.zoomLevel > 1) {
+            this.lightboxImage.classList.add('zoomed');
+        } else {
+            this.lightboxImage.classList.remove('zoomed');
+        }
+    }
+    
+    resetImageTransform() {
+        this.zoomLevel = 1;
+        this.imageX = 0;
+        this.imageY = 0;
+        this.updateImageTransform();
+        this.updateZoomLevel();
+    }
+    
+    updateZoomLevel() {
+        document.querySelector('.lightbox-zoom-level').textContent = Math.round(this.zoomLevel * 100) + '%';
+    }
+    
+    updateCounter() {
+        const collection = this.imageCollections[this.currentIndex];
+        
+        if (collection.images.length > 1) {
+            // Show image count within the collection and project count
+            this.lightboxCounter.textContent = `Image ${collection.currentImageIndex + 1} of ${collection.images.length} | Project ${this.currentIndex + 1} of ${this.projects.length}`;
+        } else {
+            // Single image project - just show project count
+            this.lightboxCounter.textContent = `${this.currentIndex + 1} of ${this.projects.length}`;
+        }
+    }
+}
+
+// Initialize lightbox when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    const lightbox = new PortfolioLightbox();
+    
+    // Add click handlers to project items with lightbox data attribute
+    document.querySelectorAll('.project[data-lightbox="true"]').forEach((project, index) => {
+        const link = project.querySelector('.a-preview[data-lightbox-trigger]');
+        if (link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Find the index among all projects (not just lightbox ones)
+                const allProjects = Array.from(document.querySelectorAll('.project'));
+                const projectIndex = allProjects.indexOf(project);
+                lightbox.open(projectIndex);
+            });
+        }
+    });
+    
+    // Also enable lightbox for any project with empty href or # href
+    document.querySelectorAll('.project').forEach((project, index) => {
+        const link = project.querySelector('.a-preview');
+        if (link && !link.hasAttribute('data-lightbox-trigger')) {
+            const href = link.getAttribute('href');
+            if (href === '#' || href === '' || href.includes('coming-soon') || href.includes('placeholder')) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    lightbox.open(index);
+                });
+                
+                // Update the action text
+                const actionElement = project.querySelector('.preview-action');
+                if (actionElement) {
+                    actionElement.textContent = 'View in gallery';
+                }
+            }
+        }
+    });
+});
+</script>
+
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f987604bba21e4',t:'MTc1NTI2OTY4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+<!-- Portfolio Lightbox Modal -->
+<div id="portfolioLightbox" class="lightbox-overlay">
+    <div class="lightbox-container">
+        <!-- Header Controls -->
+        <div class="lightbox-header">
+            <div class="lightbox-title">
+                <h3 id="lightboxTitle">Project Title</h3>
+                <div class="lightbox-tags" id="lightboxTags"></div>
+            </div>
+            <div class="lightbox-controls">
+                <button class="lightbox-btn lightbox-share" title="Share">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="lightbox-btn lightbox-close" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="lightbox-content">
+            <div class="lightbox-image-container">
+                <img id="lightboxImage" src="" alt="" class="lightbox-image">
+                
+                <!-- Navigation Arrows -->
+                <button class="lightbox-nav lightbox-prev" title="Previous">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="lightbox-nav lightbox-next" title="Next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Controls -->
+        <div class="lightbox-footer">
+            <div class="lightbox-zoom-controls">
+                <button class="lightbox-btn lightbox-zoom-out" title="Zoom Out">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <span class="lightbox-zoom-level">100%</span>
+                <button class="lightbox-btn lightbox-zoom-in" title="Zoom In">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="lightbox-btn lightbox-fit" title="Fit to Screen">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+            </div>
+            <div class="lightbox-info">
+                <span id="lightboxCounter">1 of 10</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+	<!-- Universal Button and Checkbox Highlighting Script -->
+	<script src="../../js/button-highlights.js"></script>
+	
+	<!-- Custom Checkbox Toggle Script -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// The CSS now handles all the visual styling automatically
+			// This script just ensures the form functionality works properly
+			const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+			
+			checkboxes.forEach(function(checkbox) {
+				const label = checkbox.nextElementSibling;
+				
+				// Make labels clickable
+				if (label && label.classList.contains('list-item-label')) {
+					label.addEventListener('click', function(e) {
+						e.preventDefault();
+						checkbox.checked = !checkbox.checked;
+						
+						// Trigger change event for form processing
+						const event = new Event('change', { bubbles: true });
+						checkbox.dispatchEvent(event);
+					});
+				}
+			});
+		});
+	</script>
+		</body>
+
+
+<!-- CF7 reCAPTCHA scripts removed - using custom form handler -->
+	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f9866719a521e6',t:'MTc1NTI2OTY0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../../cdn-cgi/challenge-platform/h/b/scripts/jsd/4710d66e8fda/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+	<!-- Universal Form Handler Script -->
+	<script src="../../js/custom-form-handler.js"></script>
+	</html>
+
+
+
+

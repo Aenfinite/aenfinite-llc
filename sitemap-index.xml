@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+    <!-- Main Website Pages (Homepage, About, Contact, etc.) -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+    
+    <!-- All Services Pages (Web Design, Logo Design, etc.) -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-services.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+    
+    <!-- All Work/Portfolio Pages -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-work.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+    
+    <!-- Other Pages (Agency, Partner Pages, etc.) -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-pages.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+
+    <!-- Contact Page Sitemap -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-contact.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+
+    <!-- Featured Work Sitemap -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-featured-work.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+
+    <!-- Partner With Us Sitemap -->
+    <sitemap>
+        <loc>https://aenfinite.com/sitemap-partner-with-us.xml</loc>
+        <lastmod>2025-10-02</lastmod>
+    </sitemap>
+    
+</sitemapindex>

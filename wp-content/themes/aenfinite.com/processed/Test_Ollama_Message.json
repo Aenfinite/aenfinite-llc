@@ -1,0 +1,53 @@
+{
+  "name": "Test Ollama Message",
+  "nodes": [
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://ollama.aenfinite.com/api/chat",
+        "jsonParameters": true,
+        "options": {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer sk-8f92bXkLQZpT1Y3m9RwNcA5tU7e2jKoV"
+          }
+        },
+        "bodyParametersJson": "{\"model\": \"llama3.1\", \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}]}"
+      },
+      "name": "Send Message to Ollama",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        400,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Set Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        600,
+        300
+      ],
+      "alwaysOutputData": true
+    }
+  ],
+  "connections": {
+    "Send Message to Ollama": {
+      "main": [
+        [
+          {
+            "node": "Set Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "1"
+}
