@@ -45,6 +45,58 @@
     {
       "@type": "Organization",
       "@id": "https://aenfinite.com/#organization",
+      "name": "Aenfinite",
+      "url": "https://aenfinite.com",
+      "sameAs": [
+        "https://www.facebook.com/aenfinite/",
+        "https://www.linkedin.com/company/aenfinite",
+        "https://www.instagram.com/aenfinite/",
+        "https://twitter.com/aenfinite"
+      ],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://aenfinite.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://aenfinite.com/#website",
+      "url": "https://aenfinite.com",
+      "name": "Aenfinite",
+      "publisher": {
+        "@id": "https://aenfinite.com/#organization"
+      },
+      "hasPart": [
+        {
+          "@type": "WebPage",
+          "name": "Services",
+          "description": "Professional digital services including web design, branding, and marketing",
+          "url": "https://aenfinite.com/services/"
+        },
+        {
+          "@type": "WebPage",
+          "name": "Portfolio",
+          "description": "Our work portfolio showcasing successful projects",
+          "url": "https://aenfinite.com/work/"
+        },
+        {
+          "@type": "WebPage",
+          "name": "About Us",
+          "description": "Learn about Aenfinite and our mission",
+          "url": "https://aenfinite.com/agency/"
+        },
+        {
+          "@type": "WebPage",
+          "name": "Contact",
+          "description": "Get in touch with our team",
+          "url": "https://aenfinite.com/contact/"
+        }
+      ]
+    },
       "name": "Aenfinite", "image": "https://aenfinite.com/wp-content/themes/aenfinite.com/images/thumbnail.jpg",
       "legalName": "Aenfinite LLC",
       "description": "Digital innovation agency specializing in web design, branding, UI/UX design, digital marketing, and e-commerce development.",
@@ -689,21 +741,7 @@
 			
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<!-- Powered by Aenfinite https://aenfinite.com/ -->
-		<!--              
-				,AAA                 AAA        
-			  AA    AA            AA     AA     
-		   ,A          AA       AA         .A.  
-		 AA              AA  .A               AA
-		   A,               A               AA  
-			 AA                           A*    
-				A,                     AA       
-				  AA                 A*         
-					 A,           AA            
-					   AA       A*              
-						  A, AA                 
-							*
-		-->
+		
 		<script src="/wp-content/themes/aenfinite.com/static/js/jquery.min.js"></script>
 		<script src="/wp-content/themes/aenfinite.com/static/js/slick.min.js"></script>
 		<link href="/wp-content/themes/aenfinite.com/static/css/mainf1a7.css?v=20250731-2020" rel="stylesheet" type="text/css" />
