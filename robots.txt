@@ -29,6 +29,37 @@ Allow: /
 User-agent: Twitterbot
 Allow: /
 
+# Allow AI search & assistant crawlers (visibility in ChatGPT, Perplexity, Claude, Google AI)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 # Sitemap location
 Sitemap: https://aenfinite.com/sitemap-index.xml
 Sitemap: https://aenfinite.com/sitemap.xml
@@ -45,6 +76,19 @@ Disallow: /wp-json/
 Disallow: /cdn-cgi/
 Disallow: /challenge-platform/
 
+# IMPORTANT: allow CSS/JS/images so Google can fully render pages
+# (Allow rules are more specific than the theme/plugin Disallow above, so they win)
+Allow: /wp-content/themes/*.css$
+Allow: /wp-content/themes/*.js$
+Allow: /wp-content/themes/*.svg$
+Allow: /wp-content/themes/*.png$
+Allow: /wp-content/themes/*.jpg$
+Allow: /wp-content/themes/*.webp$
+Allow: /wp-content/themes/*.avif$
+Allow: /wp-content/plugins/*.css$
+Allow: /wp-content/plugins/*.js$
+Allow: /wp-content/uploads/
+
 # Disallow temporary and test files
 Disallow: /*test*.html
 Disallow: /*backup*.html
@@ -56,10 +100,10 @@ Disallow: /animation-test.html
 Disallow: /faq-heart-rotation-template.html
 Disallow: /faq-heart-rotation-component.html
 Disallow: /schedule-meeting-component.html
+Disallow: /seo-competitor-sample/
+Disallow: /work-test/
 
-# Disallow script files from indexing
-Disallow: /*.js$
-Disallow: /*.css$
+# Disallow non-web script/config files from indexing
 Disallow: /*.bat$
 Disallow: /*.ps1$
 Disallow: /*.md$
